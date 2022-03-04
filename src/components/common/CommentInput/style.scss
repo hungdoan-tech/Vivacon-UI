@@ -1,0 +1,36 @@
+.draft-comment-container {
+  margin: 10px 0;
+  display: flex;
+  vertical-align: middle;
+  img {
+    border-radius: 100px;
+    border: solid 0.5px var(--lightColor);
+  }
+  .comment-input {
+    position: relative;
+    margin: 0 10px;
+    width: 80%;
+    padding: 0 20px;
+    background-color: var(--lightColor);
+    border-radius: 20px;
+    .MuiInputBase-root {
+      width: 90%;
+      height: 100%;
+    }
+    .different-text-icon {
+      svg {
+        font-size: 28px;
+      }
+      position: absolute;
+      right: 10px;
+      bottom: 0px;
+    }
+  }
+
+  .send-icon {
+    margin-top: 5px;
+    color: var(--mainColor);
+    font-size: 32px;
+    height: 100%;
+  }
+}

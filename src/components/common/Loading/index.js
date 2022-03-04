@@ -1,5 +1,5 @@
 import * as React from "react";
-import { LinearProgress, Typography } from "@mui/material";
+import { Typography } from "@mui/material";
 import "./style.scss";
 
 const Loading = () => {
@@ -22,7 +22,6 @@ const Loading = () => {
           />
           <Typography className="shadow"></Typography>
         </Typography>
-        <LinearProgress color="primary" />
       </Typography>
     </Typography>
   );

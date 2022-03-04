@@ -1,0 +1,32 @@
+.owner-container {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  img {
+    border-radius: 100px;
+    border: solid 0.5px var(--lightColor);
+  }
+  .right-content {
+    min-width: 100px;
+    margin-left: 10px;
+  }
+  .owner-name {
+    color: var(--charColor);
+    font-weight: 600;
+  }
+  .post-time {
+    font-size: 13px;
+    color: var(--defaultColor);
+  }
+}
+
+.post-caption {
+  margin: 10px 0;
+}
+
+.post-images {
+  margin: auto;
+  padding: 0px;
+  width: 714px;
+  height: 500px;
+}

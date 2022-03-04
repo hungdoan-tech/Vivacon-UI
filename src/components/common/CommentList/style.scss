@@ -1,0 +1,25 @@
+.sended-comments-container {
+    .comment-container {
+      margin: 10px 0;
+      display: flex;
+      vertical-align: middle;
+      img {
+        border-radius: 100px;
+        border: solid 0.5px var(--lightColor);
+      }
+      .content {
+        position: relative;
+        margin: 0 10px;
+        max-width: 60%;
+        padding: 0 20px;
+        background-color: var(--lightColor);
+        border-radius: 20px;
+        height: 100%;
+        padding: 10px;
+      }
+    }
+    .view-more{
+        margin-left: 10px;
+        font-size: 14px;
+    }
+  }
