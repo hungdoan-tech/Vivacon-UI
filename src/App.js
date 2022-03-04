@@ -1,4 +1,4 @@
-import "./App.css";
+import "./App.scss";
 import { useState } from "react";
 import Navbar from "./components/common/Navbar";
 import PostsList from "./components/PostsList";
