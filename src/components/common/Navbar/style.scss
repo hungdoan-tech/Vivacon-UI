@@ -1,0 +1,82 @@
+@import "../../../styles/colors.scss";
+.nav-container {
+  background-color: var(--backgroundColor) !important;
+  color: var(--mainColor) !important;
+  display: grid !important;
+  grid-template-columns: repeat(12, 1fr);
+  align-items: center;
+  height: 70px;
+
+  .app-logo {
+    grid-column-start: 1;
+    grid-column-end: span 1;
+    font-size: 20px;
+    font-weight: 300;
+  }
+
+  .app-search {
+    grid-column-start: 3;
+    grid-column-end: span 3;
+    display: flex;
+    flex-direction: row;
+    color: var(--charColor);
+    background-color: var(--lightColor);
+    border-radius: 10px;
+    .search-icon {
+      margin: 5px;
+      align-items: center;
+      left: 5px;
+      top: 5px;
+    }
+    .search-text {
+      width: 80%;
+    }
+  }
+
+  .app-buttons-container {
+    grid-column-start: 10;
+    grid-column-end: 11;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    button {
+      background-color: var(--defaultColor);
+      color: var(--backgroundColor);
+      width: 48px;
+      border-radius: 100px;
+      padding: 7px 0;
+      min-width: 48px !important;
+      margin-right: 10px;
+    }
+    .MuiSvgIcon-root {
+      font-size: 32px;
+    }
+    .notification-icon {
+      transform: rotate(40deg);
+    }
+  }
+
+  .app-user {
+    grid-column-start: 11;
+    grid-column-end: 11;
+    display: flex;
+    justify-content: flex-start;
+    .MuiButton-root {
+      margin: 5px 0;
+      padding: 0;
+      border-radius: 100px;
+      .user-avatar {
+        img {
+          border-radius: 100px;
+          border: solid 0.5px var(--lightColor);
+        }
+      }
+      .user-name {
+        text-transform: capitalize;
+        margin-left: 5px;
+        color: var(--charColor);
+        font-weight: 900;
+      }
+    }
+  }
+}
