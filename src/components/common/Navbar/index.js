@@ -1,11 +1,8 @@
 import * as React from "react";
 import SearchIcon from "@mui/icons-material/Search";
-import AddIcon from "@mui/icons-material/Add";
-import HomeIcon from "@mui/icons-material/Home";
 import { InputBase, AppBar, Button, Typography } from "@mui/material";
-import NotificationsIcon from "@mui/icons-material/Notifications";
-import ChatBubbleIcon from "@mui/icons-material/ChatBubble";
 import "./style.scss";
+import AppButtonsGroup from "../AppButtonsGroup";
 
 const Navbar = () => {
   return (
@@ -18,26 +15,7 @@ const Navbar = () => {
         <SearchIcon className="search-icon" />
         <InputBase className="search-text" placeholder="Search..." />
       </Typography>
-
-      <Typography
-        className="app-buttons-container"
-        component="div"
-        align="center"
-      >
-        <Button>
-          <AddIcon />
-        </Button>
-        <Button>
-          <HomeIcon />
-        </Button>
-        <Button>
-          <ChatBubbleIcon />
-        </Button>
-        <Button>
-          <NotificationsIcon className="notification-icon" />
-        </Button>
-      </Typography>
-
+      <AppButtonsGroup />
       <Typography className="app-user" component="div" align="center">
         <Button>
           <Typography className="user-avatar" component="div" align="center">

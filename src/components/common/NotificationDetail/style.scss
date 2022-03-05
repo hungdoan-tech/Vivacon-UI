@@ -1,0 +1,66 @@
+.notification-container {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  padding: 5px 16px;
+  cursor: pointer;
+  &:hover {
+    background-color: var(--mainColor);
+    color: var(--backgroundColor);
+    .seen-dot {
+      background-color: var(--backgroundColor);
+    }
+    .date-time {
+      color: var(--backgroundColor) !important;
+    }
+  }
+  .present-image {
+    grid-column-start: 1;
+    grid-column-end: 2;
+    margin: auto;
+    img {
+      border-radius: 50px;
+    }
+  }
+  .notification-content {
+    padding: 12px 0;
+    grid-column-start: 3;
+    grid-column-end: 11;
+    p {
+      font-size: 14px;
+    }
+    .owner-activity {
+      .notification-activity {
+        width: 100% !important;
+      }
+      .message-activity {
+        display: flex;
+        justify-content: space-between;
+        .message-from-now {
+          width: 30%;
+        }
+        .message-content {
+          width: 60%;
+          white-space: nowrap;
+          overflow: hidden !important;
+          text-overflow: ellipsis;
+        }
+      }
+      .date-time {
+        font-size: 12px;
+        color: var(--defaultColor);
+        &.notification-from-now {
+          width: 100% !important;
+        }
+      }
+    }
+  }
+  .seen-dot {
+    grid-column-start: 12;
+    grid-column-end: 12;
+    width: 12px;
+    height: 12px;
+    border-radius: 12px;
+    background-color: var(--mainColor);
+    margin: auto;
+  }
+}

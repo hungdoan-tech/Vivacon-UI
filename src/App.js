@@ -9,7 +9,7 @@ function App() {
 
   setTimeout(() => {
     setOpenApp(true);
-  }, 5000);
+  }, 0);
   return (
     <div className="App">
       {openApp ? (
