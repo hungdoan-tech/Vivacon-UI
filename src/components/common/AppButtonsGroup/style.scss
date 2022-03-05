@@ -1,0 +1,29 @@
+.app-btns-container {
+  grid-column-start: 10;
+  grid-column-end: 11;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  .btn-container {
+    position: relative;
+  }
+  button {
+    background-color: var(--defaultColor);
+    color: var(--backgroundColor);
+    width: 48px;
+    border-radius: 100px;
+    padding: 7px 0;
+    min-width: 48px !important;
+    margin-right: 10px;
+    &.active {
+      background-color: var(--mainColor);
+      font-weight: 900;
+    }
+  }
+  .MuiSvgIcon-root {
+    font-size: 32px;
+  }
+  .notification-icon {
+    transform: rotate(40deg);
+  }
+}

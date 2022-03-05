@@ -4,3 +4,9 @@
   margin-top: 80px;
   width: 750px;
 }
+button{
+  &:hover{
+    background-color: var(--mainColor) !important;
+    color: var(--backgroundColor) !important;
+  }
+}

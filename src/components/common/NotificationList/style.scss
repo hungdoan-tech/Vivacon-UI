@@ -1,0 +1,56 @@
+.notification-list-container {
+  position: absolute;
+  right: 0;
+  top: 60px;
+  border: solid 0.25px transparent;
+  width: 350px;
+  height: 450px;
+  .notification-list-content {
+    .title {
+      font-weight: 900;
+      height: 30px;
+      margin-left: 16px;
+    }
+    .filter-btn-group {
+      button {
+        font-size: 12px !important;
+        text-transform: capitalize;
+        font-weight: 900;
+        width: auto;
+        padding: 5px;
+      }
+      margin-left: 16px;
+      margin-bottom: 10px;
+    }
+    .MuiCardContent-root {
+      padding: 16px 0;
+    }
+    width: 350px;
+    height: 450px;
+    border-radius: 10px;
+    background-color: var(--backgroundColor);
+    border: solid 0.25px var(--lightColor);
+    overflow: auto;
+    &::after,
+    &::before {
+      content: "";
+      display: block;
+      position: absolute;
+      right: 20px;
+      top: -24px !important;
+      width: 0px;
+      height: 0px;
+      border-style: solid;
+    }
+    &::after {
+      border-color: transparent transparent var(--backgroundColor) transparent;
+      border-width: 12px;
+      top: -23.25px !important;
+      right: 20.45px;
+    }
+    &::before {
+      border-color: transparent transparent var(--defaultColor) transparent;
+      border-width: 12.25px;
+    }
+  }
+}
