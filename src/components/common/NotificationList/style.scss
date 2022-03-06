@@ -5,6 +5,8 @@
   border: solid 0.25px transparent;
   width: 350px;
   height: 450px;
+  animation-name: appearNotification;
+  animation-duration: 0.2s;
   .notification-list-content {
     .title {
       font-weight: 900;
@@ -51,6 +53,15 @@
     &::before {
       border-color: transparent transparent var(--defaultColor) transparent;
       border-width: 12.25px;
+    }
+  }
+
+  @keyframes appearNotification {
+    0%{
+      top: 50px;
+    }
+    100%{
+      top: 60px;
     }
   }
 }

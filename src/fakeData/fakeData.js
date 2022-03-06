@@ -1,3 +1,6 @@
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import SettingsIcon from '@mui/icons-material/Settings';
+import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
 const notiType = {
   POST: "POST",
   FOLLOWED: "FOLLOWED",
@@ -152,5 +155,20 @@ export const messageList = [
     url: "/",
     seen: true,
     dateTime: new Date("2022-02-22T20:17:46.384Z"),
+  },
+];
+
+export const userOption = [
+  {
+    icon: <AccountCircleIcon />,
+    name: "Profile",
+  },
+  {
+    icon: <SettingsIcon />,
+    name: "Setting",
+  },
+  {
+    icon: <LogoutOutlinedIcon />,
+    name: "Log out",
   },
 ];
