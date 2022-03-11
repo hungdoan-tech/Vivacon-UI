@@ -1,12 +1,19 @@
 .notification-list-container {
   position: absolute;
-  right: 0;
   top: 60px;
+  right: 50px;
   border: solid 0.25px transparent;
   width: 350px;
   height: 450px;
+
   animation-name: appearNotification;
   animation-duration: 0.2s;
+  &.left {
+    right: 30px;
+  }
+  &.right {
+    right: 0px;
+  }
   .notification-list-content {
     .title {
       font-weight: 900;
@@ -38,7 +45,6 @@
       content: "";
       display: block;
       position: absolute;
-      right: 20px;
       top: -24px !important;
       width: 0px;
       height: 0px;
@@ -48,20 +54,63 @@
       border-color: transparent transparent var(--backgroundColor) transparent;
       border-width: 12px;
       top: -23.25px !important;
-      right: 20.45px;
     }
     &::before {
       border-color: transparent transparent var(--defaultColor) transparent;
       border-width: 12.25px;
     }
+    &.right {
+      &::before {
+        right: 20px;
+      }
+      &::after{
+        right: 20.45px;
+      }
+    }
+    &.left {
+      &::before {
+        right: 48px;
+      }
+      &::after{
+        right: 48.45px;
+      }
+    }
+  }
+
+  &.animation-change {
+    &.left{
+      animation-name: rightToLeft;
+    }
+    &.right{
+      animation-name: leftToRight;
+    }
+    animation-duration: 0.2s;
   }
 
   @keyframes appearNotification {
-    0%{
+    0% {
       top: 50px;
     }
-    100%{
+    100% {
       top: 60px;
+    }
+  }
+
+  @keyframes leftToRight {
+    0%{
+      right: 30px;
+    }
+    100% {
+      right: 0px;
+    }
+  }
+
+  @keyframes rightToLeft {
+    0%{
+      right: 0px;
+    }
+    100% {
+      right: 30px;
     }
   }
 }

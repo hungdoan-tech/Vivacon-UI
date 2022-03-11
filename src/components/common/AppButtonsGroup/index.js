@@ -8,20 +8,31 @@ import NotificationNumber from "../NotificationNumber";
 import "./style.scss";
 import NotificationList from "../NotificationList";
 import classNames from "classnames";
+import { notificationType } from "../../../constant/types";
 
 const AppButtonsGroup = () => {
   const [openNoti, setOpenNoti] = React.useState(false);
   const [openMessage, setOpenMessage] = React.useState(false);
+  const [changePosition , setChangePosition] = React.useState(false);
+
   const handleOpenNotificationList = () => {
     setOpenNoti(!openNoti);
     if (openMessage) {
+      setChangePosition(true);
       setOpenMessage(false);
+    }
+    else{
+      setChangePosition(false);
     }
   };
   const handleOpenMessageList = () => {
     setOpenMessage(!openMessage);
     if (openNoti) {
+      setChangePosition(true);
       setOpenNoti(false);
+    }
+    else{
+      setChangePosition(false);
     }
   };
   const notiBtnClass = classNames({
@@ -30,12 +41,22 @@ const AppButtonsGroup = () => {
   const messageBtnClass = classNames({
     active: openMessage,
   });
-  const handleClickAwayMessage = () => {
+
+  const closeNotification = () => {
     setOpenMessage(false);
-  };
-  const handleClickAwayNoti = () => {
     setOpenNoti(false);
-  }
+  };
+
+  const renderNotificationList = () => {
+    console.log({ openMessage, openNoti });
+    if (openMessage) {
+      return <NotificationList type={notificationType.MESSAGE} changePosition={changePosition}/>;
+    }
+    if (openNoti) {
+      return <NotificationList type={notificationType.NOTIFICATION} changePosition={changePosition}/>;
+    }
+  };
+
   return (
     <Typography className="app-btns-container" component="div" align="center">
       <Typography component="div" className="btn-container">
@@ -48,20 +69,15 @@ const AppButtonsGroup = () => {
           <HomeIcon />
         </Button>
       </Typography>
-      <Typography component="div" className="btn-container">
-        <ClickAwayListener onClickAway={handleClickAwayMessage}>
-          <Box sx={{ position: "relative" }}>
+      <ClickAwayListener onClickAway={closeNotification}>
+        <Typography component="div" className="notification-btns">
+          <Typography component="div" className="btn-container">
             <Button onClick={handleOpenMessageList} className={messageBtnClass}>
               <NotificationNumber number={3} />
               <ChatBubbleIcon />
             </Button>
-            {openMessage && <NotificationList type="MESSAGE" />}
-          </Box>
-        </ClickAwayListener>
-      </Typography>
-      <Typography component="div" className="btn-container">
-        <ClickAwayListener onClickAway={handleClickAwayNoti}>
-          <Box sx={{ position: "relative" }}>
+          </Typography>
+          <Typography component="div" className="btn-container">
             <Button
               onClick={handleOpenNotificationList}
               className={notiBtnClass}
@@ -69,10 +85,10 @@ const AppButtonsGroup = () => {
               <NotificationNumber number={100} />
               <NotificationsIcon className="notification-icon" />
             </Button>
-            {openNoti && <NotificationList type="NOTIFICATION" />}
-          </Box>
-        </ClickAwayListener>
-      </Typography>
+          </Typography>
+          {renderNotificationList()}
+        </Typography>
+      </ClickAwayListener>
     </Typography>
   );
 };
