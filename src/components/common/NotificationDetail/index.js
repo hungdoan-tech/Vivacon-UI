@@ -25,9 +25,9 @@ const NotificationDetail = ({ item, type }) => {
     return (
       <Typography component="div">
         <Typography component="div" className="notification-activity">
-          <strong>{item.ownerName}</strong> {activityText}
+          <p><strong>{item.ownerName}</strong> {activityText}</p>
         </Typography>
-        <Typography component="div" className={fromNowClassName}>
+        <Typography className={fromNowClassName}>
           {item.fromNow}
         </Typography>
       </Typography>
@@ -44,7 +44,6 @@ const NotificationDetail = ({ item, type }) => {
             {item.newestMessage}
           </Typography>
           <Typography
-            component="div"
             className={fromNowClassName}
           >
             {item.fromNow}

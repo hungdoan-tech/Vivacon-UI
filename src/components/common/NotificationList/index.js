@@ -5,14 +5,16 @@ import NotificationDetail from "../NotificationDetail";
 import { notificationList, messageList } from "../../../fakeData/fakeData";
 import { notificationType } from "../../../constant/types";
 import "./style.scss";
+import classNames from "classnames";
 
-const NotificationList = ({ type }) => {
+const NotificationList = ({ type, changePosition }) => {
   const [isAll, setAll] = useState(true);
   const [data, setData] = useState([]);
+
   useEffect(() => {
     const initData = initalData(type);
     setData(initData);
-  }, []);
+  }, [type]);
 
   const initalData = (type) => {
     let initData;
@@ -40,9 +42,18 @@ const NotificationList = ({ type }) => {
     setAll(!isAll);
   };
 
+  const positionClass = classNames({
+    "right": type === notificationType.NOTIFICATION,
+    "left": type === notificationType.MESSAGE
+  })
+
+  const changePositionClass = classNames({
+    "animation-change": changePosition === true 
+  })
+
   return (
-    <Typography component="div" className="notification-list-container">
-      <Card sx={{ minWidth: 275 }} className="notification-list-content">
+    <Typography component="div" className={`notification-list-container ${positionClass} ${changePositionClass}`}>
+      <Card sx={{ minWidth: 275 }} className={`notification-list-content ${positionClass}`}>
         <CardContent>
           <Typography className="title" align="left">
             {type === notificationType.NOTIFICATION ? "Notifications" : "Messages"}
