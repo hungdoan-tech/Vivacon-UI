@@ -1,0 +1,72 @@
+.modal-container {
+  height: 100%;
+  width: 100%;
+  vertical-align: middle;
+  overflow: auto;
+  .MuiBackdrop-root {
+    background-color: var(--charColor);
+    opacity: 0.8 !important;
+  }
+  .create-post-container {
+    background-color: var(--backgroundColor);
+    width: 800px;
+    height: 800px;
+    vertical-align: middle;
+    text-align: center;
+    position: absolute;
+    top: calc(50% - 400px);
+    left: calc(50% - 400px);
+    animation: appearModal 0.2s linear;
+    .MuiCardContent-root {
+      padding: 0;
+      height: 100%;
+    }
+    .create-post-header {
+      height: 50px;
+      position: initial;
+      background-color: var(--backgroundColor);
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      padding: 0 !important;
+      .btn-container {
+        color: var(--charColor) !important;
+        margin: 5px;
+        border-radius: 15px;
+        text-transform: capitalize;
+        &.hidden{
+          visibility: hidden;
+        }
+        &:hover {
+          color: var(--charColor) !important;
+          background-color: var(--lightColor) !important;
+        }
+      }
+      .title {
+        margin: auto;
+        color: var(--charColor);
+        font-weight: 900;
+      }
+    }
+    .tab-container {
+      margin-top: 10px;
+      width: 100%;
+      height: 80%;
+    }
+
+    @keyframes appearModal {
+      0% {
+        width: 200px;
+        height: 200px;
+        top: calc(50% - 100px);
+        left: calc(50% - 100px);
+      }
+      100% {
+        width: 800px;
+        height: 800px;
+        top: calc(50% - 400px);
+        left: calc(50% - 400px);
+      }
+    }
+  }
+}

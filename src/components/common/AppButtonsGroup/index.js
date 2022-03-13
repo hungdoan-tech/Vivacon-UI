@@ -10,18 +10,21 @@ import NotificationList from "../NotificationList";
 import classNames from "classnames";
 import { notificationType } from "../../../constant/types";
 
-const AppButtonsGroup = () => {
+const AppButtonsGroup = (props) => {
   const [openNoti, setOpenNoti] = React.useState(false);
   const [openMessage, setOpenMessage] = React.useState(false);
-  const [changePosition , setChangePosition] = React.useState(false);
+  const [changePosition, setChangePosition] = React.useState(false);
+
+  const {
+    handleOpenCreatePostModal,
+  } = props;
 
   const handleOpenNotificationList = () => {
     setOpenNoti(!openNoti);
     if (openMessage) {
       setChangePosition(true);
       setOpenMessage(false);
-    }
-    else{
+    } else {
       setChangePosition(false);
     }
   };
@@ -30,8 +33,7 @@ const AppButtonsGroup = () => {
     if (openNoti) {
       setChangePosition(true);
       setOpenNoti(false);
-    }
-    else{
+    } else {
       setChangePosition(false);
     }
   };
@@ -48,19 +50,28 @@ const AppButtonsGroup = () => {
   };
 
   const renderNotificationList = () => {
-    console.log({ openMessage, openNoti });
     if (openMessage) {
-      return <NotificationList type={notificationType.MESSAGE} changePosition={changePosition}/>;
+      return (
+        <NotificationList
+          type={notificationType.MESSAGE}
+          changePosition={changePosition}
+        />
+      );
     }
     if (openNoti) {
-      return <NotificationList type={notificationType.NOTIFICATION} changePosition={changePosition}/>;
+      return (
+        <NotificationList
+          type={notificationType.NOTIFICATION}
+          changePosition={changePosition}
+        />
+      );
     }
   };
 
   return (
     <Typography className="app-btns-container" component="div" align="center">
       <Typography component="div" className="btn-container">
-        <Button>
+        <Button onClick={handleOpenCreatePostModal}>
           <AddIcon />
         </Button>
       </Typography>

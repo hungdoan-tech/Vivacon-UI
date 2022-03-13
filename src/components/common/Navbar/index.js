@@ -1,19 +1,36 @@
 import * as React from "react";
 import SearchIcon from "@mui/icons-material/Search";
-import { InputBase, AppBar, Button, Typography, ClickAwayListener, Box } from "@mui/material";
+import {
+  InputBase,
+  AppBar,
+  Button,
+  Typography,
+  ClickAwayListener,
+  Box,
+} from "@mui/material";
 import "./style.scss";
 import AppButtonsGroup from "../AppButtonsGroup";
-import UserOption from "../UserOption"
+import UserOption from "../UserOption";
+import CreatePostModal from "../../CreatePostModal";
 
 const Navbar = () => {
   const [openUserOption, setUserOption] = React.useState(false);
+  const [openCreatePostModal, setOpenCreatePostModal] = React.useState(false);
 
   const handleClickAwayUserOption = () => {
     setUserOption(false);
-  }
+  };
   const handleOpenUserOption = () => {
     setUserOption(!openUserOption);
-  }
+  };
+
+  const handleOpenCreatePostModal = () => {
+    setOpenCreatePostModal(true);
+  };
+
+  const handleCloseOpenCreatePostModal = () => {
+    setOpenCreatePostModal(false);
+  };
   return (
     <AppBar className="nav-container" postion="sticky">
       <Typography className="app-logo" align="center">
@@ -24,7 +41,7 @@ const Navbar = () => {
         <SearchIcon className="search-icon" />
         <InputBase className="search-text" placeholder="Search..." />
       </Typography>
-      <AppButtonsGroup />
+      <AppButtonsGroup handleOpenCreatePostModal={handleOpenCreatePostModal} />
       <Typography className="app-user" component="div" align="center">
         <ClickAwayListener onClickAway={handleClickAwayUserOption}>
           <Box sx={{ position: "relative" }}>
@@ -47,6 +64,10 @@ const Navbar = () => {
           </Box>
         </ClickAwayListener>
       </Typography>
+      <CreatePostModal
+        open={openCreatePostModal}
+        handleClose={handleCloseOpenCreatePostModal}
+      />
     </AppBar>
   );
 };

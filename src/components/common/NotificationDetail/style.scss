@@ -50,7 +50,7 @@
       }
       .date-time {
         font-size: 12px !important;
-        color: var(--defaultColor) !important;
+        color: var(--defaultColor);
         &.notification-from-now {
           width: 100% !important;
         }
