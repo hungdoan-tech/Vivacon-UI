@@ -13,6 +13,7 @@ const NotificationList = ({ type, changePosition }) => {
 
   useEffect(() => {
     const initData = initalData(type);
+    setAll(true);
     setData(initData);
   }, [type]);
 

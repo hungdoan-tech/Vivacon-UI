@@ -1,0 +1,13 @@
+.upload-image-tab-container {
+  height: 100%;
+  vertical-align: middle;
+  margin-top: 150px !important;
+  .upload-image-icon {
+    font-size: 140px;
+    margin: auto;
+    cursor: pointer;
+    &:hover {
+      opacity: 0.6;
+    }
+  }
+}

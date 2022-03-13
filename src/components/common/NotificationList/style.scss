@@ -5,9 +5,7 @@
   border: solid 0.25px transparent;
   width: 350px;
   height: 450px;
-
-  animation-name: appearNotification;
-  animation-duration: 0.2s;
+  animation: appearNotification 0.2s;
   &.left {
     right: 30px;
   }
@@ -63,7 +61,7 @@
       &::before {
         right: 20px;
       }
-      &::after{
+      &::after {
         right: 20.45px;
       }
     }
@@ -71,7 +69,7 @@
       &::before {
         right: 48px;
       }
-      &::after{
+      &::after {
         right: 48.45px;
       }
     }
@@ -79,12 +77,11 @@
 
   &.animation-change {
     &.left{
-      animation-name: rightToLeft;
+      animation: rightToLeft 0.2s;
     }
-    &.right{
-      animation-name: leftToRight;
+    &.right {
+      animation: leftToRight 0.2s;
     }
-    animation-duration: 0.2s;
   }
 
   @keyframes appearNotification {
@@ -97,7 +94,7 @@
   }
 
   @keyframes leftToRight {
-    0%{
+    0% {
       right: 30px;
     }
     100% {
@@ -106,7 +103,7 @@
   }
 
   @keyframes rightToLeft {
-    0%{
+    0% {
       right: 0px;
     }
     100% {
