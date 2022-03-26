@@ -4,7 +4,7 @@
     margin-right: 10px;
   }
   .like-icon {
-    color: var(--notificationColor);
+    color: var(--notificationColor) !important;
   }
 }
 .number-of-likes {

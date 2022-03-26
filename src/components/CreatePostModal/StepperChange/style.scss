@@ -32,7 +32,7 @@
 
   .Mui-completed {
     .MuiSvgIcon-root {
-      color: var(--mainColor);
+      color: var(--mainColor) !important;
     }
   }
   .Mui-disabled, .Mui-completed{

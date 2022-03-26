@@ -4,8 +4,6 @@ import {
   Typography,
   Card,
   CardContent,
-  Tabs,
-  Tab,
   AppBar,
   Button,
 } from "@mui/material";
@@ -16,8 +14,11 @@ import "./style.scss";
 import StepperChange from "./StepperChange";
 import UploadImageTab from "./UploadImageTab";
 import classNames from "classnames";
+import EditImagesTab from "./EditImagesTab";
+import ConfirmDialog from "../common/ConfirmDialog";
+import WriteCaptionTab from "./WriteCaptionTab";
 
-function TabPanel(props) {
+const TabPanel = (props) => {
   const { children, value, index, ...other } = props;
 
   return (
@@ -35,20 +36,16 @@ function TabPanel(props) {
       )}
     </div>
   );
-}
+};
 
-function a11yProps(index) {
-  return {
-    id: `simple-tab-${index}`,
-    "aria-controls": `simple-tabpanel-${index}`,
-  };
-}
 const CreatePostModal = (props) => {
   const { open, handleClose } = props;
-  const [value, setValue] = useState(0);
   const [activeStep, setActiveStep] = useState(0);
+  const [pictures, setPictures] = useState([]);
+  const [openConfirmDialog, setOpenConfirmDialog] = useState(false);
+  const [isBack, setIsBack] = useState(false);
 
-  const steps = ["Upload image(s)", "Crop", "Edit", "Write caption"];
+  const steps = ["Upload image(s)", "Edit", "Write caption"];
 
   const handleNext = () => {
     if (activeStep === steps.length - 1) {
@@ -58,18 +55,64 @@ const CreatePostModal = (props) => {
     }
   };
 
+  const handleSaveImages = (pictureFiles) => {
+    pictureFiles.map((pic) => {
+      setPictures((prev) => [...prev, { src: URL.createObjectURL(pic), pic }]);
+    });
+    if (activeStep === 0) {
+      handleNext();
+    }
+  };
+
   const handleBack = () => {
     if (activeStep === 0) {
       return null;
+    }
+    if (activeStep === 1) {
+      setIsBack(true);
+      setOpenConfirmDialog(true);
     } else {
       setActiveStep(activeStep - 1);
     }
   };
 
   const handleCloseModal = () => {
-    handleClose();
-    setActiveStep(0);
+    if (activeStep > 0) {
+      setOpenConfirmDialog(true);
+    } else {
+      handleClose();
+    }
   };
+
+  const handleRemoveImage = (image) => {
+    setPictures(pictures.filter((item) => item !== image));
+  };
+
+  const handleEditedUpdateImage = (newImage, index) => {
+    pictures[index].src = newImage;
+    setPictures([...pictures]);
+  };
+
+  const handleCloseConfirmDialog = () => {
+    setOpenConfirmDialog(false);
+  };
+  const handleConfirmDialog = () => {
+    if (isBack) {
+      setActiveStep(0);
+      setIsBack(false);
+    } else {
+      handleClose();
+      setActiveStep(0);
+    }
+    setPictures([]);
+    setOpenConfirmDialog(false);
+  };
+
+  useEffect(() => {
+    if (pictures.length === 0) {
+      setActiveStep(0);
+    }
+  }, [pictures]);
 
   const hideButtonClass = classNames({
     hidden: activeStep === 0 || activeStep > steps.length - 1,
@@ -95,7 +138,10 @@ const CreatePostModal = (props) => {
                 Back
               </Button>
               <Typography className="title">Create new post</Typography>
-              <Button className="btn-container" onClick={handleNext}>
+              <Button
+                className={`btn-container ${hideButtonClass}`}
+                onClick={handleNext}
+              >
                 {activeStep === steps.length - 1 ? (
                   "Finish"
                 ) : (
@@ -107,18 +153,37 @@ const CreatePostModal = (props) => {
             </AppBar>
             <StepperChange steps={steps} activeStep={activeStep} />
             <TabPanel value={activeStep} index={0} className="tab-container">
-              <UploadImageTab />
+              <UploadImageTab
+                handleNextTab={handleNext}
+                handleSaveImages={handleSaveImages}
+              />
             </TabPanel>
             <TabPanel value={activeStep} index={1} className="tab-container">
-              Item Two
+              <EditImagesTab
+                pictures={pictures}
+                handleRemoveImage={handleRemoveImage}
+                handleSaveImages={handleSaveImages}
+                handleEditedUpdateImage={handleEditedUpdateImage}
+              />
             </TabPanel>
             <TabPanel value={activeStep} index={2} className="tab-container">
-              Item Three
-            </TabPanel>
-            <TabPanel value={activeStep} index={3} className="tab-container">
-              Item Four
+              <WriteCaptionTab
+                pictures={pictures}
+                handleRemoveImage={handleRemoveImage}
+                handleSaveImages={handleSaveImages}
+                handleEditedUpdateImage={handleEditedUpdateImage}
+              />
             </TabPanel>
           </Box>
+          <ConfirmDialog
+            handleClose={handleCloseConfirmDialog}
+            handleConfirm={handleConfirmDialog}
+            open={openConfirmDialog}
+            title={"Confirm"}
+            description={
+              "This action can delete all images on draft. Are you sure?"
+            }
+          />
         </CardContent>
       </Card>
     </Modal>

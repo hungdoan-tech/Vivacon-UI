@@ -2,14 +2,14 @@ import "./App.scss";
 import { useState } from "react";
 import Navbar from "./components/common/Navbar";
 import PostsList from "./components/PostsList";
-import Loading from "./components/common/Loading";
+import { InitLoading } from "./components/common/Loading";
 
 function App() {
   const [openApp, setOpenApp] = useState(false);
 
   setTimeout(() => {
     setOpenApp(true);
-  }, 0);
+  }, 2000);
   return (
     <div className="App">
       {openApp ? (
@@ -22,7 +22,7 @@ function App() {
           </div>
         </>
       ) : (
-        <Loading />
+        <InitLoading />
       )}
     </div>
   );
