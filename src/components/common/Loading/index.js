@@ -1,10 +1,10 @@
 import * as React from "react";
-import { Typography } from "@mui/material";
+import { CircularProgress, Typography } from "@mui/material";
 import "./style.scss";
 
-const Loading = () => {
+export const InitLoading = () => {
   return (
-    <Typography className="loading-container" component="div">
+    <Typography className="init-loading-container" component="div">
       <Typography className="progress" component="div">
         <Typography className="logo" component="div">
           <img
@@ -27,4 +27,6 @@ const Loading = () => {
   );
 };
 
-export default Loading;
+export const Loading = () => {
+  return <Typography component="div" className="loading-container"><CircularProgress /></Typography>
+}

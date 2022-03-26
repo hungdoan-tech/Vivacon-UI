@@ -1,13 +1,33 @@
 .upload-image-tab-container {
-  height: 100%;
+  height: 200px;
   vertical-align: middle;
-  margin-top: 150px !important;
-  .upload-image-icon {
-    font-size: 140px;
-    margin: auto;
-    cursor: pointer;
-    &:hover {
-      opacity: 0.6;
+  // width: 100%;
+  // margin: auto;
+  position: absolute;
+  top: calc(50% - 100px);
+  left: calc(50% - 100px);
+  vertical-align: middle;
+  .fileUploader {
+    .fileContainer {
+      padding: 0 !important;
+      margin: 0 !important;
+      border: none !important;
+      box-shadow: none;
+      .chooseFileButton{
+        background-color: transparent;
+        color: var(--charColor) !important;
+        .upload-image-icon {
+          margin: auto;
+          cursor: pointer;
+          color: var(--charColor) !important;
+          &:hover {
+            opacity: 0.3;
+          }
+        }
+        &:hover{
+          background-color: transparent !important;
+        }
+      }
     }
   }
 }
