@@ -1,0 +1,8 @@
+.MuiSnackbarContent-root {
+  background-color: white !important;
+  color: var(--mainColor) !important;
+  .MuiSnackbarContent-message {
+    margin: auto !important;
+    font-weight: 900 !important
+  }
+}

@@ -4,33 +4,33 @@ import "./style.scss";
 const userComments = [
   {
     username: "Matt",
-    avatar: "fakeData/fr-avatar.png",
+    avatar: "images/fr-avatar.png",
     comment: "I love it!",
   },
   {
     username: "Riddle",
-    avatar: "fakeData/fr-avatar.png",
+    avatar: "images/fr-avatar.png",
     comment: "So beautiful guy!!",
   },
   {
     username: "Marry",
-    avatar: "fakeData/fr-avatar.png",
+    avatar: "images/fr-avatar.png",
     comment: "Supprise!!!!! Congratulation Bro!!!!!!!",
   },
   {
     username: "John",
-    avatar: "fakeData/fr-avatar.png",
+    avatar: "images/fr-avatar.png",
     comment: "It is also my dream Bro! :)))",
   },
   {
     username: "Matt",
-    avatar: "fakeData/fr-avatar.png",
+    avatar: "images/fr-avatar.png",
     comment:
       "Powerful! Guy :v Powerful! Guy :v Powerful! Guy :v Powerful! Guy :v Powerful! Guy :v Powerful! Guy :v Powerful! Guy :v Powerful! Guy :v Powerful! Guy :v Powerful! Guy :v Powerful! Guy :v ",
   },
   {
     username: "Harry",
-    avatar: "fakeData/fr-avatar.png",
+    avatar: "images/fr-avatar.png",
     comment: "Hmm..... :3",
   },
 ];

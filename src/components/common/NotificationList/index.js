@@ -1,9 +1,9 @@
 import { Typography, Card, CardContent, Button } from "@mui/material";
 import { useState, useEffect } from "react";
-import { calculateFromNow } from "../../../utils/calcDateTime";
-import NotificationDetail from "../NotificationDetail";
-import { notificationList, messageList } from "../../../fakeData/fakeData";
-import { notificationType } from "../../../constant/types";
+import { calculateFromNow } from "utils/calcDateTime";
+import NotificationDetail from "components/common/NotificationDetail";
+import { notificationList, messageList } from "fakeData/fakeData";
+import { notificationType } from "constant/types";
 import "./style.scss";
 import classNames from "classnames";
 

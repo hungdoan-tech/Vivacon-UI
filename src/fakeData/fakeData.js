@@ -1,6 +1,8 @@
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import SettingsIcon from '@mui/icons-material/Settings';
-import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import SettingsIcon from "@mui/icons-material/Settings";
+import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
+import { removeJwtToken, removeRefreshToken } from "utils/cookie";
+import { useNavigate } from "react-router-dom";
 const notiType = {
   POST: "POST",
   FOLLOWED: "FOLLOWED",
@@ -10,7 +12,7 @@ const notiType = {
 
 export const notificationList = [
   {
-    avatar: "fakeData/fr-avatar.png",
+    avatar: "images/fr-avatar.png",
     ownerName: "Matt",
     type: notiType.POST,
     numberOfImages: 3,
@@ -19,7 +21,7 @@ export const notificationList = [
     dateTime: new Date("2022-02-22T20:17:46.384Z"),
   },
   {
-    avatar: "fakeData/fr-avatar.png",
+    avatar: "images/fr-avatar.png",
     ownerName: "Marry",
     type: notiType.LIKED,
     numberOfImages: null,
@@ -28,7 +30,7 @@ export const notificationList = [
     dateTime: new Date("2022-01-12T20:17:46.384Z"),
   },
   {
-    avatar: "fakeData/fr-avatar.png",
+    avatar: "images/fr-avatar.png",
     ownerName: "John",
     type: notiType.LIKED,
     numberOfImages: null,
@@ -37,7 +39,7 @@ export const notificationList = [
     dateTime: new Date("2022-01-12T20:17:46.384Z"),
   },
   {
-    avatar: "fakeData/fr-avatar.png",
+    avatar: "images/fr-avatar.png",
     ownerName: "Marry",
     type: notiType.COMMENTED,
     numberOfImages: null,
@@ -46,7 +48,7 @@ export const notificationList = [
     dateTime: new Date("2022-01-12T20:17:46.384Z"),
   },
   {
-    avatar: "fakeData/fr-avatar.png",
+    avatar: "images/fr-avatar.png",
     ownerName: "Williams",
     type: notiType.POST,
     numberOfImages: 5,
@@ -55,7 +57,7 @@ export const notificationList = [
     dateTime: new Date("2021-12-12T20:17:46.384Z"),
   },
   {
-    avatar: "fakeData/fr-avatar.png",
+    avatar: "images/fr-avatar.png",
     ownerName: "Robert",
     type: notiType.POST,
     numberOfImages: 1,
@@ -64,7 +66,7 @@ export const notificationList = [
     dateTime: new Date("2021-08-12T20:17:46.384Z"),
   },
   {
-    avatar: "fakeData/fr-avatar.png",
+    avatar: "images/fr-avatar.png",
     ownerName: "Robert",
     type: notiType.POST,
     numberOfImages: 1,
@@ -73,7 +75,7 @@ export const notificationList = [
     dateTime: new Date("2021-06-12T20:17:46.384Z"),
   },
   {
-    avatar: "fakeData/fr-avatar.png",
+    avatar: "images/fr-avatar.png",
     ownerName: "Robert",
     type: notiType.POST,
     numberOfImages: 1,
@@ -82,7 +84,7 @@ export const notificationList = [
     dateTime: new Date("2021-04-12T20:17:46.384Z"),
   },
   {
-    avatar: "fakeData/fr-avatar.png",
+    avatar: "images/fr-avatar.png",
     ownerName: "Robert",
     type: notiType.POST,
     numberOfImages: 1,
@@ -91,7 +93,7 @@ export const notificationList = [
     dateTime: new Date("2021-03-12T20:17:46.384Z"),
   },
   {
-    avatar: "fakeData/fr-avatar.png",
+    avatar: "images/fr-avatar.png",
     ownerName: "Robert",
     type: notiType.POST,
     numberOfImages: 1,
@@ -103,7 +105,7 @@ export const notificationList = [
 
 export const messageList = [
   {
-    avatar: "fakeData/fr-avatar.png",
+    avatar: "images/fr-avatar.png",
     ownerName: "Matt",
     newestMessage: "Hello John!",
     isYourNewestMessage: false,
@@ -112,7 +114,7 @@ export const messageList = [
     dateTime: new Date("2022-02-22T20:17:46.384Z"),
   },
   {
-    avatar: "fakeData/fr-avatar.png",
+    avatar: "images/fr-avatar.png",
     ownerName: "Marry",
     newestMessage: "Hello John!",
     isYourNewestMessage: false,
@@ -121,7 +123,7 @@ export const messageList = [
     dateTime: new Date("2022-02-22T20:17:46.384Z"),
   },
   {
-    avatar: "fakeData/fr-avatar.png",
+    avatar: "images/fr-avatar.png",
     ownerName: "Williams",
     newestMessage: "Can you help me, John?",
     isYourNewestMessage: false,
@@ -130,7 +132,7 @@ export const messageList = [
     dateTime: new Date("2022-02-22T20:17:46.384Z"),
   },
   {
-    avatar: "fakeData/fr-avatar.png",
+    avatar: "images/fr-avatar.png",
     ownerName: "Matt",
     newestMessage: "Bye!",
     isYourNewestMessage: true,
@@ -139,7 +141,7 @@ export const messageList = [
     dateTime: new Date("2022-02-22T20:17:46.384Z"),
   },
   {
-    avatar: "fakeData/fr-avatar.png",
+    avatar: "images/fr-avatar.png",
     ownerName: "Matt",
     newestMessage: "Hello Matt!",
     isYourNewestMessage: true,
@@ -148,7 +150,7 @@ export const messageList = [
     dateTime: new Date("2022-02-22T20:17:46.384Z"),
   },
   {
-    avatar: "fakeData/fr-avatar.png",
+    avatar: "images/fr-avatar.png",
     ownerName: "Matt",
     newestMessage: "Hello John!",
     isYourNewestMessage: false,
@@ -162,13 +164,22 @@ export const userOption = [
   {
     icon: <AccountCircleIcon />,
     name: "Profile",
+    onClickHandle: () => null,
+    navigateUrl: "/",
   },
   {
     icon: <SettingsIcon />,
     name: "Setting",
+    onClickHandle: () => null,
+    navigateUrl: "/",
   },
   {
     icon: <LogoutOutlinedIcon />,
     name: "Log out",
+    onClickHandle: () => {
+      removeJwtToken();
+      removeRefreshToken();
+    },
+    navigateUrl: "/login",
   },
 ];

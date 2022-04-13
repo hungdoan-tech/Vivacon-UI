@@ -13,8 +13,8 @@
     position: relative;
   }
   button {
-    background-color: var(--defaultColor);
-    color: var(--backgroundColor);
+    background-color: var(--lightColor);
+    color: var(--defaultColor);
     width: 48px;
     border-radius: 100px;
     padding: 7px 0;
@@ -22,12 +22,13 @@
     margin-right: 10px;
 
     &:hover {
-      background-color: var(--mainColor) !important;
-      color: var(--backgroundColor) !important;
+      background-color: var(--hoverColor) !important;
+      color: var(--defaultColor) !important;
     }
 
     &.active {
-      background-color: var(--mainColor);
+      background-color: var(--mainHoverColor) !important;
+      color: var(--mainColor) !important;
       font-weight: 900;
     }
   }
