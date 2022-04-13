@@ -1,7 +1,7 @@
 import { Typography } from "@mui/material";
 import classNames from "classnames";
 import * as React from "react";
-import { notificationType } from "../../../constant/types";
+import { notificationType } from "constant/types";
 import "./style.scss";
 
 const NotificationDetail = ({ item, type }) => {

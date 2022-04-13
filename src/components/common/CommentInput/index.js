@@ -13,7 +13,7 @@ const CommentInput = () => {
       className="draft-comment-container"
     >
       <img
-        src={require("../../../fakeData/avatar.png")}
+        src={require("images/avatar.png")}
         width="40"
         height="40"
         alt=""

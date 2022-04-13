@@ -4,11 +4,11 @@ import HomeIcon from "@mui/icons-material/Home";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import ChatBubbleIcon from "@mui/icons-material/ChatBubble";
 import { Button, Typography, ClickAwayListener, Box } from "@mui/material";
-import NotificationNumber from "../NotificationNumber";
+import NotificationNumber from "components/common/NotificationNumber";
 import "./style.scss";
-import NotificationList from "../NotificationList";
+import NotificationList from "components/common/NotificationList";
 import classNames from "classnames";
-import { notificationType } from "../../../constant/types";
+import { notificationType } from "constant/types";
 
 const AppButtonsGroup = (props) => {
   const [openNoti, setOpenNoti] = React.useState(false);
@@ -93,7 +93,7 @@ const AppButtonsGroup = (props) => {
               onClick={handleOpenNotificationList}
               className={notiBtnClass}
             >
-              <NotificationNumber number={100} />
+              <NotificationNumber number={9} />
               <NotificationsIcon className="notification-icon" />
             </Button>
           </Typography>

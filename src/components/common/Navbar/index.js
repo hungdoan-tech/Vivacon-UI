@@ -9,13 +9,14 @@ import {
   Box,
 } from "@mui/material";
 import "./style.scss";
-import AppButtonsGroup from "../AppButtonsGroup";
-import UserOption from "../UserOption";
-import CreatePostModal from "../../CreatePostModal";
+import AppButtonsGroup from "components/common/AppButtonsGroup";
+import UserOption from "components/common/UserOption";
+import CreatePostModal from "components/common/CreatePostModal";
 
 const Navbar = () => {
   const [openUserOption, setUserOption] = React.useState(false);
   const [openCreatePostModal, setOpenCreatePostModal] = React.useState(false);
+
 
   const handleClickAwayUserOption = () => {
     setUserOption(false);
@@ -52,13 +53,12 @@ const Navbar = () => {
                 align="center"
               >
                 <img
-                  src={require("../../../fakeData/avatar.png")}
-                  width="50"
-                  height="50"
+                  src={require("images/avatar.png")}
+                  width="45"
+                  height="45"
                   alt=""
                 />
               </Typography>
-              <Typography className="user-name">John</Typography>
             </Button>
             {openUserOption && <UserOption />}
           </Box>

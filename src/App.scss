@@ -1,8 +1,13 @@
 @import "./styles/colors.scss";
-.page-content{
+.page-content {
   margin: auto;
-  margin-top: 80px;
-  width: 750px;
+  &.fullWidth {
+    width: 100%;
+  }
+  &.notFullWidth {
+    margin-top: 80px;
+    width: 750px;
+  }
 }
 :root {
   font-family: "Roboto", "Helvetica", "Arial", sans-serif !important;

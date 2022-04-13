@@ -9,14 +9,7 @@
   }
   cursor: pointer;
   &:hover {
-    background-color: var(--mainColor);
-    color: var(--backgroundColor);
-    .seen-dot {
-      background-color: var(--backgroundColor);
-    }
-    .date-time {
-      color: var(--backgroundColor) !important;
-    }
+    background-color: var(--hoverColor);
   }
   .present-image {
     grid-column-start: 1;

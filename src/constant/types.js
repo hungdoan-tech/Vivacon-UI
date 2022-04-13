@@ -15,18 +15,13 @@ export const privacyPostType = [
     icon: <PublicIcon />,
   },
   {
-    value: "ONLY_YOU",
-    label: "Only you",
+    value: "ONLY_ME",
+    label: "Only me",
     icon: <LockIcon />,
   },
   {
-    value: "FRIENDS",
-    label: "Your friends",
+    value: "FOLLOWER",
+    label: "Follower",
     icon: <PermContactCalendarIcon />,
-  },
-  {
-    value: "FRIENDS_OF_FRIENDS",
-    label: "Friends of your friends",
-    icon: <GroupIcon />,
   },
 ];

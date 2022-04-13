@@ -5,13 +5,13 @@ import "./style.scss";
 
 const items = [
   {
-    path: "fakeData/post01.png",
+    path: "images/post01.png",
   },
   {
-    path: "fakeData/post02.png",
+    path: "images/post02.png",
   },
   {
-    path: "fakeData/post03.png",
+    path: "images/post03.png",
   },
 ];
 
@@ -20,7 +20,7 @@ const PostContent = () => {
     <>
       <Typography component="div" align="left" className="owner-container">
         <img
-          src={require("../../../fakeData/fr-avatar.png")}
+          src={require("images/fr-avatar.png")}
           width="40"
           height="40"
           alt=""
