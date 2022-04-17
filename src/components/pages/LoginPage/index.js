@@ -15,14 +15,15 @@ import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import { login } from "api/userService";
 import "./style.scss";
 import { saveJwtToken, saveRefreshToken } from "utils/cookie";
-import { Loading, Snackbar } from "App";
+import useLoading from "hooks/useLoading";
+import useSnackbar from "hooks/useSnackbar";
 
 const LoginPage = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const { setLoading } = useContext(Loading);
-  const { setSnackbarState, snackbarState } = useContext(Snackbar);
+  const { setLoading } = useLoading();
+  const { setSnackbarState, snackbarState } = useSnackbar();
 
   const handleChangeUsername = (event) => {
     setUsername(event.target.value);
@@ -43,11 +44,13 @@ const LoginPage = () => {
         if (res.status === 200) {
           saveJwtToken(res.data.accessToken);
           saveRefreshToken(res.data.refreshToken);
-          window.location.reload();
           setSnackbarState({
             open: true,
             content: "Login successfully",
           });
+          setTimeout(() => {
+            window.location.href = "/";
+          }, 1000);
         }
       })
       .catch((err) => {
@@ -55,7 +58,6 @@ const LoginPage = () => {
       })
       .finally(() => {
         setLoading(false);
-
       });
   };
 
