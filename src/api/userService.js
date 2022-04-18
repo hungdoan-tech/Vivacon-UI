@@ -8,3 +8,7 @@ export const login = async (data) => {
 export const renewToken = async (data) => {
   return await axiosConfig.post(API_ENDPOINT_KEYS.RENEW_TOKEN, data);
 };
+
+export const getProfile = async (username) => {
+  return await axiosConfig.get(`${API_ENDPOINT_KEYS.GET_PROFILE}/${username}`);
+};

@@ -1,11 +1,16 @@
+import { useState } from "react";
 import { CardContent, Typography, Card } from "@mui/material";
 import { AuthUser } from "App";
 import { userOption } from "fakeData/fakeData";
 import { useContext } from "react";
+import { useHistory } from "react-router-dom";
+import { getCurrentUser } from "utils/jwtToken";
 import "./style.scss";
 
-const UserOption = () => {
+const UserOption = (props) => {
   const Auth = useContext(AuthUser);
+  const history = useHistory();
+
   return (
     <Typography component="div" className="user-option-container">
       <Card>
@@ -17,8 +22,11 @@ const UserOption = () => {
                 className="user-option-item"
                 onClick={() => {
                   option.onClickHandle();
-                  if(option.name === "Log out"){
-                    window.location.reload();
+                  if (option.name === "Log out") {
+                    window.location.href = "/login";
+                  } else {
+                    history.push(`${option.navigateUrl}/${getCurrentUser().username}`);
+                    props.handleClose();
                   }
                 }}
               >

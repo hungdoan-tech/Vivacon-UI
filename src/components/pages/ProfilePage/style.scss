@@ -1,0 +1,66 @@
+.profile-container {
+  margin-top: 100px !important;
+  .info-container {
+    margin-bottom: 40px !important;
+    display: flex;
+    .user-avatar {
+      width: 40%;
+      img {
+        width: 150px;
+        height: 150px;
+        border-radius: 150px;
+        border: 0.25px solid var(--defaultColor);
+      }
+    }
+    .info-details {
+      flex: 1;
+      .info-detail-line1 {
+        margin-bottom: 10px;
+        display: flex;
+        justify-content: flex-start;
+        .user-name {
+          font-size: 28px;
+        }
+        .action-btns {
+          display: flex;
+          flex-direction: row;
+          justify-content: flex-end;
+          margin-left: 50px;
+          .edit-btn,
+          .message-btn,
+          .followed-btn {
+            margin-left: 20px;
+            margin-right: 20px;
+            text-transform: capitalize;
+            color: var(--charColor);
+            font-weight: 900;
+            padding: 8px;
+            border: 0.5px solid var(--lightColor);
+            border-radius: 5px;
+            margin: 0px 5px
+          }
+          .edit-icon {
+            align-self: center;
+            font-size: 28px;
+            color: var(--defaultColor);
+          }
+        }
+      }
+      .info-detail-line2 {
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-start;
+        margin-bottom: 10px;
+        .number-of-container {
+          margin-right: 20px;
+        }
+      }
+      .info-detail-line3 {
+        .full-name {
+          font-weight: 900;
+        }
+      }
+    }
+  }
+}
+

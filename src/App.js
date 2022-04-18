@@ -13,6 +13,7 @@ import {
 import classNames from "classnames";
 import { useCookies } from "react-cookie";
 import NotificationSnackbar from "components/common/NotificationSnackbar";
+import Footer from "components/common/Footer";
 
 export const AuthUser = createContext();
 export const Loading = createContext();
@@ -88,6 +89,7 @@ function App(props) {
                 </div>
                 {loading && <ProgressLoading />}
                 <NotificationSnackbar snackbarState={snackbarState} />
+                <Footer />
               </>
             ) : (
               <InitLoading />

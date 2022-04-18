@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { useState, useEffect } from "react";
 import SearchIcon from "@mui/icons-material/Search";
 import {
   InputBase,
@@ -9,14 +9,14 @@ import {
   Box,
 } from "@mui/material";
 import "./style.scss";
+import { getCurrentUser } from "utils/jwtToken";
 import AppButtonsGroup from "components/common/AppButtonsGroup";
 import UserOption from "components/common/UserOption";
 import CreatePostModal from "components/common/CreatePostModal";
 
 const Navbar = () => {
-  const [openUserOption, setUserOption] = React.useState(false);
-  const [openCreatePostModal, setOpenCreatePostModal] = React.useState(false);
-
+  const [openUserOption, setUserOption] = useState(false);
+  const [openCreatePostModal, setOpenCreatePostModal] = useState(false);
 
   const handleClickAwayUserOption = () => {
     setUserOption(false);
@@ -53,14 +53,16 @@ const Navbar = () => {
                 align="center"
               >
                 <img
-                  src={require("images/avatar.png")}
+                  src={getCurrentUser().avatar}
                   width="45"
                   height="45"
                   alt=""
                 />
               </Typography>
             </Button>
-            {openUserOption && <UserOption />}
+            {openUserOption && (
+              <UserOption handleClose={() => setUserOption(false)} />
+            )}
           </Box>
         </ClickAwayListener>
       </Typography>

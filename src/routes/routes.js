@@ -2,6 +2,7 @@ import { Route, Navigate, Routes, BrowserRouter, Link } from "react-router-dom";
 import PostsListPage from "components/pages/PostsListPage";
 import NotFoundPage from "components/pages/NotFoundPage";
 import LoginPage from "components/pages/LoginPage";
+import ProfilePage from "components/pages/ProfilePage";
 import { useContext } from "react";
 import { AuthUser } from "App";
 import { Switch } from "react-router-dom";
@@ -9,14 +10,28 @@ import { Redirect } from "react-router-dom";
 
 const RouterList = () => {
   const Auth = useContext(AuthUser);
+  return (
+    <Switch>
+      <PrivateRoute exact path="/" component={PostsListPage} />
+      <PrivateRoute exact path="/not-found" component={NotFoundPage} />
+      <PrivateRoute exact path="/login" component={LoginPage} />
+      <PrivateRoute path="/profile/:username" component={ProfilePage} />
+      <PrivateRoute path="*">
+        <Redirect to="/not-found" replace />
+      </PrivateRoute>
+    </Switch>
+  );
+};
 
-  const PrivateRoute = ({ component: Component, ...rest }) => {
-    if(Component.name === 'LoginPage'){
-      return ( <Route
+const PrivateRoute = ({ component: Component, ...rest }) => {
+  const Auth = useContext(AuthUser);
+  if (Component.name === "LoginPage") {
+    return (
+      <Route
         {...rest}
         render={({ location }) =>
           !Auth.auth ? (
-            <Component />
+            <Component location={location} />
           ) : (
             <Redirect
               to={{
@@ -26,8 +41,9 @@ const RouterList = () => {
             />
           )
         }
-      />)
-    }
+      />
+    );
+  } else {
     return (
       <Route
         {...rest}
@@ -45,17 +61,7 @@ const RouterList = () => {
         }
       />
     );
-  };
-  return (
-    <Switch>
-      <PrivateRoute exact path="/" component={PostsListPage} />
-      <PrivateRoute exact path="/not-found"component={NotFoundPage} />
-      <PrivateRoute exact path="/login"component={LoginPage} />
-      <Route path="*">
-        <Redirect to="/not-found" replace />
-      </Route>
-    </Switch>
-  );
+  }
 };
 
 export default RouterList;

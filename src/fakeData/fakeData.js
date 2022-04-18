@@ -165,7 +165,7 @@ export const userOption = [
     icon: <AccountCircleIcon />,
     name: "Profile",
     onClickHandle: () => null,
-    navigateUrl: "/",
+    navigateUrl: "/profile",
   },
   {
     icon: <SettingsIcon />,
