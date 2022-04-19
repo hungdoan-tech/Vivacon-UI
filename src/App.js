@@ -27,6 +27,7 @@ function App(props) {
     open: false,
     title: "",
     content: "",
+    type: 'SUCCESS'
   });
   const [isExpiredToken, setIsExpiredToken] = useState(false);
   const [cookies, setCookie] = useCookies(["jwt-token", "refresh-token"]);

@@ -1,0 +1,9 @@
+.pop-up-container {
+  z-index: 1302;
+  width: var(--popUpWidth);
+  height: var(--popUpHeight);
+  position: absolute;
+  background-color: blue;
+  top: 30px;
+  left: 30px;
+}

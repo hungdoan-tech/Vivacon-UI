@@ -47,6 +47,7 @@ const LoginPage = () => {
           setSnackbarState({
             open: true,
             content: "Login successfully",
+            type: 'SUCCESS'
           });
           setTimeout(() => {
             window.location.href = "/";

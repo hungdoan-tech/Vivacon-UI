@@ -12,6 +12,7 @@ import InsertEmoticonOutlinedIcon from "@mui/icons-material/InsertEmoticonOutlin
 import "./style.scss";
 import { privacyPostType } from "constant/types";
 import Emoji from "react-emoji-render";
+import { getCurrentUser } from "utils/jwtToken";
 
 const WriteCaptionTab = (props) => {
   const {
@@ -32,14 +33,14 @@ const WriteCaptionTab = (props) => {
       >
         <Typography component="div" align="left" className="owner-container">
           <img
-            src={require("images/avatar.png")}
+            src={getCurrentUser().avatar}
             width="50"
             height="50"
             alt=""
           />
           <Typography align="left" className="right-container">
             <Typography align="left" className="owner-name">
-              John
+              {getCurrentUser().username}
             </Typography>
             <Typography
               component="div"

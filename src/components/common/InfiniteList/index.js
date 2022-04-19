@@ -12,7 +12,7 @@ const InfiniteList = (props) => {
     handleGetData,
     data,
   } = props;
-  const { dataList, isLoading, hasMore } = useInfiniteList(
+  const { dataList, isLoading, hasMore, isNoData } = useInfiniteList(
     handleGetData,
     data,
     pageNumber
@@ -21,8 +21,12 @@ const InfiniteList = (props) => {
   const observer = useRef();
 
   useEffect(() => {
-    // setPageNumber(0);
+    setPageNumber(0);
   }, []);
+
+  useEffect(() => {
+setPageNumber(0)
+  }, [data.username])
 
   const lastItemRef = useCallback(
     (node) => {
@@ -30,7 +34,6 @@ const InfiniteList = (props) => {
       if (observer.current) observer.current.disconnect();
       observer.current = new IntersectionObserver(
         (entries) => {
-          console.log({ entries });
           if (entries[0].isIntersecting && hasMore) {
             setPageNumber((prevPageNumber) => prevPageNumber + 1);
           }
@@ -41,10 +44,10 @@ const InfiniteList = (props) => {
     },
     [isLoading, hasMore]
   );
-  console.log({ lastItemRef });
+
   return (
     <>
-      {dataList.length > 0 ? (
+      {!isNoData ? (
         <Container
           _renderItem={
             <>
@@ -63,7 +66,7 @@ const InfiniteList = (props) => {
                   );
                 }
               })}
-              {isLoading && (
+              {isLoading && pageNumber > 0 && (
                 <ReactLoading
                   className="loading-more-icon"
                   type="spokes"
@@ -76,7 +79,7 @@ const InfiniteList = (props) => {
           }
         />
       ) : (
-        <></>
+        <NoDataComponent />
       )}
     </>
   );
