@@ -12,3 +12,19 @@ export const renewToken = async (data) => {
 export const getProfile = async (username) => {
   return await axiosConfig.get(`${API_ENDPOINT_KEYS.GET_PROFILE}/${username}`);
 };
+
+export const getFollowingUsersById = async (account) => {
+  return await axiosConfig.get(`${API_ENDPOINT_KEYS.FOLLOWING}/${account}`);
+};
+
+export const getFollowersById = async (account) => {
+  return await axiosConfig.get(`${API_ENDPOINT_KEYS.FOLLOWER}/${account}`);
+};
+
+export const unfollowUserById = async (account) => {
+  return await axiosConfig.delete(`${API_ENDPOINT_KEYS.FOLLOWING}/${account}`)
+}
+
+export const followUserById = async (account) => {
+  return await axiosConfig.post(`${API_ENDPOINT_KEYS.FOLLOWING}/${account}`)
+}

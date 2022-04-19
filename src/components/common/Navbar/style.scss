@@ -10,7 +10,8 @@
     grid-column-start: 3;
     grid-column-end: span 1;
     font-size: 20px;
-    font-weight: 300;
+    font-weight: 600;
+    cursor: pointer;
   }
 
   .app-search {
@@ -37,9 +38,9 @@
     grid-column-end: 10;
     display: flex;
     justify-content: flex-start;
-    button{
+    button {
       padding: 5px !important;
-      &:hover{
+      &:hover {
         background-color: var(--lightColor) !important;
       }
     }

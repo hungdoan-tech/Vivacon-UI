@@ -26,6 +26,7 @@
     "react-elastic-carousel": "^0.11.5",
     "react-emoji-render": "^1.2.4",
     "react-filerobot-image-editor": "^4.0.0",
+    "react-helmet": "^6.1.0",
     "react-images-upload": "^1.2.8",
     "react-loading": "^2.0.3",
     "react-material-ui-carousel": "^3.2.0",

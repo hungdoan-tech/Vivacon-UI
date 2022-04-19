@@ -15,10 +15,10 @@ const RouterList = () => {
       <PrivateRoute exact path="/" component={PostsListPage} />
       <PrivateRoute exact path="/not-found" component={NotFoundPage} />
       <PrivateRoute exact path="/login" component={LoginPage} />
-      <PrivateRoute path="/profile/:username" component={ProfilePage} />
-      <PrivateRoute path="*">
+      <PrivateRoute exact path="/profile/:username" component={ProfilePage} />
+      <Route path="*">
         <Redirect to="/not-found" replace />
-      </PrivateRoute>
+      </Route>
     </Switch>
   );
 };

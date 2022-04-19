@@ -51,7 +51,8 @@ function a11yProps(index) {
 
 const UserImagesTabs = (props) => {
   const [value, setValue] = useState(0);
-  const { username } = props.match.params;
+  const [username, setUsername] = useState(props.match.params.username);
+  // const { username } = props.match.params;
 
   useEffect(() => {
     // handleGetPostsByUserName(0);
@@ -59,6 +60,10 @@ const UserImagesTabs = (props) => {
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
+
+  useEffect(() => {
+    setUsername(props.match.params.username);
+  }, [props.match.params.username]);
 
   const renderTabLabel = ({ icon: IconComponent, label }) => {
     return (
@@ -137,10 +142,11 @@ const ImageItem = ({ item, key }) => {
 const ImagesListContainer = ({ _renderItem }) => {
   return (
     <ImageList
-      sx={{ width: "100%", height: "100%" }}
+      sx={{ width: "100%",}}
       cols={3}
-      gap={28}
-      style={{ position: "relative" }}
+      gap={30}
+      style={{ position: "relative", overflow: 'hidden' }}
+      rowHeight={280}
     >
       {_renderItem}
     </ImageList>

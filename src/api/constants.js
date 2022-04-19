@@ -4,4 +4,6 @@ export const API_ENDPOINT_KEYS = {
     RENEW_TOKEN: '/refresh-token',
     CREATE_POST: '/post',
     GET_PROFILE: '/profile',
+    FOLLOWER: '/follower',
+    FOLLOWING: '/following'
 }

@@ -143,6 +143,7 @@ const CreatePostModal = (props) => {
   const handlePost = (data) => {
     createPost(data)
       .then((res) => {
+        console.log({res})
         handleClose();
         setActiveStep(0);
         setPictures([]);
@@ -151,6 +152,7 @@ const CreatePostModal = (props) => {
           setSnackbarState({
             open: true,
             content: "Create a post successfully",
+            type: 'SUCCESS'
           });
         }, 1000);
       })

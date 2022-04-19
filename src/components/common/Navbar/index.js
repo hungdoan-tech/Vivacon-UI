@@ -13,10 +13,12 @@ import { getCurrentUser } from "utils/jwtToken";
 import AppButtonsGroup from "components/common/AppButtonsGroup";
 import UserOption from "components/common/UserOption";
 import CreatePostModal from "components/common/CreatePostModal";
+import { useHistory } from "react-router-dom";
 
 const Navbar = () => {
   const [openUserOption, setUserOption] = useState(false);
   const [openCreatePostModal, setOpenCreatePostModal] = useState(false);
+  const history = useHistory();
 
   const handleClickAwayUserOption = () => {
     setUserOption(false);
@@ -32,9 +34,14 @@ const Navbar = () => {
   const handleCloseOpenCreatePostModal = () => {
     setOpenCreatePostModal(false);
   };
+
   return (
     <AppBar className="nav-container" postion="sticky">
-      <Typography className="app-logo" align="center">
+      <Typography
+        className="app-logo"
+        align="center"
+        onClick={() => history.push("/")}
+      >
         VivaCon
       </Typography>
 
