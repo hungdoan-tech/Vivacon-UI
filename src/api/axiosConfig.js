@@ -9,7 +9,7 @@ import {
 } from "utils/cookie";
 import { renewToken } from "api/userService";
 
-const CURRENT_VERSION = 'v1'
+const CURRENT_VERSION = "v1";
 
 let refreshTokenRequest = null;
 
@@ -19,7 +19,7 @@ const renewAccessToken = async (refreshToken) => {
 };
 
 const axiosConfig = axios.create({
-  baseURL: `http://localhost:8080/api/${CURRENT_VERSION}`,
+  baseURL: `http://localhost:8300/api/${CURRENT_VERSION}`,
   headers: {
     "Content-Type": "application/json",
   },

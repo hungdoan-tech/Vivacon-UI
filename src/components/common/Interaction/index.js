@@ -5,7 +5,9 @@ import ShareOutlinedIcon from "@mui/icons-material/ShareOutlined";
 import ChatBubbleOutlineOutlinedIcon from "@mui/icons-material/ChatBubbleOutlineOutlined";
 import "./style.scss";
 
-const Interaction = () => {
+const Interaction = (props) => {
+  const { item } = props;
+
   return (
     <>
       <Typography
@@ -18,7 +20,10 @@ const Interaction = () => {
         <ShareOutlinedIcon className="share-icon" />
       </Typography>
       <Typography className="number-of-likes" component="a">
-        <a href="/">100 likes</a>
+        <a href="/">{item.likeCount} likes</a>
+      </Typography>
+      <Typography className="number-of-likes" component="a">
+        <a href="/">{item.commentCount} likes</a>
       </Typography>
     </>
   );
