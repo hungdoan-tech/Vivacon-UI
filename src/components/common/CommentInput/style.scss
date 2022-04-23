@@ -1,36 +1,35 @@
 .draft-comment-container {
-  margin: 10px 0;
+  padding: 0 10px;
   display: flex;
-  vertical-align: middle;
-  img {
-    border-radius: 100px;
-    border: solid 0.5px var(--lightColor);
+  flex-direction: row;
+  justify-content: space-between;
+  height: 50px;
+  .emotion-icon {
+    margin: auto;
   }
   .comment-input {
-    position: relative;
-    margin: 0 10px;
-    width: 80%;
-    padding: 0 20px;
-    background-color: var(--lightColor);
-    border-radius: 20px;
+    width: 100%;
+    padding: 0 10px;
+    background-color: var(--backgroundColor);
     .MuiInputBase-root {
-      width: 90%;
+      width: 100%;
       height: 100%;
     }
-    .different-text-icon {
-      svg {
-        font-size: 28px;
-      }
-      position: absolute;
-      right: 10px;
-      bottom: 0px;
-    }
   }
-
-  .send-icon {
-    margin-top: 5px;
-    color: var(--mainColor) !important;
-    font-size: 32px;
-    height: 100%;
+  .different-text-icon {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    svg {
+      font-size: 28px;
+      margin: auto;
+    }
+    .post-button {
+      padding: 0;
+      height: 100%;
+      color: var(--mainColor);
+      font-weight: 600;
+      text-transform: capitalize;
+    }
   }
 }

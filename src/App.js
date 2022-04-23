@@ -18,6 +18,7 @@ import Footer from "components/common/Footer";
 export const AuthUser = createContext();
 export const Loading = createContext();
 export const Snackbar = createContext();
+export const UpdateProfile = createContext();
 
 function App(props) {
   const [openApp, setOpenApp] = useState(false);
@@ -27,10 +28,11 @@ function App(props) {
     open: false,
     title: "",
     content: "",
-    type: 'SUCCESS'
+    type: "SUCCESS",
   });
   const [isExpiredToken, setIsExpiredToken] = useState(false);
   const [cookies, setCookie] = useCookies(["jwt-token", "refresh-token"]);
+  const [isUpdateProfile, setIsUpdateProfile] = useState(false);
 
   const readCookie = () => {
     const token = getJwtToken();
@@ -75,29 +77,31 @@ function App(props) {
   });
   return (
     <AuthUser.Provider value={{ auth, setAuth }}>
-      <Loading.Provider value={{ loading, setLoading }}>
-        <Snackbar.Provider value={{ snackbarState, setSnackbarState }}>
-          <div className="App">
-            {openApp ? (
-              <>
-                {auth && (
-                  <div className="navbar">
-                    <Navbar />
+      <UpdateProfile.Provider value={{ isUpdateProfile, setIsUpdateProfile }}>
+        <Loading.Provider value={{ loading, setLoading }}>
+          <Snackbar.Provider value={{ snackbarState, setSnackbarState }}>
+            <div className="App">
+              {openApp ? (
+                <>
+                  {auth && (
+                    <div className="navbar">
+                      <Navbar />
+                    </div>
+                  )}
+                  <div className={appWidthClass}>
+                    <RouterList />
                   </div>
-                )}
-                <div className={appWidthClass}>
-                  <RouterList />
-                </div>
-                {loading && <ProgressLoading />}
-                <NotificationSnackbar snackbarState={snackbarState} />
-                <Footer />
-              </>
-            ) : (
-              <InitLoading />
-            )}
-          </div>{" "}
-        </Snackbar.Provider>
-      </Loading.Provider>
+                  {loading && <ProgressLoading />}
+                  <NotificationSnackbar snackbarState={snackbarState} />
+                  <Footer />
+                </>
+              ) : (
+                <InitLoading />
+              )}
+            </div>{" "}
+          </Snackbar.Provider>
+        </Loading.Provider>
+      </UpdateProfile.Provider>
     </AuthUser.Provider>
   );
 }

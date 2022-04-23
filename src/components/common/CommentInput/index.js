@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Typography, InputBase } from "@mui/material";
+import { Typography, InputBase, Button } from "@mui/material";
 import CameraAltOutlinedIcon from "@mui/icons-material/CameraAltOutlined";
 import InsertEmoticonOutlinedIcon from "@mui/icons-material/InsertEmoticonOutlined";
 import SendIcon from "@mui/icons-material/Send";
@@ -12,25 +12,18 @@ const CommentInput = () => {
       align="left"
       className="draft-comment-container"
     >
-      <img
-        src={require("images/avatar.png")}
-        width="40"
-        height="40"
-        alt=""
-      />
+      <InsertEmoticonOutlinedIcon className="emotion-icon"/>
       <Typography className="comment-input" component="div">
         <InputBase
           placeholder="Add a comment"
           fullWidth={true}
           maxRows={10}
           multiline={true}
-        />
-        <Typography className="different-text-icon" component="div">
-          <InsertEmoticonOutlinedIcon />
-          <CameraAltOutlinedIcon />
-        </Typography>
+        />{" "}
       </Typography>
-      <SendIcon className="send-icon" />
+      <Typography className="different-text-icon" component="div">
+        <Button className="post-button">Post</Button>
+      </Typography>
     </Typography>
   );
 };

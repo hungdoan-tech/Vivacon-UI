@@ -1,0 +1,99 @@
+.post-details-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+  .plus-post-index,
+  .minus-post-index {
+    position: absolute;
+    top: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: 100%;
+    .icon {
+      font-size: 20px;
+    }
+    button {
+      border-radius: 30px;
+      background-color: rgba(255, 255, 255, 0.5);
+      color: var(--charColor);
+      min-width: 40px !important;
+      width: 40px;
+      padding: 0;
+      height: 40px;
+      display: flex;
+      justify-content: center;
+      &:hover {
+        background-color: var(--backgroundColor);
+      }
+    }
+  }
+  .plus-post-index {
+    right: 20px;
+  }
+  .minus-post-index {
+    left: 20px;
+  }
+  .post-details-carousel {
+    background-color: var(--charColor);
+    width: 65%;
+    height: 100%;
+    position: relative;
+    .details-carousel {
+      width: 100%;
+      height: 100%;
+      .css-1f8sh1y {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        height: 100% !important;
+        img {
+          width: 100%;
+          height: 100%;
+          float: left;
+          &::before {
+            content: "";
+            float: left;
+            padding-top: 100%;
+          }
+        }
+      }
+      .css-1m9128y {
+        position: absolute;
+        bottom: 10px;
+      }
+    }
+  }
+
+  .post-details-interation {
+    width: 35%;
+    height: 100%;
+    justify-content: space-between;
+    .interaction-line1 {
+      width: calc(100% - 40px);
+      display: flex;
+      padding: 20px 20px;
+      flex-direction: row;
+      height: calc(10% - 40px);
+      img {
+        border-radius: 35px;
+      }
+      .owner-name {
+        margin-left: 20px;
+      }
+      border-bottom: 0.5px solid var(--lightColor);
+    }
+    .interaction-line2 {
+      height: 60%;
+      border-bottom: 0.5px solid var(--lightColor);
+    }
+    .interaction-line3 {
+      height: 20%;
+      border-bottom: 0.5px solid var(--lightColor);
+    }
+    .interaction-line4 {
+      height: 10%;
+    }
+  }
+}
