@@ -297,7 +297,7 @@ const ProfilePage = (props) => {
                 </Button>
               )}
               <div className="pops-up-container">
-              {/* <UserInfoPopUp open={openPopUp} anchorEl={anchorEl} /> */}
+                {/* <UserInfoPopUp open={openPopUp} anchorEl={anchorEl} /> */}
               </div>
             </Typography>
           );

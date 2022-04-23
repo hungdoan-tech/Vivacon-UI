@@ -25,8 +25,8 @@ const InfiniteList = (props) => {
   }, []);
 
   useEffect(() => {
-setPageNumber(0)
-  }, [data.username])
+    setPageNumber(0);
+  }, [data.username]);
 
   const lastItemRef = useCallback(
     (node) => {
