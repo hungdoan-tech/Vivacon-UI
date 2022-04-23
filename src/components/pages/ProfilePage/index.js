@@ -55,7 +55,7 @@ const ProfilePage = (props) => {
 
   //--GET DATA--
   const handleGetProfile = (username) => {
-    getProfile(username, { })
+    getProfile(username, {})
       .then((res) => {
         if (res.status === 200) {
           setUserProfile(res.data);
@@ -157,7 +157,22 @@ const ProfilePage = (props) => {
 
   useEffect(() => {
     if (updatedItem.id) {
-      handleGetProfile(username);
+      if (userProfile.id === updatedItem.id) {
+        setUserProfile({
+          ...userProfile,
+          following: updatedItem.following,
+          followerCount: updatedItem.following
+            ? userProfile.followerCount + 1
+            : userProfile.followerCount - 1,
+        });
+      } else {
+        setUserProfile({
+          ...userProfile,
+          followingCount: updatedItem.following
+            ? userProfile.followingCount + 1
+            : userProfile.followingCount - 1,
+        });
+      }
       if (showModal.data.content) {
         const { content } = showModal.data;
         const filteredFollowingUser = content.filter(
