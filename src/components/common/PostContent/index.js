@@ -15,7 +15,9 @@ const items = [
   },
 ];
 
-const PostContent = () => {
+const PostContent = (props) => {
+  const { item } = props;
+
   return (
     <>
       <Typography component="div" align="left" className="owner-container">
@@ -31,20 +33,14 @@ const PostContent = () => {
         </Typography>
       </Typography>
       <Typography component="div" align="left" className="post-caption">
-        This is so beautiful!
+        {item.caption}
         <br />
         <a href="/">#abc</a>
       </Typography>
       <Typography component="div" align="center" className="post-images">
         <Carousel autoPlay={false}>
-          {items.map((item, i) => (
-            <img
-              key={i}
-              src={require(`../../../${item.path}`)}
-              width="714"
-              height="450"
-              alt=""
-            />
+          {item.attachments.map((item, i) => (
+            <img key={i} src={item.url} width="714" height="450" alt="" />
           ))}
         </Carousel>
       </Typography>

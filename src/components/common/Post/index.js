@@ -6,15 +6,16 @@ import CommentInput from "components/common/CommentInput";
 import CommentList from "components/common/CommentList";
 import "./style.scss";
 
+const Post = (props) => {
+  const { item } = props;
 
-const Post = () => {
   return (
     <Card sx={{ minWidth: 275 }} className="post-container">
       <CardContent>
-        <PostContent />
-        <Interaction />
+        <PostContent item={item} />
+        <Interaction item={item} />
         <CommentInput />
-        <CommentList />
+        {/* <CommentList /> */}
       </CardContent>
     </Card>
   );

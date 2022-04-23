@@ -34,3 +34,13 @@ export const getPostDetail = async (data) => {
     },
   });
 };
+
+export const getNewFeed = async (data) => {
+  const { limit, page } = data;
+  return await axiosConfig.get(`${API_ENDPOINT_KEYS.NEWFEED}`, {
+    params: {
+      limit,
+      page,
+    },
+  });
+};

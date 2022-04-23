@@ -5,5 +5,6 @@ export const API_ENDPOINT_KEYS = {
     POST: '/post',
     GET_PROFILE: '/profile',
     FOLLOWER: '/follower',
-    FOLLOWING: '/following'
+    FOLLOWING: '/following',
+    NEWFEED: "/newsfeed",
 }
