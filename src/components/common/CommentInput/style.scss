@@ -3,17 +3,19 @@
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  height: 50px;
+  height: 100%;
   .emotion-icon {
     margin: auto;
   }
   .comment-input {
     width: 100%;
+    height: 100%;
     padding: 0 10px;
     background-color: var(--backgroundColor);
     .MuiInputBase-root {
       width: 100%;
       height: 100%;
+      padding: 0;
     }
   }
   .different-text-icon {

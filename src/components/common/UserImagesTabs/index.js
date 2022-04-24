@@ -146,7 +146,7 @@ const UserImagesTabs = (props) => {
           )}
           title={_.startCase(_.toLower(""))}
           handleCloseModal={handleCloseOpenPostDetailsModal}
-          width={1500}
+          width={1200}
           height={800}
         />
       </TabPanel>

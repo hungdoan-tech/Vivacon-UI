@@ -12,12 +12,12 @@ const CommentInput = () => {
       align="left"
       className="draft-comment-container"
     >
-      <InsertEmoticonOutlinedIcon className="emotion-icon"/>
+      <InsertEmoticonOutlinedIcon className="emotion-icon" />
       <Typography className="comment-input" component="div">
         <InputBase
           placeholder="Add a comment"
           fullWidth={true}
-          maxRows={10}
+          maxRows={4}
           multiline={true}
         />{" "}
       </Typography>

@@ -12,7 +12,7 @@ const Post = () => {
     <Card sx={{ minWidth: 275 }} className="post-container">
       <CardContent>
         <PostContent />
-        <Interaction />
+        {/* <Interaction /> */}
         <CommentInput />
         <CommentList />
       </CardContent>
