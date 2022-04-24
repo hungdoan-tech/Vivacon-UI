@@ -9,7 +9,7 @@ import {
 } from "utils/cookie";
 import { renewToken } from "api/userService";
 
-const CURRENT_VERSION = 'v1'
+const CURRENT_VERSION = "v1";
 
 let refreshTokenRequest = null;
 

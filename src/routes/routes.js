@@ -7,6 +7,8 @@ import { useContext } from "react";
 import { AuthUser } from "App";
 import { Switch } from "react-router-dom";
 import { Redirect } from "react-router-dom";
+import RegisterPage from "components/pages/RegisterPage";
+import VerifyPage from "components/pages/VerifyPage";
 
 const RouterList = () => {
   const Auth = useContext(AuthUser);
@@ -15,6 +17,8 @@ const RouterList = () => {
       <PrivateRoute exact path="/" component={PostsListPage} />
       <PrivateRoute exact path="/not-found" component={NotFoundPage} />
       <PrivateRoute exact path="/login" component={LoginPage} />
+      <PrivateRoute exact path="/register" component={RegisterPage} />
+      <PrivateRoute exact path="/verify" component={VerifyPage} />
       <PrivateRoute exact path="/profile/:username" component={ProfilePage} />
       <Route path="*">
         <Redirect to="/not-found" replace />

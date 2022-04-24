@@ -1,8 +1,27 @@
+import axios from "axios";
 import axiosConfig from "./axiosConfig";
 import { API_ENDPOINT_KEYS } from "./constants";
 
 export const login = async (data) => {
   return await axiosConfig.post(API_ENDPOINT_KEYS.LOGIN, data);
+};
+
+export const register = async (data) => {
+  return await axiosConfig.post(API_ENDPOINT_KEYS.REGISTER, data);
+};
+
+export const verify = async (data) => {
+  var config = {
+    method: "post",
+    url: "http://localhost:8080/api/v1" + API_ENDPOINT_KEYS.VERIFY,
+    headers: {
+      accept: "*/*",
+      "Content-Type": "text/plain",
+    },
+    data,
+  };
+
+  return await axios(config);
 };
 
 export const renewToken = async (data) => {
@@ -22,9 +41,9 @@ export const getFollowersById = async (account) => {
 };
 
 export const unfollowUserById = async (account) => {
-  return await axiosConfig.delete(`${API_ENDPOINT_KEYS.FOLLOWING}/${account}`)
-}
+  return await axiosConfig.delete(`${API_ENDPOINT_KEYS.FOLLOWING}/${account}`);
+};
 
 export const followUserById = async (account) => {
-  return await axiosConfig.post(`${API_ENDPOINT_KEYS.FOLLOWING}/${account}`)
-}
+  return await axiosConfig.post(`${API_ENDPOINT_KEYS.FOLLOWING}/${account}`);
+};
