@@ -10,60 +10,60 @@ import {
   InputLabel,
   Typography,
 } from "@mui/material";
-import { register } from "api/userService";
+import { changePassword, forgotPassword } from "api/userService";
 import useLoading from "hooks/useLoading";
 import useSnackbar from "hooks/useSnackbar";
-import { useState } from "react";
+import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 
-const RegisterPage = () => {
-  const [username, setUsername] = useState("");
-  const [fullName, setFullName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [matchingPassword, setMatchingPassword] = useState("");
+export default function ForgotPasswordPage(props) {
+  const [verificationToken, setVerificationToken] = useState("");
+  const [oldPassword, setOldPassword] = useState("");
+  const [matchingNewPassword, setMatchingNewPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
   const { setLoading } = useLoading();
   const { setSnackbarState, snackbarState } = useSnackbar();
   const history = useHistory();
 
-  const handleChangeEmail = (event) => {
-    setEmail(event.target.value);
+  const handleChangeVerificationToken = (event) => {
+    setVerificationToken(event.target.value);
   };
 
-  const handleChangeFullName = (event) => {
-    setFullName(event.target.value);
+  const handleChangeOldPassword = (event) => {
+    setOldPassword(event.target.value);
   };
 
-  const handleChangeUsername = (event) => {
-    setUsername(event.target.value);
+  const handleChangeMatchingNewPassword = (event) => {
+    setMatchingNewPassword(event.target.value);
   };
 
-  const handleChangePassword = (event) => {
-    setPassword(event.target.value);
-  };
-
-  const handleChangeMatchingPassword = (event) => {
-    setMatchingPassword(event.target.value);
+  const handleChangeNewPassword = (event) => {
+    setNewPassword(event.target.value);
   };
 
   const handleClickShowPassword = () => {
     setShowPassword(!showPassword);
   };
 
-  const handleRegister = () => {
+  const handleForgotPassword = () => {
     setLoading(true);
-    register({ username, fullName, email, password, matchingPassword })
+    changePassword({
+      oldPassword,
+      newPassword,
+      matchingNewPassword,
+    })
       .then((res) => {
         if (res.status === 200) {
           setSnackbarState({
             open: true,
-            content: "Please verify code to use this web",
+            content:
+              "You have changed password successfully. Please login to use this web",
             type: "SUCCESS",
           });
           setTimeout(() => {
-            history.push("/verify", email);
+            window.location.href = "/login";
           }, 1000);
         }
       })
@@ -88,49 +88,30 @@ const RegisterPage = () => {
 
           <Typography className="form-container">
             <Typography align="left" className="title">
-              Register
+              Forgot password
             </Typography>
             <Typography component="div" align="center" className="text-input">
               <FormControl sx={{ m: 1, width: "100%" }} variant="standard">
-                <InputLabel htmlFor="email">Email</InputLabel>
+                <InputLabel htmlFor="verificationtoken">
+                  Verification Token
+                </InputLabel>
                 <Input
-                  id="email"
-                  type="email"
-                  value={email}
-                  onChange={handleChangeEmail}
-                />
-              </FormControl>{" "}
-            </Typography>
-            <Typography component="div" align="center" className="text-input">
-              <FormControl sx={{ m: 1, width: "100%" }} variant="standard">
-                <InputLabel htmlFor="fullname">Full Name</InputLabel>
-                <Input
-                  id="fullname"
+                  id="verificationtoken"
                   type="text"
-                  value={fullName}
-                  onChange={handleChangeFullName}
+                  value={props.location.state.token}
+                  //onChange={handleChangeVerificationToken}
+                  disabled
                 />
               </FormControl>{" "}
             </Typography>
             <Typography component="div" align="center" className="text-input">
               <FormControl sx={{ m: 1, width: "100%" }} variant="standard">
-                <InputLabel htmlFor="username">Username</InputLabel>
+                <InputLabel htmlFor="oldpassword">Old Password</InputLabel>
                 <Input
-                  id="username"
-                  type="text"
-                  value={username}
-                  onChange={handleChangeUsername}
-                />
-              </FormControl>{" "}
-            </Typography>
-            <Typography component="div" align="center" className="text-input">
-              <FormControl sx={{ m: 1, width: "100%" }} variant="standard">
-                <InputLabel htmlFor="password">Password</InputLabel>
-                <Input
-                  id="password"
+                  id="oldpassword"
                   type={showPassword ? "text" : "password"}
-                  value={password}
-                  onChange={handleChangePassword}
+                  value={oldPassword}
+                  onChange={handleChangeOldPassword}
                   endAdornment={
                     <InputAdornment position="end">
                       <IconButton
@@ -146,14 +127,35 @@ const RegisterPage = () => {
             </Typography>
             <Typography component="div" align="center" className="text-input">
               <FormControl sx={{ m: 1, width: "100%" }} variant="standard">
-                <InputLabel htmlFor="matchingpassword">
-                  Matching Password
+                <InputLabel htmlFor="newpassword">New Password</InputLabel>
+                <Input
+                  id="newpassword"
+                  type={showPassword ? "text" : "password"}
+                  value={newPassword}
+                  onChange={handleChangeNewPassword}
+                  endAdornment={
+                    <InputAdornment position="end">
+                      <IconButton
+                        aria-label="toggle password visibility"
+                        onClick={handleClickShowPassword}
+                      >
+                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  }
+                />
+              </FormControl>
+            </Typography>
+            <Typography component="div" align="center" className="text-input">
+              <FormControl sx={{ m: 1, width: "100%" }} variant="standard">
+                <InputLabel htmlFor="matchingnewpassword">
+                  Matching New Password
                 </InputLabel>
                 <Input
-                  id="matchingpassword"
+                  id="matchingnewpassword"
                   type={showPassword ? "text" : "password"}
-                  value={matchingPassword}
-                  onChange={handleChangeMatchingPassword}
+                  value={matchingNewPassword}
+                  onChange={handleChangeMatchingNewPassword}
                   endAdornment={
                     <InputAdornment position="end">
                       <IconButton
@@ -170,33 +172,12 @@ const RegisterPage = () => {
           </Typography>
 
           <Typography component="div" align="center">
-            <Button className="login-btn" onClick={handleRegister}>
-              Register
+            <Button className="login-btn" onClick={handleForgotPassword}>
+              Forgot password
             </Button>
           </Typography>
         </CardContent>
       </Card>
     </Typography>
   );
-};
-
-export default RegisterPage;
-
-{
-  /* <Typography
-            component="div"
-            align="center"
-            className="or"
-          ></Typography>
-
-          <Typography
-            component="div"
-            align="center"
-            className="register-link-container"
-          >
-            <Typography className="dont-have-account">
-              Don't have an account?
-            </Typography>
-            <Typography className="register-link"> Register</Typography>
-          </Typography> */
 }

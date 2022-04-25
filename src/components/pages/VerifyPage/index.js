@@ -1,10 +1,11 @@
-import { verify } from "api/userService";
+import { resendToken, verify } from "api/userService";
 import useLoading from "hooks/useLoading";
 import useSnackbar from "hooks/useSnackbar";
 import React, { useState } from "react";
 import { saveJwtToken, saveRefreshToken } from "utils/cookie";
+import { useHistory } from "react-router-dom";
 
-export default function VerifyPage() {
+export default function VerifyPage(props) {
   const [firstCode, setFirstCode] = useState("");
   const [secondCode, setSecondCode] = useState("");
   const [thirdCode, setThirdCode] = useState("");
@@ -14,9 +15,14 @@ export default function VerifyPage() {
 
   const { setLoading } = useLoading();
   const { setSnackbarState, snackbarState } = useSnackbar();
+  const history = useHistory();
+
+  const [isButtonDisabled, setButtonDisabled] = useState(false);
+
+  var token = "";
 
   const handleSendToken = () => {
-    var token =
+    token =
       firstCode + secondCode + thirdCode + fourthCode + fifthCode + sixthCode;
 
     setLoading(true);
@@ -32,6 +38,65 @@ export default function VerifyPage() {
           });
           setTimeout(() => {
             window.location.href = "/";
+          }, 1000);
+        }
+      })
+      .catch((err) => {
+        throw err;
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  };
+
+  const handleResendToken = () => {
+    console.log("resend");
+    setButtonDisabled(true);
+
+    const email = props.location.state;
+
+    setLoading(true);
+    resendToken(email)
+      .then((res) => {
+        if (res.status === 200) {
+          // saveJwtToken(res.data.accessToken);
+          // saveRefreshToken(res.data.refreshToken);
+          setSnackbarState({
+            open: true,
+            content: "Please enter again code was sent in your email",
+            type: "SUCCESS",
+          });
+          // setTimeout(() => {
+          //   window.location.href = "/";
+          // }, 1000);
+          setTimeout(() => setButtonDisabled(false), 5000);
+        }
+      })
+      .catch((err) => {
+        throw err;
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  };
+
+  const handleConformForgotPassword = () => {
+    token =
+      firstCode + secondCode + thirdCode + fourthCode + fifthCode + sixthCode;
+
+    setLoading(true);
+    verify(token)
+      .then((res) => {
+        if (res.status === 200) {
+          saveJwtToken(res.data.accessToken);
+          saveRefreshToken(res.data.refreshToken);
+          setSnackbarState({
+            open: true,
+            content: "Go to page forgot password successfully",
+            type: "SUCCESS",
+          });
+          setTimeout(() => {
+            history.push("/forgot-password", token);
           }, 1000);
         }
       })
@@ -82,6 +147,12 @@ export default function VerifyPage() {
         onChange={(e) => setSixthCode(e.target.value)}
       />
       <button onClick={handleSendToken}>Send Token</button>
+      <button disabled={isButtonDisabled} onClick={handleResendToken}>
+        Resend Token
+      </button>
+      <button onClick={handleConformForgotPassword}>
+        Conform forgot password
+      </button>
     </div>
   );
 }
