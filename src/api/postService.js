@@ -58,6 +58,30 @@ export const getFirstLevelCommentListByPostId = async (data) => {
   );
 };
 
+export const getChildCommentListByPostId = async (data) => {
+  const { _sort, limit, _order, page } = data;
+  return await axiosConfig.get(
+    `${API_ENDPOINT_KEYS.POST}/${data.postId}/comment/${data.parentCommentId}/child-comment`,
+    {
+      params: {
+        _sort,
+        _order,
+        limit,
+        page,
+      },
+    }
+  );
+};
+
 export const comment = async (data) => {
   return await axiosConfig.post(`${API_ENDPOINT_KEYS.COMMENT}`, data);
+};
+export const getNewFeed = async (data) => {
+  const { limit, page } = data;
+  return await axiosConfig.get(`${API_ENDPOINT_KEYS.NEWFEED}`, {
+    params: {
+      limit,
+      page,
+    },
+  });
 };

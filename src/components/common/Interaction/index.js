@@ -7,9 +7,9 @@ import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import "./style.scss";
 import { likePost, unlikePost } from "api/postService";
 
-const Interaction = ({ currentPost, setCurrentPost }) => {
+const Interaction = ({ currentPost }) => {
   const { isLiked, id: postId } = currentPost;
-  console.log({currentPost})
+  console.log({ currentPost });
   const [like, setLike] = useState(isLiked);
   const [id, setId] = useState(postId);
 
@@ -55,7 +55,10 @@ const Interaction = ({ currentPost, setCurrentPost }) => {
         <ShareOutlinedIcon className="share-icon" />
       </Typography>
       <Typography className="number-of-likes" align="left">
-        100 likes
+        {currentPost.likeCount} {currentPost.likeCount > 1 ? " likes" : "like"}
+      </Typography>
+      <Typography className="post-caption" align="left">
+        <strong>{currentPost.createdBy?.username}</strong> {currentPost.caption}
       </Typography>
     </>
   );

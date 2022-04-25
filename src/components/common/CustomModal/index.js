@@ -34,14 +34,14 @@ const CustomModal = ({
     >
       <Card className="custom-modal-card">
         <CardContent>
-          <Box sx={{ width: "100%", height: "100%" }}>
+          <Box sx={{ width: "100%" }}>
             {title && (
               <AppBar className="custom-modal-header">
                 <Typography className="title">{title}</Typography>
               </AppBar>
             )}
-            <Component />
           </Box>
+          <Component />
         </CardContent>
       </Card>
     </Modal>

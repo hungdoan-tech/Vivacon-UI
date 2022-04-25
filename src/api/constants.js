@@ -8,4 +8,5 @@ export const API_ENDPOINT_KEYS = {
   FOLLOWING: "/following",
   LIKE: "/like",
   COMMENT: "/comment",
+  NEWFEED: "/newsfeed",
 };

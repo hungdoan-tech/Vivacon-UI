@@ -1,59 +1,47 @@
 import { useState, useEffect } from "react";
 import { Typography } from "@mui/material";
 import "./style.scss";
-import { getFirstLevelCommentListByPostId } from "api/postService";
-import { convertUTCtoLocalDate } from "utils/calcDateTime";
-const userComments = [
-  {
-    username: "Matt",
-    avatar: "images/fr-avatar.png",
-    comment: "I love it!",
-  },
-  {
-    username: "Riddle",
-    avatar: "images/fr-avatar.png",
-    comment: "So beautiful guy!!",
-  },
-  {
-    username: "Marry",
-    avatar: "images/fr-avatar.png",
-    comment: "Supprise!!!!! Congratulation Bro!!!!!!!",
-  },
-  {
-    username: "John",
-    avatar: "images/fr-avatar.png",
-    comment: "It is also my dream Bro! :)))",
-  },
-  {
-    username: "Matt",
-    avatar: "images/fr-avatar.png",
-    comment:
-      "Powerful! Guy :v Powerful! Guy :v Powerful! Guy :v Powerful! Guy :v Powerful! Guy :v Powerful! Guy :v Powerful! Guy :v Powerful! Guy :v Powerful! Guy :v Powerful! Guy :v Powerful! Guy :v ",
-  },
-  {
-    username: "Harry",
-    avatar: "images/fr-avatar.png",
-    comment: "Hmm..... :3",
-  },
-];
+import {
+  getChildCommentListByPostId,
+  getFirstLevelCommentListByPostId,
+} from "api/postService";
+import { convertUTCtoLocalDate, calculateFromNow } from "utils/calcDateTime";
+import { substringUsername } from "utils/resolveData";
+import _ from "lodash";
 
-const CommentList = ({ currentPost }) => {
-  const [commentList, setCommentList] = useState(userComments);
+const CommentList = ({
+  currentPost,
+  submittedComment,
+  setSubmittedComment,
+}) => {
+  const [commentList, setCommentList] = useState([]);
+  const [fetchInfo, setFetchInfo] = useState({});
   const [pageNumber, setPageNumber] = useState(0);
 
-  const handleGetFirstLevelCommentList = () => {
+  const handleGetFirstLevelCommentList = (page, postId) => {
+    console.log("new fetch");
     getFirstLevelCommentListByPostId({
-      id: currentPost.id,
+      id: postId,
       _sort: "createdAt",
       _order: "desc",
       limit: 15,
-      page: pageNumber,
+      page,
     })
       .then((res) => {
-        setCommentList({
-          ...res.data,
-          createdAt: convertUTCtoLocalDate(res.data.createdAt),
-        });
+        setFetchInfo(res.data);
+        if (page !== 0) {
+          if (commentList.length % 15 > 0) {
+            const start = commentList.length - page * 15;
+            setCommentList([
+              ...commentList,
+              ..._.slice(res.data.content, start, res.data.content.length),
+            ]);
+          } else {
+            setCommentList([...commentList, ...res.data.content]);
+          }
+        } else {
+          setCommentList(res.data.content);
+        }
       })
       .catch((err) => {
         throw err;
@@ -61,8 +49,20 @@ const CommentList = ({ currentPost }) => {
   };
 
   useEffect(() => {
-    handleGetFirstLevelCommentList();
+    if (submittedComment.id) {
+      setCommentList([submittedComment, ...commentList]);
+      setSubmittedComment({});
+    }
+  }, [submittedComment]);
+
+  useEffect(() => {
+    handleGetFirstLevelCommentList(pageNumber, currentPost.id);
   }, [pageNumber]);
+
+  useEffect(() => {
+    setPageNumber(0);
+    handleGetFirstLevelCommentList(0, currentPost.id);
+  }, [currentPost]);
 
   const handleViewMore = () => {
     setPageNumber(pageNumber + 1);
@@ -70,31 +70,168 @@ const CommentList = ({ currentPost }) => {
 
   return (
     <>
-      {commentList.data?.content.length > 0 ? (
+      {commentList.length > 0 ? (
         <Typography className="sended-comments-container">
-          {commentList.data.content.map((comment, i) => (
-            <Typography className="comment-container">
-              <img
-                src={require(`../../../${comment.createdBy?.avatar}`)}
-                width="35"
-                height="35"
-                alt=""
-              />
-              <Typography className="content" component="div">
-                <strong>{comment.createdBy?.username}</strong>
-                {"    "}
-                {comment.content}
-              </Typography>
-            </Typography>
+          {commentList.map((comment, i) => (
+            <CommentItem comment={comment} postId={currentPost.id} />
           ))}
-          <Typography className="view-more" onClick={handleViewMore}>
-            View more comments
-          </Typography>
+          {!fetchInfo.last && (
+            <Typography className="view-more" onClick={handleViewMore}>
+              View more comments
+            </Typography>
+          )}
         </Typography>
       ) : (
         <></>
       )}
     </>
+  );
+};
+
+const CommentItem = ({ comment, postId }) => {
+  const [createdTime, setCreatedTime] = useState(
+    calculateFromNow(convertUTCtoLocalDate(comment.createdAt))
+  );
+  const [commentChildList, setCommentChildList] = useState({
+    open: false,
+    data: [],
+  });
+  const [childPageNumber, setChildPageNumber] = useState(0);
+  const [total, setTotal] = useState(comment.totalChildComments);
+
+  const handleGetChildCommentList = (page) => {
+    getChildCommentListByPostId({
+      postId,
+      parentCommentId: comment.id,
+      _sort: "createdAt",
+      _order: "desc",
+      limit: 3,
+      page,
+    })
+      .then((res) => {
+        if (res.status === 200) {
+          console.log({ page });
+          let result;
+          if (page > 0) {
+            console.log("page > 0");
+            result = [..._.reverse(res.data.content), ...commentChildList.data];
+            console.log({ result });
+          } else {
+            result = _.reverse(res.data.content);
+          }
+          console.log({ result });
+          setCommentChildList({
+            open: true,
+            data: result,
+          });
+        }
+      })
+      .catch((err) => {
+        throw err;
+      });
+  };
+
+  const handleToggleCommentChild = () => {
+    if (total === 0) {
+      setCommentChildList({
+        ...commentChildList,
+        open: false,
+      });
+      setTotal(comment.totalChildComments);
+      setChildPageNumber(0);
+    } else {
+      if (
+        total === comment.totalChildComments &&
+        commentChildList.data.length > 0
+      ) {
+        setCommentChildList({ ...commentChildList, open: true });
+        setTotal(0);
+      } else {
+        handleGetChildCommentList(childPageNumber);
+        setTotal(total - 3 < 0 ? 0 : total - 3);
+        setChildPageNumber(childPageNumber + 1);
+      }
+    }
+  };
+
+  setInterval(() => {
+    setCreatedTime(calculateFromNow(convertUTCtoLocalDate(comment.createdAt)));
+  }, 60000);
+  return (
+    <Typography className="comment-container">
+      <Typography className="comment-content">
+        <img
+          src={
+            comment.createdBy?.avatar
+              ? comment.createdBy?.avatar
+              : require("images/no-avatar.png")
+          }
+          width="35"
+          height="35"
+          alt=""
+        />
+        <Typography className="content" component="div">
+          <Typography className="content-line1" component="div">
+            <strong>{substringUsername(comment.createdBy?.username)}</strong>
+            {"    "}
+            {comment.content}
+          </Typography>
+          <Typography className="content-line2" component="div">
+            <Typography className="date-time" component="div">
+              {createdTime}
+            </Typography>
+            <Typography className="reply" component="div">
+              Reply
+            </Typography>
+          </Typography>
+        </Typography>
+      </Typography>
+      {comment.totalChildComments > 0 && (
+        <Typography
+          className="view-child"
+          align="left"
+          onClick={handleToggleCommentChild}
+        >
+          {total === 0
+            ? "_____Hide all replies"
+            : `_____View replies (${total})`}
+        </Typography>
+      )}
+      {commentChildList.open &&
+        commentChildList.data.map((childCmt) => {
+          return (
+            <Typography className="comment-content child">
+              <img
+                src={
+                  childCmt.createdBy?.avatar
+                    ? childCmt.createdBy?.avatar
+                    : require("images/no-avatar.png")
+                }
+                width="35"
+                height="35"
+                alt=""
+              />
+              <Typography className="content" component="div">
+                <Typography className="content-line1" component="div">
+                  <strong>
+                    {substringUsername(childCmt.createdBy?.username)}
+                  </strong>
+                  {"    "}
+                  {childCmt.content}
+                </Typography>
+                <Typography className="content-line2" component="div">
+                  <Typography className="date-time" component="div">
+                    {createdTime}
+                  </Typography>
+                  <Typography className="reply" component="div">
+                    Reply
+                  </Typography>
+                </Typography>
+              </Typography>
+            </Typography>
+          );
+        })}
+    </Typography>
   );
 };
 export default CommentList;
