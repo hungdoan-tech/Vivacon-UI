@@ -13,7 +13,7 @@
   }
   .create-post-container {
     background-color: var(--backgroundColor);
-    border-radius: 20px !important;
+    border-radius: 14px !important;
     width: 900px;
     height: 900px;
     vertical-align: middle;
@@ -62,6 +62,7 @@
         }
       }
     }
+
 
     @keyframes appearModal {
       0% {

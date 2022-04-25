@@ -21,7 +21,11 @@ import useSnackbar from "hooks/useSnackbar";
 import ReactLoading from "react-loading";
 import classNames from "classnames";
 import { useHistory } from "react-router-dom";
-// import UserInfoPopUp from "components/common/UserInfoPopUp";
+import CustomPopUp from "components/common/CustomPopUp";
+import CameraAltOutlinedIcon from "@mui/icons-material/CameraAltOutlined";
+import FollowButton from "components/common/FollowButton";
+import { substringUsername } from "utils/resolveData";
+import FollowUserItem from "components/common/FollowUserItem";
 
 const ModalType = {
   FOLLOWER: "FOLLOWERS",
@@ -43,23 +47,17 @@ const ProfilePage = (props) => {
     data: {},
   });
   const [isUpdated, setUpdated] = useState(false);
+  const [updatedItem, setUpdatedItem] = useState({});
   const [isLocalLoading, setLocalLoading] = useState({
     status: false,
     index: -1,
   });
-  //Pop up
-  const [openPopUp, setOpenPopUp] = useState(false);
-  const [anchorEl, setAnchorEl] = useState(null);
-
-  const handleOpenPopUp = (event) => {
-    setAnchorEl(event.currentTarget);
-    setOpenPopUp((previousOpen) => !previousOpen);
-  };
 
   const history = useHistory();
 
+  //--GET DATA--
   const handleGetProfile = (username) => {
-    getProfile(username)
+    getProfile(username, {})
       .then((res) => {
         if (res.status === 200) {
           setUserProfile(res.data);
@@ -114,8 +112,8 @@ const ProfilePage = (props) => {
       });
   };
 
+  //--ACTION--
   const handleUnfollowUser = (id, username, index) => {
-    const { content } = showModal.data;
     handleCloseUnfollowModal();
     setLocalLoading({ status: true, index });
     unfollowUserById(id)
@@ -127,19 +125,6 @@ const ProfilePage = (props) => {
             type: "SUCCESS",
           });
           setUpdated(true);
-          const filteredFollowingUser = content.filter(
-            (item) => item.id === id
-          );
-          const index = content.indexOf(filteredFollowingUser[0]);
-          content[index].isFollowing = false;
-
-          setShowModal({
-            ...showModal,
-            data: {
-              ...showModal.data,
-              content: [...content],
-            },
-          });
         }
       })
       .catch((err) => {
@@ -162,19 +147,6 @@ const ProfilePage = (props) => {
             type: "SUCCESS",
           });
           setUpdated(true);
-          const filteredFollowingUser = content.filter(
-            (item) => item.id === id
-          );
-          const index = content.indexOf(filteredFollowingUser[0]);
-          content[index].isFollowing = true;
-
-          setShowModal({
-            ...showModal,
-            data: {
-              ...showModal.data,
-              content: [...content],
-            },
-          });
         }
       })
       .catch((err) => {
@@ -184,6 +156,44 @@ const ProfilePage = (props) => {
         // setLocalLoading(false);
       });
   };
+
+  useEffect(() => {
+    if (updatedItem.id) {
+      if (userProfile.id === updatedItem.id) {
+        setUserProfile({
+          ...userProfile,
+          following: updatedItem.following,
+          followerCount: updatedItem.following
+            ? userProfile.followerCount + 1
+            : userProfile.followerCount - 1,
+        });
+      } else {
+        setUserProfile({
+          ...userProfile,
+          followingCount: updatedItem.following
+            ? userProfile.followingCount + 1
+            : userProfile.followingCount - 1,
+        });
+      }
+      if (showModal.data.content) {
+        const { content } = showModal.data;
+        const filteredFollowingUser = content.filter(
+          (item) => item.id === updatedItem.id
+        );
+        const index = content.indexOf(filteredFollowingUser[0]);
+        content[index].isFollowing = updatedItem.following;
+
+        setShowModal({
+          ...showModal,
+          data: {
+            ...showModal.data,
+            content: [...content],
+          },
+        });
+      }
+    }
+    console.log("resetUpdate");
+  }, [updatedItem]);
 
   useEffect(() => {
     if (isUpdated) {
@@ -244,72 +254,9 @@ const ProfilePage = (props) => {
     setUnfollowModal({ ...unfollowModal, open: false });
   };
 
-  const navigateToUser = (username) => {
-    handleCloseModal();
-    history.push(`/profile/${username}`);
-  };
-
-  const renderFollowModal = () => {
-    const { content } = showModal.data;
-
-    return (
-      <Typography component="div" className="follow-container">
-        {content.map((user, index) => {
-          console.log("compare", getCurrentUser(), user.id);
-          return (
-            <Typography component="div" className="follow-item">
-              <Typography
-                component="div"
-                className="follow-avatar"
-                onMouseMove={handleOpenPopUp}
-              >
-                <img src={user.avatar} width={35} height={35} />
-              </Typography>
-              <Typography
-                component="div"
-                className="follow-name"
-                onClick={() => navigateToUser(user.username)}
-              >
-                <Typography className="username">{user.username}</Typography>
-                <Typography className="fullName">{user.fullName}</Typography>
-              </Typography>
-              {getCurrentUser().accountId !== user.id && (
-                <Button
-                  className={`${changeFormatByCondition(user.isFollowing)}`}
-                  onClick={() =>
-                    user.isFollowing
-                      ? handleOpenUnfollowModal(user)
-                      : handleFollowUser(user.id, user.username, index)
-                  }
-                >
-                  {isLocalLoading.index === index && isLocalLoading.status ? (
-                    <ReactLoading
-                      type="spokes"
-                      color="#00000"
-                      height={18}
-                      width={18}
-                    />
-                  ) : user.isFollowing ? (
-                    <CheckIcon className="followed-icon" />
-                  ) : (
-                    " Follow"
-                  )}
-                </Button>
-              )}
-              <div className="pops-up-container">
-              {/* <UserInfoPopUp open={openPopUp} anchorEl={anchorEl} /> */}
-              </div>
-            </Typography>
-          );
-        })}
-      </Typography>
-    );
-  };
-
   const renderUnfollowModal = () => {
     const userInfo = unfollowModal.data;
     const { content } = showModal.data;
-    console.log(content, userInfo);
 
     return (
       <Typography component="div" className="unfollow-container">
@@ -351,7 +298,7 @@ const ProfilePage = (props) => {
   return (
     <Typography component="div" align="center" className="profile-container">
       <Helmet>
-        <title>{userProfile.fullName}</title>
+        <title>{`${userProfile.fullName} (@${userProfile.username})`} </title>
       </Helmet>
       <Typography component="div" align="center" className="info-container">
         <Typography component="div" align="center" className="user-avatar">
@@ -464,16 +411,28 @@ const ProfilePage = (props) => {
           </Typography>
         </Typography>
       </Typography>
-      <UserImagesTabs username={username} />
+      <UserImagesTabs
+        username={username}
+        setUpdatedItem={setUpdatedItem}
+        updatedItem={updatedItem}
+      />
       <CustomModal
+        isRadius
         open={showModal.open}
-        component={() => renderFollowModal()}
+        component={() => (
+          <Typography component="div" className="follow-container">
+            {showModal.data.content.map((user) => {
+              return <FollowUserItem user={user} />;
+            })}
+          </Typography>
+        )}
         title={_.startCase(_.toLower(showModal.type))}
         handleCloseModal={handleCloseModal}
         width={400}
         height={400}
       />
       <CustomModal
+        isRadius
         width={400}
         height={300}
         open={unfollowModal.open}
@@ -483,5 +442,20 @@ const ProfilePage = (props) => {
     </Typography>
   );
 };
+
+// const FollowUsers = (props) => {
+
+//   return (
+//     <>
+//       <Typography component="div" className="follow-container">
+//         {content.map((user) => {
+//           return (
+//             <></>
+//           );
+//         })}
+//       </Typography>
+//     </>
+//   );
+// };
 
 export default withRouter(ProfilePage);

@@ -13,11 +13,14 @@
   }
   .custom-modal-card {
     background-color: var(--backgroundColor);
-    width: var(--modalWidth);
-    height: var(--modalHeight);
+    max-width: var(--modalWidth);
+    max-height: var(--modalHeight);
+    width: 100%;
+    height: 100%;
     vertical-align: middle;
     text-align: center;
-    border-radius: 20px !important;
+    border-radius: var(--radius) !important;
+    overflow:visible;
     animation: appearCustomModal 0.5s;
     .MuiCardContent-root {
       padding: 0;
@@ -26,7 +29,7 @@
     .custom-modal-header {
       height: 50px;
       position: initial;
-      background-color: var(--backgroundColor);
+      background-color: transparent;
       display: flex;
       flex-direction: row;
       justify-content: space-between;

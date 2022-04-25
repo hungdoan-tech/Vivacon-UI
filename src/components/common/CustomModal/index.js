@@ -16,6 +16,7 @@ const CustomModal = ({
   handleCloseModal,
   width,
   height,
+  isRadius = false,
 }) => {
   const [modalWidth, setModalWidth] = useState(0);
   return (
@@ -28,18 +29,19 @@ const CustomModal = ({
       style={{
         "--modalWidth": `${width || 600}px`,
         "--modalHeight": `${height || 600}px`,
+        "--radius": `${isRadius ? 14 : 6}px`,
       }}
     >
       <Card className="custom-modal-card">
         <CardContent>
-          <Box sx={{ width: "100%", height: "100%" }}>
+          <Box sx={{ width: "100%" }}>
             {title && (
               <AppBar className="custom-modal-header">
                 <Typography className="title">{title}</Typography>
               </AppBar>
             )}
-            <Component />
           </Box>
+          <Component />
         </CardContent>
       </Card>
     </Modal>

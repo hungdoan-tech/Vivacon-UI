@@ -15,6 +15,9 @@ import PhotoLibraryIcon from "@mui/icons-material/PhotoLibrary";
 import "./style.scss";
 import { getPostsByUserName } from "api/postService";
 import InfiniteList from "../InfiniteList";
+import PostDetailsModal from "../PostDetailsModal";
+import _ from "lodash";
+import CustomModal from "../CustomModal";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -52,6 +55,30 @@ function a11yProps(index) {
 const UserImagesTabs = (props) => {
   const [value, setValue] = useState(0);
   const [username, setUsername] = useState(props.match.params.username);
+  const { setUpdatedItem, updatedItem } = props;
+
+  const [showPostDetailsModal, setShowPostDetailsModal] = useState({
+    open: false,
+    index: -1,
+    item: {},
+    dataList: [],
+  });
+  const handleOpenPostDetailsModal = (index, item, dataList) => {
+    setShowPostDetailsModal({
+      open: true,
+      index,
+      item,
+      dataList,
+    });
+  };
+
+  const handleCloseOpenPostDetailsModal = (id) => {
+    setShowPostDetailsModal({
+      open: false,
+      index: -1,
+      dataLength: 0,
+    });
+  };
   // const { username } = props.match.params;
 
   useEffect(() => {
@@ -104,6 +131,23 @@ const UserImagesTabs = (props) => {
           }}
           component={ImageItem}
           noDataComponent={noDataComponent}
+          handleClickItem={handleOpenPostDetailsModal}
+        />
+        <CustomModal
+          open={showPostDetailsModal.open}
+          component={() => (
+            <PostDetailsModal
+              index={showPostDetailsModal.index}
+              item={showPostDetailsModal.item}
+              dataList={showPostDetailsModal.dataList}
+              setUpdatedItem={setUpdatedItem}
+              updatedItem={updatedItem}
+            />
+          )}
+          title={_.startCase(_.toLower(""))}
+          handleCloseModal={handleCloseOpenPostDetailsModal}
+          width={1200}
+          height={800}
         />
       </TabPanel>
       <TabPanel value={value} index={1}>
@@ -113,9 +157,13 @@ const UserImagesTabs = (props) => {
   );
 };
 
-const ImageItem = ({ item, key }) => {
+const ImageItem = ({ item, key, handleClick, index, dataList }) => {
   return (
-    <ImageListItem key={key} className="image-item">
+    <ImageListItem
+      key={index}
+      className="image-item"
+      onClick={() => handleClick(index, item, dataList)}
+    >
       <img
         src={`${item.firstImage}`}
         srcSet={`${item.firstImage}`}
@@ -141,15 +189,17 @@ const ImageItem = ({ item, key }) => {
 
 const ImagesListContainer = ({ _renderItem }) => {
   return (
-    <ImageList
-      sx={{ width: "100%",}}
-      cols={3}
-      gap={30}
-      style={{ position: "relative", overflow: 'hidden' }}
-      rowHeight={280}
-    >
-      {_renderItem}
-    </ImageList>
+    <>
+      <ImageList
+        sx={{ width: "100%" }}
+        cols={3}
+        gap={30}
+        style={{ position: "relative", overflow: "hidden" }}
+        rowHeight={280}
+      >
+        {_renderItem}
+      </ImageList>
+    </>
   );
 };
 
