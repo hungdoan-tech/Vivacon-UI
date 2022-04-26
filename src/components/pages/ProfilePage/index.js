@@ -9,6 +9,8 @@ import {
   getFollowingUsersById,
   getProfile,
   unfollowUserById,
+  uploadImage,
+  changeProfileAvatar,
 } from "api/userService";
 import UserImagesTabs from "components/common/UserImagesTabs";
 import useLoading from "hooks/useLoading";
@@ -21,6 +23,7 @@ import useSnackbar from "hooks/useSnackbar";
 import ReactLoading from "react-loading";
 import classNames from "classnames";
 import { useHistory } from "react-router-dom";
+import ImageUploader from "react-images-upload";
 // import UserInfoPopUp from "components/common/UserInfoPopUp";
 
 const ModalType = {
@@ -51,6 +54,9 @@ const ProfilePage = (props) => {
   const [openPopUp, setOpenPopUp] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
 
+  const [file, setFile] = useState(null);
+  const [img, setImg] = useState(null);
+
   const handleOpenPopUp = (event) => {
     setAnchorEl(event.currentTarget);
     setOpenPopUp((previousOpen) => !previousOpen);
@@ -63,6 +69,7 @@ const ProfilePage = (props) => {
       .then((res) => {
         if (res.status === 200) {
           setUserProfile(res.data);
+          setImg(res.data.avatar);
         }
       })
       .catch((err) => {
@@ -297,7 +304,7 @@ const ProfilePage = (props) => {
                 </Button>
               )}
               <div className="pops-up-container">
-              {/* <UserInfoPopUp open={openPopUp} anchorEl={anchorEl} /> */}
+                {/* <UserInfoPopUp open={openPopUp} anchorEl={anchorEl} /> */}
               </div>
             </Typography>
           );
@@ -348,6 +355,34 @@ const ProfilePage = (props) => {
     return followedButtonColor;
   };
 
+  const handleChangeImg = (img) => {
+    console.log(img);
+    const data = new FormData();
+    data.append("file", img);
+    uploadImage(data)
+      .then((res) => {
+        if (res.status === 200) {
+          changeProfileAvatar({
+            actualName: res.data.actualName,
+            uniqueName: res.data.uniqueName,
+            url: res.data.url,
+          }).then((res) => {
+            if (res.status === 200) {
+              setSnackbarState({
+                open: true,
+                content: "You have changed your profile avatar successfully!",
+                type: "SUCCESS",
+              });
+              setImg(res.data.url);
+            }
+          });
+        }
+      })
+      .catch((err) => {
+        throw err;
+      });
+  };
+
   return (
     <Typography component="div" align="center" className="profile-container">
       <Helmet>
@@ -355,7 +390,15 @@ const ProfilePage = (props) => {
       </Helmet>
       <Typography component="div" align="center" className="info-container">
         <Typography component="div" align="center" className="user-avatar">
-          <img src={userProfile.avatar} />
+          <input
+            className="form-control "
+            type="file"
+            id="ccomment"
+            name="comment"
+            required
+            onChange={(e) => handleChangeImg(e.target.files[0])}
+          />
+          <img src={img} />
         </Typography>
         <Typography component="div" align="left" className="info-details">
           <Typography

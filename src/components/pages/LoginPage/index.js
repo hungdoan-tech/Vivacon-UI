@@ -133,6 +133,26 @@ const LoginPage = () => {
             </Typography>
             <Typography className="register-link"> Register</Typography>{" "}
           </Typography>
+
+          <Typography
+            component="div"
+            align="center"
+            className="or"
+          ></Typography>
+
+          <Typography
+            component="div"
+            align="center"
+            className="register-link-container"
+          >
+            <Typography className="dont-have-account">
+              Did you forgot your password?
+            </Typography>
+            <Typography className="register-link">
+              {" "}
+              Forgot your password
+            </Typography>{" "}
+          </Typography>
         </CardContent>
       </Card>
     </Typography>

@@ -11,4 +11,6 @@ export const API_ENDPOINT_KEYS = {
   RESEND: "/account/verification_token",
   FORGOT: "/account/password",
   CHECK: "/account/check",
+  ATTACTMENT: "/attachment",
+  CHANGE_AVATAR: "/profile/avatar",
 };

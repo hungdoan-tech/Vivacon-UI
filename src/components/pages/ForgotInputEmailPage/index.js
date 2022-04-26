@@ -10,6 +10,8 @@ import useLoading from "hooks/useLoading";
 import useSnackbar from "hooks/useSnackbar";
 import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
+import CustomModal from "components/common/CustomModal";
+import _ from "lodash";
 
 export default function ForgotInputEmailPage() {
   const [email, setEmail] = useState("");
@@ -17,7 +19,14 @@ export default function ForgotInputEmailPage() {
   const { setLoading } = useLoading();
   const { setSnackbarState, snackbarState } = useSnackbar();
 
+  const [showConfirmModal, setShowConfirmModal] = useState({
+    open: false,
+    data: {},
+  });
+
   const history = useHistory();
+
+  console.log(showConfirmModal);
 
   const handleConform = () => {
     setLoading(true);
@@ -51,6 +60,10 @@ export default function ForgotInputEmailPage() {
         if (res.status === 200) {
           //setUserProfile(res.data);
           console.log(res.data);
+          setShowConfirmModal({
+            open: true,
+            data: { username: res.data.username, avatar: res.data.avatar },
+          });
         }
       })
       .catch((err) => {
@@ -61,13 +74,23 @@ export default function ForgotInputEmailPage() {
       });
   };
 
-  useEffect(() => {
+  const handleOpenModal = () => {
     handleGetProfile(email);
+  };
 
-    // return () => {
-    //   second
-    // }
-  }, [email]);
+  const handleCloseModal = () => {
+    setShowConfirmModal({ open: false, data: {} });
+  };
+
+  const ImageList = (props) => {
+    return (
+      <div>
+        <p>{props.username}</p>
+        {/* <img src={props.avatar} /> */}
+        <button onClick={handleConform}>Send</button>
+      </div>
+    );
+  };
 
   return (
     <div>
@@ -82,11 +105,24 @@ export default function ForgotInputEmailPage() {
           />
         </FormControl>{" "}
         <Typography component="div" align="center">
-          <Button className="login-btn" onClick={handleConform}>
-            Register
+          <Button className="login-btn" onClick={handleOpenModal}>
+            Confirm
           </Button>
         </Typography>
       </Typography>
+      <CustomModal
+        open={showConfirmModal.open}
+        component={() => (
+          <ImageList
+            username={showConfirmModal.data.username}
+            avatar={showConfirmModal.data.avatar}
+          />
+        )}
+        title={_.startCase(_.toLower("confirm"))}
+        handleCloseModal={handleCloseModal}
+        width={400}
+        height={400}
+      />
     </div>
   );
 }

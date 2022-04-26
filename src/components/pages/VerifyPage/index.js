@@ -53,7 +53,7 @@ export default function VerifyPage(props) {
     console.log("resend");
     setButtonDisabled(true);
 
-    const email = props.location.state;
+    const email = props.location.state.emailForgot;
 
     setLoading(true);
     resendToken(email)
@@ -146,7 +146,7 @@ export default function VerifyPage(props) {
         value={sixthCode}
         onChange={(e) => setSixthCode(e.target.value)}
       />
-      <button onClick={handleSendToken}>Send Token</button>
+      <button onClick={handleSendToken}>Submit</button>
       <button disabled={isButtonDisabled} onClick={handleResendToken}>
         Resend Token
       </button>

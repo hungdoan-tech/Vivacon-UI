@@ -52,6 +52,14 @@ export const getUserInformation = async (email) => {
   });
 };
 
+export const uploadImage = async (data) => {
+  return await axiosConfig.post(`${API_ENDPOINT_KEYS.ATTACTMENT}`, data);
+};
+
+export const changeProfileAvatar = async (data) => {
+  return await axiosConfig.post(`${API_ENDPOINT_KEYS.CHANGE_AVATAR}`, data);
+};
+
 export const getProfile = async (username) => {
   return await axiosConfig.get(`${API_ENDPOINT_KEYS.GET_PROFILE}/${username}`);
 };
