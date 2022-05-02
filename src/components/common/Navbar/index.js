@@ -50,7 +50,6 @@ const Navbar = () => {
         VivaCon
       </Typography>
 
-      <AppButtonsGroup handleOpenCreatePostModal={handleOpenCreatePostModal} />
       {!Auth.auth.isAdmin && (
         <>
           <Typography className="app-search" component="div" align="center">
