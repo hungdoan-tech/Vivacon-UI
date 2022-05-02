@@ -60,7 +60,7 @@ const WriteCaptionTab = (props) => {
                           {item.icon}
                         </Typography>
                         <Typography className="item-label">
-                          {item.label}
+                          {trans(item.label)}
                         </Typography>
                       </MenuItem>
                     );

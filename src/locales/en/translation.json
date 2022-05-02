@@ -48,5 +48,15 @@
         "confirm": "Confirm",
         "no": "No",
         "yes": "Yes"
+    },
+    "privacy": {
+        "public": "Public",
+        "onlyMe": "Only me",
+        "follower": "Follower"
+    },
+    "settingUI": {
+        "profile": "Profile",
+        "setting": "Setting",
+        "logOut": "Log out"
     }
 }

@@ -29,12 +29,14 @@ import FollowUserItem from "components/common/FollowUserItem";
 
 import { useTranslation } from "react-i18next";
 
-const ModalType = {
-  FOLLOWER: "FOLLOWERS",
-  FOLLOWING: "FOLLOWING",
-};
-
 const ProfilePage = (props) => {
+  const { t: trans } = useTranslation();
+
+  const ModalType = {
+    FOLLOWER: trans("profile.followerCount"),
+    FOLLOWING: trans("profile.followingCount"),
+  };
+
   const [username, setUsername] = useState(props.match.params.username);
   const [userProfile, setUserProfile] = useState({});
   const { setLoading } = useLoading();
@@ -56,8 +58,6 @@ const ProfilePage = (props) => {
   });
 
   const history = useHistory();
-
-  const { t: trans } = useTranslation();
 
   //--GET DATA--
   const handleGetProfile = (username) => {

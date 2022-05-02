@@ -48,5 +48,15 @@
         "confirm": "Xác nhận",
         "no": "Không",
         "yes": "Đồng ý"
+    },
+    "privacy": {
+        "public": "Công khai",
+        "onlyMe": "Chỉ mình tôi",
+        "follower": "Người theo dõi"
+    },
+    "settingUI": {
+        "profile": "Thông tin cá nhân",
+        "setting": "Cấu hình",
+        "logOut": "Đăng xuất"
     }
 }

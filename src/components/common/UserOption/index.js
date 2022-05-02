@@ -6,10 +6,13 @@ import { useContext } from "react";
 import { useHistory } from "react-router-dom";
 import { getCurrentUser } from "utils/jwtToken";
 import "./style.scss";
+import { useTranslation } from "react-i18next";
 
 const UserOption = (props) => {
   const Auth = useContext(AuthUser);
   const history = useHistory();
+
+  const { t: trans } = useTranslation();
 
   return (
     <Typography component="div" className="user-option-container">
@@ -25,7 +28,9 @@ const UserOption = (props) => {
                   if (option.name === "Log out") {
                     window.location.href = "/login";
                   } else {
-                    history.push(`${option.navigateUrl}/${getCurrentUser().username}`);
+                    history.push(
+                      `${option.navigateUrl}/${getCurrentUser().username}`
+                    );
                     props.handleClose();
                   }
                 }}
@@ -34,7 +39,7 @@ const UserOption = (props) => {
                   {option.icon}
                 </Typography>
                 <Typography component="div" className="option-name">
-                  {option.name}
+                  {trans(option.name)}
                 </Typography>
               </Typography>
             );
