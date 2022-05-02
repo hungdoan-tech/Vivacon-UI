@@ -7,6 +7,7 @@ import {
 } from "api/postService";
 import { convertUTCtoLocalDate, calculateFromNow } from "utils/calcDateTime";
 import { substringUsername } from "utils/resolveData";
+import CommentInput from "components/common/CommentInput";
 import _ from "lodash";
 
 const CommentList = ({
@@ -96,24 +97,25 @@ const CommentItem = ({ comment, postId }) => {
     open: false,
     data: [],
   });
-  const [childPageNumber, setChildPageNumber] = useState(0);
   const [total, setTotal] = useState(comment.totalChildComments);
+  const [isReply, setReply] = useState({ open: false, hastag: "" });
+  const [submittedComment, setSubmittedComment] = useState({});
 
-  const handleGetChildCommentList = (page) => {
+  const handleGetChildCommentList = (page, limit) => {
+    console.log("data in fetch: ", { page, limit });
     getChildCommentListByPostId({
       postId,
       parentCommentId: comment.id,
       _sort: "createdAt",
       _order: "desc",
-      limit: 3,
+      limit,
       page,
     })
       .then((res) => {
         if (res.status === 200) {
-          console.log({ page });
+          // if(childPageNumber !== 0 ){
           let result;
           if (page > 0) {
-            console.log("page > 0");
             result = [..._.reverse(res.data.content), ...commentChildList.data];
             console.log({ result });
           } else {
@@ -122,7 +124,14 @@ const CommentItem = ({ comment, postId }) => {
           console.log({ result });
           setCommentChildList({
             open: true,
-            data: result,
+            data: result.map((item) => {
+              return {
+                ...item,
+                fromNow: calculateFromNow(
+                  convertUTCtoLocalDate(item.createdAt)
+                ),
+              };
+            }),
           });
         }
       })
@@ -132,31 +141,67 @@ const CommentItem = ({ comment, postId }) => {
   };
 
   const handleToggleCommentChild = () => {
-    if (total === 0) {
+    //Hide child list
+    if (total === 0 && commentChildList.open) {
       setCommentChildList({
         ...commentChildList,
         open: false,
       });
-      setTotal(comment.totalChildComments);
-      setChildPageNumber(0);
+      setTotal(commentChildList.data.length);
     } else {
-      if (
-        total === comment.totalChildComments &&
-        commentChildList.data.length > 0
-      ) {
+      // Show all if the child list is shown before
+      if (total === commentChildList.data.length && !commentChildList.open) {
         setCommentChildList({ ...commentChildList, open: true });
         setTotal(0);
-      } else {
-        handleGetChildCommentList(childPageNumber);
+      }
+      // Show list child by using the page number += 1
+      else {
+        const tempLimit = 3 - (commentChildList.data.length % 3);
+        const newPageNumber = Math.floor(commentChildList.data.length / 3);
+        handleGetChildCommentList(newPageNumber, tempLimit);
+        // const newTotal = (childPageNumber + 1) % 3 - length
+
         setTotal(total - 3 < 0 ? 0 : total - 3);
-        setChildPageNumber(childPageNumber + 1);
       }
     }
   };
 
-  setInterval(() => {
-    setCreatedTime(calculateFromNow(convertUTCtoLocalDate(comment.createdAt)));
-  }, 60000);
+  const handleOpenReplyCmt = (username) => {
+    setReply({ open: true, hastag: `@${username}` });
+  };
+
+  useEffect(() => {
+    console.log('call submit')
+    if (submittedComment.id) {
+      setCommentChildList({
+        open: true,
+        data: [
+          ...commentChildList.data,
+          {
+            ...submittedComment,
+            fromNow: calculateFromNow(
+              convertUTCtoLocalDate(submittedComment.createdAt)
+            ),
+          },
+        ],
+      });
+    }
+  }, [submittedComment]);
+
+  // setInterval(() => {
+  //   setCreatedTime(calculateFromNow(convertUTCtoLocalDate(comment.createdAt)));
+    // if (commentChildList.data.length > 0 && commentChildList.open) {
+    //   setCommentChildList({
+    //     ...commentChildList,
+    //     data: commentChildList.data.map((item) => {
+    //       return {
+    //         ...item,
+    //         fromNow: calculateFromNow(convertUTCtoLocalDate(item.createdAt)),
+    //       };
+    //     }),
+    //   });
+    // }
+  // }, 60000);
   return (
     <Typography className="comment-container">
       <Typography className="comment-content">
@@ -180,7 +225,15 @@ const CommentItem = ({ comment, postId }) => {
             <Typography className="date-time" component="div">
               {createdTime}
             </Typography>
-            <Typography className="reply" component="div">
+            <Typography
+              className="reply"
+              component="div"
+              onClick={() =>
+                handleOpenReplyCmt(
+                  substringUsername(comment.createdBy?.username)
+                )
+              }
+            >
               Reply
             </Typography>
           </Typography>
@@ -221,9 +274,17 @@ const CommentItem = ({ comment, postId }) => {
                 </Typography>
                 <Typography className="content-line2" component="div">
                   <Typography className="date-time" component="div">
-                    {createdTime}
+                    {childCmt.fromNow}
                   </Typography>
-                  <Typography className="reply" component="div">
+                  <Typography
+                    className="reply"
+                    component="div"
+                    onClick={() =>
+                      handleOpenReplyCmt(
+                        substringUsername(childCmt.createdBy?.username)
+                      )
+                    }
+                  >
                     Reply
                   </Typography>
                 </Typography>
@@ -231,6 +292,20 @@ const CommentItem = ({ comment, postId }) => {
             </Typography>
           );
         })}
+      {isReply.open && (
+        <Typography
+          className="comment-input-reply"
+          component="div"
+          align="left"
+        >
+          <CommentInput
+            postId={postId}
+            setSubmittedComment={setSubmittedComment}
+            hastag={isReply.hastag}
+            parentCommentId={comment.id}
+          />
+        </Typography>
+      )}
     </Typography>
   );
 };
