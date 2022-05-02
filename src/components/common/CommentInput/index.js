@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Typography, InputBase, Button } from "@mui/material";
 import CameraAltOutlinedIcon from "@mui/icons-material/CameraAltOutlined";
 import InsertEmoticonOutlinedIcon from "@mui/icons-material/InsertEmoticonOutlined";
@@ -7,7 +7,12 @@ import "./style.scss";
 import { comment } from "api/postService";
 import { useTranslation } from "react-i18next";
 
-const CommentInput = ({ postId, setSubmittedComment }) => {
+const CommentInput = ({
+  postId,
+  setSubmittedComment,
+  hastag,
+  parentCommentId = null,
+}) => {
   const [commentContent, setCommentContent] = useState("");
 
   const { t: trans } = useTranslation();
@@ -19,7 +24,7 @@ const CommentInput = ({ postId, setSubmittedComment }) => {
   const submitComment = () => {
     comment({
       content: commentContent,
-      parentCommentId: null,
+      parentCommentId,
       postId,
     }).then((res) => {
       if (res.status === 200) {

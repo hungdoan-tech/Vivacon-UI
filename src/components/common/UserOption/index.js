@@ -15,7 +15,11 @@ const UserOption = (props) => {
   const { t: trans } = useTranslation();
 
   return (
-    <Typography component="div" className="user-option-container">
+    <Typography
+      component="div"
+      className="user-option-container"
+      style={{ "--optionSize": userOption.length }}
+    >
       <Card>
         <CardContent>
           {userOption.map((option) => {
@@ -28,9 +32,13 @@ const UserOption = (props) => {
                   if (option.name === "Log out") {
                     window.location.href = "/login";
                   } else {
-                    history.push(
-                      `${option.navigateUrl}/${getCurrentUser().username}`
-                    );
+                    if (option.name === "Profile") {
+                      history.push(
+                        `${option.navigateUrl}/${getCurrentUser().username}`
+                      );
+                    } else {
+                      history.push(`${option.navigateUrl}`);
+                    }
                     props.handleClose();
                   }
                 }}

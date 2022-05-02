@@ -74,7 +74,7 @@ const Footer = () => {
         pinterest="fluffy_cats_collections"
         copyright="darkgrey"
         iconColor="darkgrey"
-        backgroundColor="white"
+        backgroundColor="transparent"
         fontColor="darkgrey"
         copyrightColor="darkgrey"
       />

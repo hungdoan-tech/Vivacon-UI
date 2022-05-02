@@ -10,6 +10,7 @@ import {
   removeJwtToken,
   removeRefreshToken,
 } from "utils/cookie";
+import { getCurrentUser } from "utils/jwtToken";
 import classNames from "classnames";
 import { useCookies } from "react-cookie";
 import NotificationSnackbar from "components/common/NotificationSnackbar";
@@ -22,7 +23,10 @@ export const UpdateProfile = createContext();
 
 function App(props) {
   const [openApp, setOpenApp] = useState(false);
-  const [auth, setAuth] = useState(false);
+  const [auth, setAuth] = useState({
+    isLogin: false,
+    isAdmin: true,
+  });
   const [loading, setLoading] = useState(false);
   const [snackbarState, setSnackbarState] = useState({
     open: false,
@@ -38,9 +42,22 @@ function App(props) {
     const token = getJwtToken();
     const refreshToken = getRefreshToken();
     if (token && refreshToken) {
-      return true;
+      if (getCurrentUser().roles.includes("ADMIN")) {
+        return {
+          isLogin: true,
+          isAdmin: true,
+        };
+      } else {
+        return {
+          isLogin: true,
+          isAdmin: false,
+        };
+      }
     } else {
-      return false;
+      return {
+        isLogin: false,
+        isAdmin: false,
+      };
     }
   };
 
@@ -83,7 +100,7 @@ function App(props) {
             <div className="App">
               {openApp ? (
                 <>
-                  {auth && (
+                  {auth.isLogin && (
                     <div className="navbar">
                       <Navbar />
                     </div>

@@ -6,11 +6,12 @@
   }
   &.notFullWidth {
     margin-top: 80px;
-    width: 900px;
+    width: 100%;
   }
 }
 :root {
   font-family: "-apple-system,BlinkMacSystemFont", "Segoe UI", "Roboto",
     "Helvetica", "Arial", "sans-serif" !important;
   font-size: 14px;
+  background-color: rgba(250,250,250 ,1);
 }
