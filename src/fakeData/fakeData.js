@@ -1,6 +1,7 @@
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import SettingsIcon from "@mui/icons-material/Settings";
 import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
+import DashboardIcon from '@mui/icons-material/Dashboard';
 import { removeJwtToken, removeRefreshToken } from "utils/cookie";
 import { useNavigate } from "react-router-dom";
 const notiType = {
@@ -166,6 +167,12 @@ export const userOption = [
     name: "Profile",
     onClickHandle: () => null,
     navigateUrl: "/profile",
+  },
+  {
+    icon: <DashboardIcon />,
+    name: "Dashboard",
+    onClickHandle: () => null,
+    navigateUrl: "/dashboard",
   },
   {
     icon: <SettingsIcon />,

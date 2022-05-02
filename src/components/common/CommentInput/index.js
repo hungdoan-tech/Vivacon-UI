@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Typography, InputBase, Button } from "@mui/material";
 import CameraAltOutlinedIcon from "@mui/icons-material/CameraAltOutlined";
 import InsertEmoticonOutlinedIcon from "@mui/icons-material/InsertEmoticonOutlined";
@@ -6,7 +6,12 @@ import SendIcon from "@mui/icons-material/Send";
 import "./style.scss";
 import { comment } from "api/postService";
 
-const CommentInput = ({ postId, setSubmittedComment }) => {
+const CommentInput = ({
+  postId,
+  setSubmittedComment,
+  hastag,
+  parentCommentId = null,
+}) => {
   const [commentContent, setCommentContent] = useState("");
 
   const handleCaptionChange = (event) => {
@@ -16,12 +21,12 @@ const CommentInput = ({ postId, setSubmittedComment }) => {
   const submitComment = () => {
     comment({
       content: commentContent,
-      parentCommentId: null,
+      parentCommentId,
       postId,
     }).then((res) => {
       if (res.status === 200) {
         setSubmittedComment(res.data);
-        setCommentContent('');
+        setCommentContent("");
       }
     });
   };
