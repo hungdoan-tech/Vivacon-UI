@@ -8,6 +8,7 @@ import {
 import { convertUTCtoLocalDate, calculateFromNow } from "utils/calcDateTime";
 import { substringUsername } from "utils/resolveData";
 import _ from "lodash";
+import { useTranslation } from "react-i18next";
 
 const CommentList = ({
   currentPost,
@@ -17,6 +18,8 @@ const CommentList = ({
   const [commentList, setCommentList] = useState([]);
   const [fetchInfo, setFetchInfo] = useState({});
   const [pageNumber, setPageNumber] = useState(0);
+
+  const { t: trans } = useTranslation();
 
   const handleGetFirstLevelCommentList = (page, postId) => {
     console.log("new fetch");
@@ -77,7 +80,7 @@ const CommentList = ({
           ))}
           {!fetchInfo.last && (
             <Typography className="view-more" onClick={handleViewMore}>
-              View more comments
+              {trans("newFeed.viewMoreComment")}
             </Typography>
           )}
         </Typography>
@@ -98,6 +101,8 @@ const CommentItem = ({ comment, postId }) => {
   });
   const [childPageNumber, setChildPageNumber] = useState(0);
   const [total, setTotal] = useState(comment.totalChildComments);
+
+  const { t: trans } = useTranslation();
 
   const handleGetChildCommentList = (page) => {
     getChildCommentListByPostId({
@@ -181,7 +186,7 @@ const CommentItem = ({ comment, postId }) => {
               {createdTime}
             </Typography>
             <Typography className="reply" component="div">
-              Reply
+              {trans("newFeed.reply")}
             </Typography>
           </Typography>
         </Typography>
@@ -193,8 +198,8 @@ const CommentItem = ({ comment, postId }) => {
           onClick={handleToggleCommentChild}
         >
           {total === 0
-            ? "_____Hide all replies"
-            : `_____View replies (${total})`}
+            ? "_____" + trans("newFeed.hideReply")
+            : `_____${trans("newFeed.viewReply")} (${total})`}
         </Typography>
       )}
       {commentChildList.open &&
@@ -224,7 +229,7 @@ const CommentItem = ({ comment, postId }) => {
                     {createdTime}
                   </Typography>
                   <Typography className="reply" component="div">
-                    Reply
+                    {trans("newFeed.reply")}
                   </Typography>
                 </Typography>
               </Typography>

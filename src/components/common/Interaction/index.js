@@ -7,11 +7,15 @@ import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import "./style.scss";
 import { likePost, unlikePost } from "api/postService";
 
+import { useTranslation } from "react-i18next";
+
 const Interaction = ({ currentPost }) => {
   const { isLiked, id: postId } = currentPost;
   console.log({ currentPost });
   const [like, setLike] = useState(isLiked);
   const [id, setId] = useState(postId);
+
+  const { t: trans } = useTranslation();
 
   useEffect(() => {
     setLike(isLiked);
@@ -55,7 +59,10 @@ const Interaction = ({ currentPost }) => {
         <ShareOutlinedIcon className="share-icon" />
       </Typography>
       <Typography className="number-of-likes" align="left">
-        {currentPost.likeCount} {currentPost.likeCount > 1 ? " likes" : "like"}
+        {currentPost.likeCount}{" "}
+        {currentPost.likeCount > 1
+          ? " " + trans("newFeed.like")
+          : trans("newFeed.like")}
       </Typography>
       <Typography className="post-caption" align="left">
         <strong>{currentPost.createdBy?.username}</strong> {currentPost.caption}

@@ -1,0 +1,38 @@
+{
+    "navbar": {
+        "search": "Search"
+    },
+    "signIn": {
+        "login": "Log in",
+        "userName": "Username",
+        "password": "Password",
+        "haveNoAccount": "Don't have an account?",
+        "register": "Register"
+    },
+    "newFeed": {
+        "like": "like",
+        "addComment": "Add a comment",
+        "post": "Post",
+        "viewMoreComment": "View more comments",
+        "reply": "Reply",
+        "hideReply": "Hide all replies",
+        "viewReply": "View replies"
+    },
+    "profile": {
+        "editInformation": "Edit information",
+        "post": "Post",
+        "followerCount": "Follower",
+        "followingCount": "Following",
+        "follow": "Follow",
+        "unfollow": "Unfollow",
+        "cancel": "Cancel",
+        "message": "Message",
+        "avatar": "Avatar",
+        "emptyPostCaseCaption": "Start capturing and sharing your moments with us",
+        "posts": "POSTS",
+        "avatars": "AVATAR",
+        "followers": "followers",
+        "following": "following",
+        "haveNoPost": "No Posts Yet"
+    }
+}

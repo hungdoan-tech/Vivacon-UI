@@ -1,0 +1,38 @@
+{
+    "navbar": {
+        "search": "Tìm kiếm"
+    },
+    "signIn": {
+        "login": "Đăng nhập",
+        "userName": "Tên tài khoản",
+        "password": "Mật khẩu",
+        "haveNoAccount": "Không có tài khoản?",
+        "register": "Đăng ký"
+    },
+    "newFeed": {
+        "like": " lượt thích",
+        "addComment": "Thêm một bình luận",
+        "post": "Gửi",
+        "viewMoreComment": "Xem thêm nhiều bình luận",
+        "reply": "Phản hồi",
+        "hideReply": "Ẩn hết các phản hồi",
+        "viewReply": "Hiển thị hết các phản hồi"
+    },
+    "profile": {
+        "editInformation": "Sửa thông tin",
+        "post": "Bài viết",
+        "followerCount": "Người theo dõi",
+        "followingCount": "Đang theo dõi",
+        "follow": "Theo dõi",
+        "unfollow": "Bỏ theo dõi",
+        "cancel": "Hủy",
+        "message": "Nhắn tin",
+        "avatar": "Ảnh đại diện",
+        "emptyPostCaseCaption": "Hãy chia sẻ ảnh và các khoảnh khắc của bạn với chúng tôi",
+        "posts": "CÁC BÀI VIẾT",
+        "avatars": "ẢNH ĐẠI DIỆN",
+        "followers": "những người theo dõi",
+        "following": "đang theo dõi",
+        "haveNoPost": "Hiện không có bài viết nào"
+    }
+}

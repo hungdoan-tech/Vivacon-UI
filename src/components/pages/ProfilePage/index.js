@@ -27,6 +27,8 @@ import FollowButton from "components/common/FollowButton";
 import { substringUsername } from "utils/resolveData";
 import FollowUserItem from "components/common/FollowUserItem";
 
+import { useTranslation } from "react-i18next";
+
 const ModalType = {
   FOLLOWER: "FOLLOWERS",
   FOLLOWING: "FOLLOWING",
@@ -54,6 +56,8 @@ const ProfilePage = (props) => {
   });
 
   const history = useHistory();
+
+  const { t: trans } = useTranslation();
 
   //--GET DATA--
   const handleGetProfile = (username) => {
@@ -263,7 +267,7 @@ const ProfilePage = (props) => {
         <Typography component="div" className="unfollow-user-info">
           <img src={userInfo.avatar} width={100} height={100} />
           <Typography className="confirm-question">
-            Unfollow @{userInfo.username}?
+            {trans("profile.unfollow")} @{userInfo.username}?
           </Typography>
         </Typography>
         <Typography component="div" className="action-btns">
@@ -277,10 +281,10 @@ const ProfilePage = (props) => {
               )
             }
           >
-            Unfollow
+            {trans("profile.unfollow")}
           </Button>
           <Button className="cancel-btn" onClick={handleCloseUnfollowModal}>
-            Cancel
+            {trans("profile.cancel")}
           </Button>
         </Typography>
       </Typography>
@@ -316,12 +320,16 @@ const ProfilePage = (props) => {
             <Typography className="action-btns">
               {getCurrentUser().username === userProfile.username ? (
                 <>
-                  <Button className="edit-btn">Edit Profile</Button>
+                  <Button className="edit-btn">
+                    {trans("profile.editInformation")}
+                  </Button>
                   <SettingsIcon className="edit-icon" />
                 </>
               ) : (
                 <>
-                  <Button className="message-btn">Message</Button>
+                  <Button className="message-btn">
+                    {trans("profile.message")}
+                  </Button>
                   <Button
                     className={`${changeFormatByCondition(
                       userProfile.following
@@ -346,7 +354,7 @@ const ProfilePage = (props) => {
                     ) : userProfile.following ? (
                       <CheckIcon className="followed-icon" />
                     ) : (
-                      "Follow"
+                      trans("profile.follow")
                     )}
                   </Button>
                 </>
@@ -365,7 +373,8 @@ const ProfilePage = (props) => {
               className="number-of-container"
             >
               <p className="number">
-                <strong className="label">{userProfile.postCount} </strong>posts
+                <strong className="label">{userProfile.postCount} </strong>{" "}
+                {trans("profile.post")}
               </p>
             </Typography>
             <Typography
@@ -380,7 +389,7 @@ const ProfilePage = (props) => {
             >
               <p className="number">
                 <strong className="label">{userProfile.followerCount} </strong>
-                followers
+                {trans("profile.followerCount")}
               </p>
             </Typography>
             <Typography
@@ -395,7 +404,7 @@ const ProfilePage = (props) => {
             >
               <p className="number">
                 <strong className="label">{userProfile.followingCount} </strong>
-                following
+                {trans("profile.followingCount")}
               </p>
             </Typography>
           </Typography>

@@ -18,6 +18,7 @@ import InfiniteList from "../InfiniteList";
 import PostDetailsModal from "../PostDetailsModal";
 import _ from "lodash";
 import CustomModal from "../CustomModal";
+import { useTranslation } from "react-i18next";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -56,6 +57,8 @@ const UserImagesTabs = (props) => {
   const [value, setValue] = useState(0);
   const [username, setUsername] = useState(props.match.params.username);
   const { setUpdatedItem, updatedItem } = props;
+
+  const { t: trans } = useTranslation();
 
   const [showPostDetailsModal, setShowPostDetailsModal] = useState({
     open: false,
@@ -110,11 +113,17 @@ const UserImagesTabs = (props) => {
           aria-label="basic tabs example"
         >
           <Tab
-            label={renderTabLabel({ icon: AppsIcon, label: "POSTS" })}
+            label={renderTabLabel({
+              icon: AppsIcon,
+              label: `${trans("profile.posts")}`,
+            })}
             {...a11yProps(0)}
           />
           <Tab
-            label={renderTabLabel({ icon: RecentActorsIcon, label: "AVATAR" })}
+            label={renderTabLabel({
+              icon: RecentActorsIcon,
+              label: `${trans("profile.avatars")}`,
+            })}
             {...a11yProps(1)}
           />
         </Tabs>
@@ -130,7 +139,7 @@ const UserImagesTabs = (props) => {
             limit: 9,
           }}
           component={ImageItem}
-          noDataComponent={noDataComponent}
+          noDataComponent={NoDataComponent}
           handleClickItem={handleOpenPostDetailsModal}
         />
         <CustomModal
@@ -203,7 +212,9 @@ const ImagesListContainer = ({ _renderItem }) => {
   );
 };
 
-const noDataComponent = () => {
+const NoDataComponent = () => {
+  const { t: trans } = useTranslation();
+
   return (
     <Typography component="div" className="no-data-container">
       <ImageList
@@ -224,7 +235,7 @@ const noDataComponent = () => {
         ))}
       </ImageList>
       <Typography className="start-post-text">
-        Start capturing and sharing your moments with us.
+        `${trans("profile.emptyPostCaseCaption")}`
       </Typography>
     </Typography>
   );
