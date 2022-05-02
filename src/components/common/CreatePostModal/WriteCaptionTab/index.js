@@ -13,6 +13,7 @@ import "./style.scss";
 import { privacyPostType } from "constant/types";
 import Emoji from "react-emoji-render";
 import { getCurrentUser } from "utils/jwtToken";
+import { useTranslation } from "react-i18next";
 
 const WriteCaptionTab = (props) => {
   const {
@@ -24,6 +25,9 @@ const WriteCaptionTab = (props) => {
     caption,
     privacy,
   } = props;
+
+  const { t: trans } = useTranslation();
+
   return (
     <>
       <Typography
@@ -32,12 +36,7 @@ const WriteCaptionTab = (props) => {
         className="write-caption-container"
       >
         <Typography component="div" align="left" className="owner-container">
-          <img
-            src={getCurrentUser().avatar}
-            width="50"
-            height="50"
-            alt=""
-          />
+          <img src={getCurrentUser().avatar} width="50" height="50" alt="" />
           <Typography align="left" className="right-container">
             <Typography align="left" className="owner-name">
               {getCurrentUser().username}
@@ -73,7 +72,7 @@ const WriteCaptionTab = (props) => {
         </Typography>
         <Typography className="caption-input" component="div">
           <InputBase
-            placeholder="Write a caption..."
+            placeholder={`${trans("createPost.writeCaption")}...`}
             fullWidth={true}
             maxRows={8}
             multiline={true}

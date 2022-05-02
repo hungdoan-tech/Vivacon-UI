@@ -34,5 +34,19 @@
         "followers": "những người theo dõi",
         "following": "đang theo dõi",
         "haveNoPost": "Hiện không có bài viết nào"
+    },
+    "createPost": {
+        "uploadImages": "Tải 1 hoặc nhiều ảnh lên",
+        "edit": "Chỉnh sửa",
+        "writeCaption": "Viết trạng thái",
+        "back": "Quay lại",
+        "next": "Kế tiếp",
+        "createNewPost": "Tạo bài viết mới",
+        "selectImage": "Vui lòng chọn ảnh từ máy tính của bạn",
+        "text": "Đoạn văn bản",
+        "deleteImage": "Bạn có chắc chắn muốn xóa các ảnh này?",
+        "confirm": "Xác nhận",
+        "no": "Không",
+        "yes": "Đồng ý"
     }
 }

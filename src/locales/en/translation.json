@@ -34,5 +34,19 @@
         "followers": "followers",
         "following": "following",
         "haveNoPost": "No Posts Yet"
+    },
+    "createPost": {
+        "uploadImages": "Upload image(s)",
+        "edit": "Edit",
+        "writeCaption": "Write caption",
+        "back": "Back",
+        "next": "Next",
+        "createNewPost": "Create new post",
+        "selectImage": "Select image from computer",
+        "text": "Text",
+        "deleteImage": "This action can delete all images on draft. Are you sure?",
+        "confirm": "Confirm",
+        "no": "No",
+        "yes": "Yes"
     }
 }
