@@ -3,7 +3,7 @@
     display: flex;
     flex-direction: row;
     margin: 10px 0;
-    position: relative;
+    // position: relative;
     padding: 0 20px;
     .follow-avatar {
       width: 15%;
@@ -11,7 +11,7 @@
         width: 35px;
         height: 35px;
         border-radius: 35px;
-        position: relative;
+        // position: relative;
         img {
           border-radius: 35px;
           margin: auto;
@@ -24,7 +24,7 @@
       margin-left: 10px;
       cursor: pointer;
       .username-container {
-        position: relative;
+        // position: relative;
         width: fit-content;
       }
       .username,

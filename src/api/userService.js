@@ -15,12 +15,34 @@ export const getProfile = async (username, data) => {
   });
 };
 
-export const getFollowingUsersById = async (account) => {
-  return await axiosConfig.get(`${API_ENDPOINT_KEYS.FOLLOWING}/${account}`);
+export const getFollowingUsersById = async (data) => {
+  const { _sort, limit, _order } = data;
+  return await axiosConfig.get(
+    `${API_ENDPOINT_KEYS.FOLLOWING}/${data.account}`,
+    {
+      params: {
+        _sort,
+        _order,
+        limit,
+        page: data.page,
+      },
+    }
+  );
 };
 
-export const getFollowersById = async (account) => {
-  return await axiosConfig.get(`${API_ENDPOINT_KEYS.FOLLOWER}/${account}`);
+export const getFollowersById = async (data) => {
+  const { _sort, limit, _order } = data;
+  return await axiosConfig.get(
+    `${API_ENDPOINT_KEYS.FOLLOWER}/${data.account}`,
+    {
+      params: {
+        _sort,
+        _order,
+        limit,
+        page: data.page,
+      },
+    }
+  );
 };
 
 export const unfollowUserById = async (account) => {

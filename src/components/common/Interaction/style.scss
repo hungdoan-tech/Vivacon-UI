@@ -20,6 +20,10 @@
   font-size: 14px;
   font-weight: 900 !important;
   margin: 8px 0 !important;
+  cursor: pointer;
+  &:hover {
+    text-decoration: underline;
+  }
 }
 .post-caption {
   display: -webkit-box;
@@ -27,4 +31,13 @@
   -webkit-box-orient: vertical;
   overflow: hidden;
   // margin: 10px 0 !important;
+}
+.follow-container {
+  .view-more {
+    margin-bottom: 10px;
+    cursor: pointer;
+    &:hover {
+      text-decoration: underline;
+    }
+  }
 }

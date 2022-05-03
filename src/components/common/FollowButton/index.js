@@ -16,7 +16,6 @@ import "./style.scss";
 import useUpdateProfile from "hooks/useUpdateProfile";
 
 const FollowButton = (props) => {
-  console.log(props);
   const {
     userProfile,
     following,
@@ -139,9 +138,10 @@ const FollowButton = (props) => {
         width={400}
         height={300}
         open={unfollowModal.open}
-        component={() => renderUnfollowModal()}
         handleCloseModal={handleCloseUnfollowModal}
-      />
+      >
+        {renderUnfollowModal()}
+      </CustomModal>
     </Typography>
   );
 };

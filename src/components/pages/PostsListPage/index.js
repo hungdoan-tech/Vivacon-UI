@@ -51,18 +51,17 @@ const PostsListPage = () => {
       />
       <CustomModal
         open={showPostDetailsModal.open}
-        component={() => (
-          <PostDetailsModal
-            index={showPostDetailsModal.index}
-            dataList={showPostDetailsModal.dataList}
-            setUpdatedItem={() => null}
-          />
-        )}
         title={_.startCase(_.toLower(""))}
         handleCloseModal={handleCloseOpenPostDetailsModal}
         width={1200}
         height={800}
-      />
+      >
+        <PostDetailsModal
+          index={showPostDetailsModal.index}
+          dataList={showPostDetailsModal.dataList}
+          setUpdatedItem={() => null}
+        />
+      </CustomModal>
     </>
   );
 };
