@@ -1,25 +1,103 @@
 .sended-comments-container {
-    .comment-container {
+  height: 100%;
+  width: 100%;
+  overflow: auto;
+  .comment-container {
+    display: flex;
+    margin-bottom: 10px;
+    flex-direction: column;
+    .comment-content {
+      &.child {
+        margin-left: 50px;
+      }
       margin: 10px 0;
       display: flex;
+      flex-direction: row;
       vertical-align: middle;
+      gap: 5px;
       img {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
         border-radius: 100px;
         border: solid 0.5px var(--lightColor);
       }
       .content {
-        position: relative;
-        margin: 0 10px;
-        max-width: 60%;
-        padding: 0 20px;
-        background-color: var(--lightColor);
-        border-radius: 20px;
-        height: 100%;
-        padding: 10px;
+        text-align: left;
+        margin-left: 10px;
+
+        .content-line1 {
+        }
+        .content-line2 {
+          display: flex;
+          flex-direction: row;
+          gap: 10px;
+          .date-time {
+            color: var(--defaultColor) !important;
+          }
+          .reply {
+            cursor: pointer;
+            color: var(--defaultColor) !important;
+            &:hover {
+              text-decoration: underline;
+            }
+          }
+          .option {
+            height: 1em;
+            opacity: 0.5;
+            cursor: pointer;
+            &:hover {
+              opacity: 1;
+            }
+          }
+        }
       }
     }
-    .view-more{
-        margin-left: 10px;
-        font-size: 14px;
+    .view-child {
+      margin-left: 50px;
+      cursor: pointer;
+      color: var(--defaultColor) !important;
+    }
+    .comment-input-reply {
+      margin-left: 50px !important;
     }
   }
+  .view-more {
+    margin-left: 10px;
+    font-size: 14px;
+    text-decoration: underline;
+    cursor: pointer !important;
+  }
+}
+
+.comment-option-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+  overflow: hidden;
+  .action-btns {
+    display: flex;
+    flex-flow: column;
+    .delete-btn,
+    .report-btn {
+      text-transform: capitalize;
+      background-color: transparent;
+      color: rgb(237, 73, 86);
+      font-weight: 600;
+      padding: 10px;
+      border-top: 0.25px solid var(--lightColor);
+      width: 100%;
+      height: 50px;
+    }
+    .cancel-btn {
+      text-transform: capitalize;
+      background-color: transparent;
+      color: var(--charColor);
+      border-top: 0.25px solid var(--lightColor);
+      padding: 10px;
+      width: 100%;
+      height: 50px;
+    }
+  }
+}

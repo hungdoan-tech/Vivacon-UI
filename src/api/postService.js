@@ -35,6 +35,67 @@ export const getPostDetail = async (data) => {
   });
 };
 
+export const likePost = async (id) => {
+  return await axiosConfig.post(`${API_ENDPOINT_KEYS.LIKE}/${id}`);
+};
+
+export const unlikePost = async (id) => {
+  return await axiosConfig.delete(`${API_ENDPOINT_KEYS.LIKE}/${id}`);
+};
+
+export const getFirstLevelCommentListByPostId = async (data) => {
+  const { _sort, limit, _order, page } = data;
+  return await axiosConfig.get(
+    `${API_ENDPOINT_KEYS.POST}/${data.id}/first-level-comment`,
+    {
+      params: {
+        _sort,
+        _order,
+        limit,
+        page,
+      },
+    }
+  );
+};
+
+export const getChildCommentListByPostId = async (data) => {
+  const { _sort, limit, _order, page } = data;
+  return await axiosConfig.get(
+    `${API_ENDPOINT_KEYS.POST}/${data.postId}/comment/${data.parentCommentId}/child-comment`,
+    {
+      params: {
+        _sort,
+        _order,
+        limit,
+        page,
+      },
+    }
+  );
+};
+
+export const comment = async (data) => {
+  return await axiosConfig.post(`${API_ENDPOINT_KEYS.COMMENT}`, data);
+};
+
+export const deleteComment = async (id) => {
+  return await axiosConfig.delete(`${API_ENDPOINT_KEYS.COMMENT}/${id}`);
+};
+
+export const getLikeListByPostId = async (data) => {
+  const { _sort, limit, _order, page } = data;
+  return await axiosConfig.get(
+    `${API_ENDPOINT_KEYS.LIKE}/post/${data.postId}`,
+    {
+      params: {
+        _sort,
+        _order,
+        limit,
+        page,
+      },
+    }
+  );
+};
+
 export const getNewFeed = async (data) => {
   const { limit, page } = data;
   return await axiosConfig.get(`${API_ENDPOINT_KEYS.NEWFEED}`, {

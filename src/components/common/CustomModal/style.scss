@@ -15,12 +15,12 @@
     background-color: var(--backgroundColor);
     max-width: var(--modalWidth);
     max-height: var(--modalHeight);
-    width: 85%;
-    height: 85%;
+    width: 100%;
+    height: 100%;
     vertical-align: middle;
     text-align: center;
     border-radius: var(--radius) !important;
-    overflow:visible;
+    overflow: hidden;
     animation: appearCustomModal 0.5s;
     .MuiCardContent-root {
       padding: 0;

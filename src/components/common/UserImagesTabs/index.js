@@ -55,7 +55,7 @@ function a11yProps(index) {
 const UserImagesTabs = (props) => {
   const [value, setValue] = useState(0);
   const [username, setUsername] = useState(props.match.params.username);
-  const { setUpdatedItem, updatedItem } = props;
+  const { handleUpdateProfile } = props;
 
   const [showPostDetailsModal, setShowPostDetailsModal] = useState({
     open: false,
@@ -78,6 +78,7 @@ const UserImagesTabs = (props) => {
       index: -1,
       dataLength: 0,
     });
+    handleUpdateProfile();
   };
   // const { username } = props.match.params;
 
@@ -135,20 +136,17 @@ const UserImagesTabs = (props) => {
         />
         <CustomModal
           open={showPostDetailsModal.open}
-          component={() => (
-            <PostDetailsModal
-              index={showPostDetailsModal.index}
-              item={showPostDetailsModal.item}
-              dataList={showPostDetailsModal.dataList}
-              setUpdatedItem={setUpdatedItem}
-              updatedItem={updatedItem}
-            />
-          )}
           title={_.startCase(_.toLower(""))}
           handleCloseModal={handleCloseOpenPostDetailsModal}
-          width={1500}
+          width={1200}
           height={800}
-        />
+        >
+          <PostDetailsModal
+            index={showPostDetailsModal.index}
+            item={showPostDetailsModal.item}
+            dataList={showPostDetailsModal.dataList}
+          />
+        </CustomModal>
       </TabPanel>
       <TabPanel value={value} index={1}>
         Item Two

@@ -16,19 +16,24 @@ import "./style.scss";
 import useUpdateProfile from "hooks/useUpdateProfile";
 
 const FollowButton = (props) => {
-  console.log(props);
-  const { userProfile, follow, setUpdatedItem, inPopUp = false } = props;
+  const {
+    userProfile,
+    following,
+    isFollowing,
+    setFollowing,
+    inPopUp = false,
+  } = props;
   const [isLocalLoading, setLocalLoading] = useState(false);
   const [unfollowModal, setUnfollowModal] = useState({
     open: false,
     data: {},
   });
-  const [isFollowing, setFollowing] = useState(follow);
+  // const [isFollowing, setFollowing] = useState(follow);
 
-  useEffect(() => {
-    console.log("follow change", follow);
-    setFollowing(follow);
-  }, [follow]);
+  // useEffect(() => {
+  //   console.log("follow change", follow);
+  //   setFollowing(follow);
+  // }, [follow]);
 
   const changeFormatByCondition = (condition) => {
     const followedButtonColor = classNames("followed-btn", {
@@ -51,7 +56,7 @@ const FollowButton = (props) => {
       .then((res) => {
         if (res.status === 200) {
           setFollowing(true);
-          setUpdatedItem({ id, following: true, inPopUp });
+          // setUpdatedItem({ id, following: true, inPopUp });
         }
       })
       .catch((err) => {
@@ -73,7 +78,7 @@ const FollowButton = (props) => {
       .then((res) => {
         if (res.status === 200) {
           setFollowing(false);
-          setUpdatedItem({ id, following: false, inPopUp });
+          // setUpdatedItem({ id, following: false, inPopUp });
         }
       })
       .catch((err) => {
@@ -133,9 +138,10 @@ const FollowButton = (props) => {
         width={400}
         height={300}
         open={unfollowModal.open}
-        component={() => renderUnfollowModal()}
         handleCloseModal={handleCloseUnfollowModal}
-      />
+      >
+        {renderUnfollowModal()}
+      </CustomModal>
     </Typography>
   );
 };

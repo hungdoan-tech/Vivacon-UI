@@ -5,7 +5,7 @@
   border: solid 0.25px var(--lightColor);
   border-radius: 5px;
   width: 150px;
-  height: 150px;
+  height: calc(var(--optionSize) * 50);
   overflow: auto;
   animation-name: appearUserOption;
   animation-duration: 0.2s;

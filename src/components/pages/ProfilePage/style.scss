@@ -1,5 +1,7 @@
 .profile-container {
+  margin: auto !important;
   margin-top: 100px !important;
+  width: 900px !important;
   .info-container {
     margin-bottom: 40px !important;
     display: flex;
@@ -80,50 +82,8 @@
 .custom-modal-container {
   .follow-container {
     width: 100%;
-    .follow-item {
-      display: flex;
-      flex-direction: row;
-      margin: 10px 0;
-      position: relative;
-      padding: 0 20px;
-      .follow-avatar {
-        width: 15%;
-        .avatar-container {
-          width: 35px;
-          height: 35px;
-          border-radius: 35px;
-          position: relative;
-          img {
-            border-radius: 35px;
-            margin: auto;
-          }
-        }
-      }
-      .follow-name {
-        width: 60%;
-        text-align: left;
-        margin-left: 10px;
-        cursor: pointer;
-        .username-container {
-          position: relative;
-          width: fit-content;
-        }
-        .username,
-        .fullName {
-          font-size: 14px;
-          width: fit-content;
-        }
-        .username {
-          font-weight: 900;
-          &:hover {
-            text-decoration: underline;
-          }
-        }
-        .fullName {
-          color: var(--defaultColor);
-        }
-      }
-    }
+    height: 350px;
+    overflow-y: auto;
   }
 
   .unfollow-container {
@@ -224,7 +184,7 @@
         flex-direction: row;
         justify-content: space-around;
         margin-top: 5px;
-        .message-btn{
+        .message-btn {
           margin-left: 20px;
           margin-right: 20px;
           text-transform: capitalize;
