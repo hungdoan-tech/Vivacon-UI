@@ -1,6 +1,6 @@
 import { Typography, Button } from "@mui/material";
 import { getProfile } from "api/userService";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useHistory } from "react-router-dom";
 import { getCurrentUser } from "utils/jwtToken";
 import { substringUsername } from "utils/resolveData";
@@ -12,42 +12,37 @@ import { useTranslation } from "react-i18next";
 
 const FollowUserItem = (props) => {
   const { handleCloseModal, user } = props;
-  const [showPopUp, setShowPopUp] = useState({
-    open: false,
-    id: -1,
-    showInImage: false,
-  });
-  const [isFollowing, setFollowing] = useState(user.isFollowing);
+  const [showPopUp, setShowPopUp] = useState(false);
+  const [isFollowing, setFollowing] = useState(
+    user.isFollowing || user.following
+  );
   const [userInfo, setUserInfo] = useState({});
   const [localLoading, setLocalLoading] = useState(true);
+  const [isUpdated, setIsUpdated] = useState(false);
+  const positionRef = useRef();
 
   const history = useHistory();
   const navigateToUser = (username) => {
     handleCloseModal();
     history.push(`/profile/${username}`);
   };
-  const handleOpenPopUp = (user, showInImage) => {
-    if (showPopUp.open === true && showPopUp.id !== user.id) {
-      handleClosePopUp();
+  const handleOpenPopUp = () => {
+    if (!userInfo.id) {
+      handleGetProfile(user.username);
     }
-    setShowPopUp({
-      open: true,
-      id: user.id,
-      showInImage,
-    });
-    handleGetProfile(user.username);
+    setShowPopUp(true);
   };
 
   const handleClosePopUp = () => {
-    setShowPopUp({
-      open: false,
-      id: -1,
-    });
+    setShowPopUp(false);
+    if (isUpdated) {
+      handleUpdateMiniProfile();
+    }
   };
 
   const handleGetProfile = (username) => {
     setLocalLoading(true);
-    getProfile(user.username, { limit: 3 })
+    getProfile(username, { limit: 3 })
       .then((res) => {
         if (res.status === 200) {
           setUserInfo(res.data);
@@ -60,20 +55,16 @@ const FollowUserItem = (props) => {
         setLocalLoading(false);
       });
   };
-  useEffect(() => {
+
+  const handleUpdateMiniProfile = () => {
     handleGetProfile(user.username);
-  }, []);
+  };
 
   return (
     <Typography component="div" className="follow-item-container">
       <Typography component="div" className="follow-item">
         <Typography component="div" className="follow-avatar">
-          <Typography
-            component="div"
-            onMouseEnter={() => handleOpenPopUp(user, true)}
-            onMouseLeave={handleClosePopUp}
-            className="avatar-container"
-          >
+          <Typography component="div" className="avatar-container">
             <img src={user.avatar} width={35} height={35} />
           </Typography>
         </Typography>
@@ -81,15 +72,32 @@ const FollowUserItem = (props) => {
           <Typography
             className="username-container"
             component="div"
-            onMouseEnter={() => handleOpenPopUp(user, false)}
-            // onMouseLeave={handleClosePopUp}
+            onMouseEnter={handleOpenPopUp}
+            onMouseLeave={handleClosePopUp}
           >
             <Typography
               className="username"
               onClick={() => navigateToUser(user.username)}
+              ref={positionRef}
             >
               {substringUsername(user.username)}
             </Typography>
+
+            {showPopUp && (
+              <CustomPopUp
+                width={390}
+                height={350}
+                positionRef={positionRef.current?.getBoundingClientRect()}
+              >
+                <PopUpContent
+                  userInfo={userInfo}
+                  isFollowing={isFollowing}
+                  setFollowing={setFollowing}
+                  localLoading={localLoading}
+                  setIsUpdated={setIsUpdated}
+                />
+              </CustomPopUp>
+            )}
           </Typography>
           <Typography className="fullName">{user.fullName}</Typography>
         </Typography>
@@ -101,20 +109,6 @@ const FollowUserItem = (props) => {
           />
         )}
       </Typography>
-      {showPopUp.open && showPopUp.id && !showPopUp.showInImage && (
-        <CustomPopUp
-          width={390}
-          height={350}
-          component={() => (
-            <PopUpContent
-              userInfo={userInfo}
-              isFollowing={isFollowing}
-              setFollowing={setFollowing}
-              localLoading={localLoading}
-            />
-          )}
-        />
-      )}
     </Typography>
   );
 };
@@ -124,8 +118,30 @@ export const PopUpContent = ({
   isFollowing,
   setFollowing,
   localLoading,
+  setIsUpdated,
 }) => {
   const { t: trans } = useTranslation();
+  const [followerCount, setFollowerCount] = useState(userInfo.followerCount);
+  const [initialFollowerState, setInitialFollowerState] = useState(isFollowing);
+
+  useEffect(() => {
+    setFollowerCount(userInfo.followerCount);
+    setInitialFollowerState(isFollowing);
+  }, [userInfo]);
+
+  useEffect(() => {
+    if (initialFollowerState !== isFollowing) {
+      if (isFollowing) {
+        setFollowerCount(followerCount + 1);
+      } else {
+        setFollowerCount(followerCount - 1);
+      }
+      setIsUpdated(true);
+    } else {
+      setFollowerCount(userInfo.followerCount);
+      setIsUpdated(false);
+    }
+  }, [isFollowing]);
 
   return (
     !localLoading && (
@@ -158,7 +174,7 @@ export const PopUpContent = ({
             className="number-of-container"
           >
             <p className="number">
-              <strong>{userInfo.followerCount || 0} </strong>
+              <strong>{followerCount || 0} </strong>
               <div className="label">{trans("profile.followers")}</div>
             </p>
           </Typography>

@@ -42,6 +42,14 @@
               text-decoration: underline;
             }
           }
+          .option {
+            height: 1em;
+            opacity: 0.5;
+            cursor: pointer;
+            &:hover {
+              opacity: 1;
+            }
+          }
         }
       }
     }
@@ -59,5 +67,37 @@
     font-size: 14px;
     text-decoration: underline;
     cursor: pointer !important;
+  }
+}
+
+.comment-option-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+  overflow: hidden;
+  .action-btns {
+    display: flex;
+    flex-flow: column;
+    .delete-btn,
+    .report-btn {
+      text-transform: capitalize;
+      background-color: transparent;
+      color: rgb(237, 73, 86);
+      font-weight: 600;
+      padding: 10px;
+      border-top: 0.25px solid var(--lightColor);
+      width: 100%;
+      height: 50px;
+    }
+    .cancel-btn {
+      text-transform: capitalize;
+      background-color: transparent;
+      color: var(--charColor);
+      border-top: 0.25px solid var(--lightColor);
+      padding: 10px;
+      width: 100%;
+      height: 50px;
+    }
   }
 }

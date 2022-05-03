@@ -16,7 +16,7 @@ import { useHistory } from "react-router-dom";
 import CustomPopUp from "../CustomPopUp";
 import { PopUpContent } from "components/pages/ProfilePage";
 
-const PostDetailsModal = ({ index, dataList, setUpdatedItem }) => {
+const PostDetailsModal = ({ index, dataList }) => {
   const [currentIndex, setCurrentIndex] = useState(index);
   const [currentPost, setCurrentPost] = useState({});
   const [showPopUp, setShowPopUp] = useState({
@@ -59,7 +59,6 @@ const PostDetailsModal = ({ index, dataList, setUpdatedItem }) => {
       open: false,
       id: -1,
     });
-    setUpdatedItem({});
   };
 
   useEffect(() => {
