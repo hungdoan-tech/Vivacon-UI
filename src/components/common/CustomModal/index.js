@@ -10,15 +10,16 @@ import {
 import "./style.scss";
 
 const CustomModal = ({
-  component: Component,
   title,
   open,
   handleCloseModal,
   width,
   height,
   isRadius = false,
+  children
 }) => {
   const [modalWidth, setModalWidth] = useState(0);
+  console.log({children})
   return (
     <Modal
       open={open}
@@ -41,7 +42,7 @@ const CustomModal = ({
               </AppBar>
             )}
           </Box>
-          <Component />
+          {children}
         </CardContent>
       </Card>
     </Modal>

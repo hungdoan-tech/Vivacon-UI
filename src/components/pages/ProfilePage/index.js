@@ -40,20 +40,19 @@ const ProfilePage = (props) => {
   const [showModal, setShowModal] = useState({
     open: false,
     type: ModalType.FOLLOWER,
-    data: {},
+    data: [],
   });
   const [unfollowModal, setUnfollowModal] = useState({
     open: false,
     data: {},
   });
-  const [isUpdated, setUpdated] = useState(false);
-  const [updatedItem, setUpdatedItem] = useState({});
   const [isLocalLoading, setLocalLoading] = useState({
     status: false,
     index: -1,
   });
-
-  const history = useHistory();
+  const [pageNumber, setPageNumber] = useState(0);
+  const [currentModalType, setCurrentModalType] = useState(null);
+  const [fetchInfo, setFetchInfo] = useState({});
 
   //--GET DATA--
   const handleGetProfile = (username) => {
@@ -74,14 +73,28 @@ const ProfilePage = (props) => {
 
   const handleGetFollowingUsers = (id) => {
     setLoading(true);
-    getFollowingUsersById(id)
+    getFollowingUsersById({
+      account: id,
+      // _order: "desc",
+      limit: 15,
+      page: pageNumber,
+    })
       .then((res) => {
         if (res.status === 200) {
-          setShowModal({
-            open: true,
-            type: ModalType.FOLLOWING,
-            data: res.data,
-          });
+          if (pageNumber > 0) {
+            setShowModal({
+              open: true,
+              type: ModalType.FOLLOWING,
+              data: [...showModal.data, ...res.data.content],
+            });
+          } else {
+            setShowModal({
+              open: true,
+              type: ModalType.FOLLOWING,
+              data: [...res.data.content],
+            });
+          }
+          setFetchInfo(res.data);
         }
       })
       .catch((err) => {
@@ -94,14 +107,28 @@ const ProfilePage = (props) => {
 
   const handleGetFollowers = (id) => {
     setLoading(true);
-    getFollowersById(id)
+    getFollowersById({
+      account: id,
+      // _order: "desc",
+      limit: 15,
+      page: pageNumber,
+    })
       .then((res) => {
         if (res.status === 200) {
-          setShowModal({
-            open: true,
-            type: ModalType.FOLLOWER,
-            data: res.data,
-          });
+          if (pageNumber > 0) {
+            setShowModal({
+              open: true,
+              type: ModalType.FOLLOWER,
+              data: [...showModal.data, ...res.data.content],
+            });
+          } else {
+            setShowModal({
+              open: true,
+              type: ModalType.FOLLOWER,
+              data: [...res.data.content],
+            });
+          }
+          setFetchInfo(res.data);
         }
       })
       .catch((err) => {
@@ -123,9 +150,7 @@ const ProfilePage = (props) => {
             open: true,
             content: `Unfollowed @${username}`,
             type: "SUCCESS",
-          });
-          setUpdated(true);
-        }
+          });        }
       })
       .catch((err) => {
         throw err;
@@ -136,7 +161,6 @@ const ProfilePage = (props) => {
   };
 
   const handleFollowUser = (id, username, index) => {
-    const { content } = showModal.data;
     setLocalLoading({ status: true, index });
     followUserById(id)
       .then((res) => {
@@ -146,7 +170,6 @@ const ProfilePage = (props) => {
             content: `Followed @${username}`,
             type: "SUCCESS",
           });
-          setUpdated(true);
         }
       })
       .catch((err) => {
@@ -156,51 +179,6 @@ const ProfilePage = (props) => {
         // setLocalLoading(false);
       });
   };
-
-  useEffect(() => {
-    if (updatedItem.id) {
-      if (userProfile.id === updatedItem.id) {
-        setUserProfile({
-          ...userProfile,
-          following: updatedItem.following,
-          followerCount: updatedItem.following
-            ? userProfile.followerCount + 1
-            : userProfile.followerCount - 1,
-        });
-      } else {
-        setUserProfile({
-          ...userProfile,
-          followingCount: updatedItem.following
-            ? userProfile.followingCount + 1
-            : userProfile.followingCount - 1,
-        });
-      }
-      if (showModal.data.content) {
-        const { content } = showModal.data;
-        const filteredFollowingUser = content.filter(
-          (item) => item.id === updatedItem.id
-        );
-        const index = content.indexOf(filteredFollowingUser[0]);
-        content[index].isFollowing = updatedItem.following;
-
-        setShowModal({
-          ...showModal,
-          data: {
-            ...showModal.data,
-            content: [...content],
-          },
-        });
-      }
-    }
-    console.log("resetUpdate");
-  }, [updatedItem]);
-
-  useEffect(() => {
-    if (isUpdated) {
-      handleGetProfile(username);
-      setUpdated(false);
-    }
-  }, [isUpdated]);
 
   useEffect(() => {
     setUsername(props.match.params.username);
@@ -218,7 +196,7 @@ const ProfilePage = (props) => {
 
   useEffect(() => {
     if (showModal.open) {
-      const { content } = showModal.data;
+      const content = showModal.data;
       const { type } = showModal;
       if (content.length === 0 && type === ModalType.FOLLOWING) {
         handleCloseModal();
@@ -230,18 +208,30 @@ const ProfilePage = (props) => {
     handleGetProfile(props.match.params.username);
   }, [props.match.params.username]);
 
-  const handleOpenModal = (type) => {
-    if (type === ModalType.FOLLOWER) {
+  useEffect(() => {
+    console.log("open");
+    if (currentModalType === ModalType.FOLLOWER) {
       handleGetFollowers(userProfile.id);
     }
-    if (type === ModalType.FOLLOWING) {
+    if (currentModalType === ModalType.FOLLOWING) {
       handleGetFollowingUsers(userProfile.id);
     }
+  }, [pageNumber, currentModalType]);
+
+  const handleOpenModal = (type) => {
+    setCurrentModalType(type);
   };
 
   const handleCloseModal = () => {
-    setShowModal({ ...showModal, open: false });
+    setShowModal({ ...showModal, data: [], open: false });
+    setPageNumber(0)
+    setCurrentModalType(null);
+    handleUpdateProfile();
   };
+
+  const handleUpdateProfile = () => {
+    handleGetProfile(props.match.params.username);
+  }
 
   const handleOpenUnfollowModal = (userInfo) => {
     setUnfollowModal({
@@ -254,9 +244,13 @@ const ProfilePage = (props) => {
     setUnfollowModal({ ...unfollowModal, open: false });
   };
 
+  const handleViewMore = () => {
+    setPageNumber(pageNumber + 1);
+  };
+
   const renderUnfollowModal = () => {
     const userInfo = unfollowModal.data;
-    const { content } = showModal.data;
+    const content = showModal.data;
 
     return (
       <Typography component="div" className="unfollow-container">
@@ -413,49 +407,38 @@ const ProfilePage = (props) => {
       </Typography>
       <UserImagesTabs
         username={username}
-        setUpdatedItem={setUpdatedItem}
-        updatedItem={updatedItem}
+        handleUpdateProfile={handleUpdateProfile}
       />
       <CustomModal
         isRadius
         open={showModal.open}
-        component={() => (
-          <Typography component="div" className="follow-container">
-            {showModal.data.content.map((user) => {
-              return <FollowUserItem user={user} />;
-            })}
-          </Typography>
-        )}
         title={_.startCase(_.toLower(showModal.type))}
         handleCloseModal={handleCloseModal}
         width={400}
         height={400}
-      />
+      >
+        <Typography component="div" className="follow-container">
+          {showModal.data?.map((user) => {
+            return <FollowUserItem user={user} handleCloseModal={handleCloseModal} key={user.id}/>;
+          })}
+          {!fetchInfo.last && (
+            <Typography className="view-more" onClick={handleViewMore}>
+              View more
+            </Typography>
+          )}
+        </Typography>
+      </CustomModal>
       <CustomModal
         isRadius
         width={400}
         height={300}
         open={unfollowModal.open}
-        component={() => renderUnfollowModal()}
         handleCloseModal={handleCloseUnfollowModal}
-      />
+      >
+        {renderUnfollowModal()}
+      </CustomModal>
     </Typography>
   );
 };
-
-// const FollowUsers = (props) => {
-
-//   return (
-//     <>
-//       <Typography component="div" className="follow-container">
-//         {content.map((user) => {
-//           return (
-//             <></>
-//           );
-//         })}
-//       </Typography>
-//     </>
-//   );
-// };
 
 export default withRouter(ProfilePage);
