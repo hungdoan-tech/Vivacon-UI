@@ -23,7 +23,7 @@ const FollowUserItem = (props) => {
 
   const history = useHistory();
   const navigateToUser = (username) => {
-    handleCloseModal();
+    handleCloseModal(false);
     history.push(`/profile/${username}`);
   };
   const handleOpenPopUp = () => {

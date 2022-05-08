@@ -7,7 +7,8 @@
         "userName": "Username",
         "password": "Password",
         "haveNoAccount": "Don't have an account?",
-        "register": "Register"
+        "register": "Register",
+        "loginSuccessful": "Login successfully"
     },
     "newFeed": {
         "like": "like",
@@ -47,7 +48,8 @@
         "deleteImage": "This action can delete all images on draft. Are you sure?",
         "confirm": "Confirm",
         "no": "No",
-        "yes": "Yes"
+        "yes": "Yes",
+        "successfully": "Create a post successfully"
     },
     "privacy": {
         "public": "Public",
@@ -58,5 +60,8 @@
         "profile": "Profile",
         "setting": "Setting",
         "logOut": "Log out"
+    },
+    "dashboard": {
+        "dashboard": "Dashboard"
     }
 }

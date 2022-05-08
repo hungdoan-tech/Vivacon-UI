@@ -29,10 +29,10 @@ const UserOption = (props) => {
                 className="user-option-item"
                 onClick={() => {
                   option.onClickHandle();
-                  if (option.name === "Log out") {
+                  if (option.name === "settingUI.logOut") {
                     window.location.href = "/login";
                   } else {
-                    if (option.name === "Profile") {
+                    if (option.name === "settingUI.profile") {
                       history.push(
                         `${option.navigateUrl}/${getCurrentUser().username}`
                       );

@@ -154,7 +154,8 @@ const ProfilePage = (props) => {
             open: true,
             content: `Unfollowed @${username}`,
             type: "SUCCESS",
-          });        }
+          });
+        }
       })
       .catch((err) => {
         throw err;
@@ -203,7 +204,7 @@ const ProfilePage = (props) => {
       const content = showModal.data;
       const { type } = showModal;
       if (content.length === 0 && type === ModalType.FOLLOWING) {
-        handleCloseModal();
+        handleCloseModal(true);
       }
     }
   }, [showModal]);
@@ -226,16 +227,18 @@ const ProfilePage = (props) => {
     setCurrentModalType(type);
   };
 
-  const handleCloseModal = () => {
+  const handleCloseModal = (isUpdate) => {
     setShowModal({ ...showModal, data: [], open: false });
-    setPageNumber(0)
+    setPageNumber(0);
     setCurrentModalType(null);
-    handleUpdateProfile();
+    if (isUpdate) {
+      handleUpdateProfile();
+    }
   };
 
   const handleUpdateProfile = () => {
     handleGetProfile(props.match.params.username);
-  }
+  };
 
   const handleOpenUnfollowModal = (userInfo) => {
     setUnfollowModal({
@@ -428,7 +431,13 @@ const ProfilePage = (props) => {
       >
         <Typography component="div" className="follow-container">
           {showModal.data?.map((user) => {
-            return <FollowUserItem user={user} handleCloseModal={handleCloseModal} key={user.id}/>;
+            return (
+              <FollowUserItem
+                user={user}
+                handleCloseModal={handleCloseModal}
+                key={user.id}
+              />
+            );
           })}
           {!fetchInfo.last && (
             <Typography className="view-more" onClick={handleViewMore}>

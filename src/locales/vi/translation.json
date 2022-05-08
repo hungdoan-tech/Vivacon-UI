@@ -7,7 +7,8 @@
         "userName": "Tên tài khoản",
         "password": "Mật khẩu",
         "haveNoAccount": "Không có tài khoản?",
-        "register": "Đăng ký"
+        "register": "Đăng ký",
+        "loginSuccessful": "Đăng nhập thành công"
     },
     "newFeed": {
         "like": " lượt thích",
@@ -31,7 +32,7 @@
         "emptyPostCaseCaption": "Hãy chia sẻ ảnh và các khoảnh khắc của bạn với chúng tôi",
         "posts": "CÁC BÀI VIẾT",
         "avatars": "ẢNH ĐẠI DIỆN",
-        "followers": "những người theo dõi",
+        "followers": "người theo dõi",
         "following": "đang theo dõi",
         "haveNoPost": "Hiện không có bài viết nào"
     },
@@ -47,7 +48,8 @@
         "deleteImage": "Bạn có chắc chắn muốn xóa các ảnh này?",
         "confirm": "Xác nhận",
         "no": "Không",
-        "yes": "Đồng ý"
+        "yes": "Đồng ý",
+        "successfully": "Tạo bài đăng thành công"
     },
     "privacy": {
         "public": "Công khai",
@@ -58,5 +60,8 @@
         "profile": "Thông tin cá nhân",
         "setting": "Cấu hình",
         "logOut": "Đăng xuất"
+    },
+    "dashboard": {
+        "dashboard": "Thống kê"
     }
 }

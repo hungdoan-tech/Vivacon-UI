@@ -49,7 +49,7 @@ const LoginPage = () => {
           saveRefreshToken(res.data.refreshToken);
           setSnackbarState({
             open: true,
-            content: "Login successfully",
+            content: trans('signIn.loginSuccessful'),
             type: "SUCCESS",
           });
           setTimeout(() => {

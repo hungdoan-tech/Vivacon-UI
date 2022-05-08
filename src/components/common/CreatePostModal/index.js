@@ -157,7 +157,7 @@ const CreatePostModal = (props) => {
         setTimeout(() => {
           setSnackbarState({
             open: true,
-            content: "Create a post successfully",
+            content: trans("createPost.successfully"),
             type: "SUCCESS",
           });
         }, 1000);

@@ -170,7 +170,7 @@ export const userOption = [
   },
   {
     icon: <DashboardIcon />,
-    name: "Dashboard",
+    name: "dashboard.dashboard",
     onClickHandle: () => null,
     navigateUrl: "/dashboard",
   },

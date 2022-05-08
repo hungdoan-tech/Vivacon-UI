@@ -1,11 +1,12 @@
 import SimpleReactFooter from "simple-react-footer";
 import i18n from "translation/i18n";
+import { getCurrentLanguage } from "translation/util";
 import "./style.scss";
 
 const Footer = () => {
-  //   const description =
-  //     "According to wikipedia, the cat (Felis catus) is a domestic species of small carnivorous mammal. It is the only domesticated species in the family Felidae and is often referred to as the domestic cat to distinguish it from the wild members of the family. A cat can either be a house cat, a farm cat or a feral cat; the latter ranges freely and avoids human contact.";
-  //   const title = "Cats";
+  const changeLanguage = (e) => {
+    i18n.changeLanguage(e.target.value);
+  };
   const columns = [
     {
       title: "Resources",
@@ -42,23 +43,22 @@ const Footer = () => {
       ],
     },
     {
-      title: "Visit",
+      title: "Language",
       resources: [
         {
-          name: "Locations",
-          link: "/locations",
-        },
-        {
-          name: "Culture",
-          link: "/culture",
+          name: (
+            <div className="d-flex align-items-center">
+              <select onChange={changeLanguage} onClick={() => null}>
+                <option value="vi">Vietnamese</option>
+                <option value="en">English</option>
+              </select>
+            </div>
+          ),
+          // link: "",
         },
       ],
     },
   ];
-
-  const changeLanguage = (e) => {
-    i18n.changeLanguage(e.target.value);
-  };
 
   return (
     <>
@@ -78,12 +78,6 @@ const Footer = () => {
         fontColor="darkgrey"
         copyrightColor="darkgrey"
       />
-      <div className="d-flex align-items-center">
-        <select onChange={changeLanguage}>
-          <option value="vi">Vietnamese</option>
-          <option value="en">English</option>
-        </select>
-      </div>
     </>
   );
 };
