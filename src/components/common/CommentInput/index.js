@@ -5,6 +5,7 @@ import InsertEmoticonOutlinedIcon from "@mui/icons-material/InsertEmoticonOutlin
 import SendIcon from "@mui/icons-material/Send";
 import "./style.scss";
 import { comment } from "api/postService";
+import { useTranslation } from "react-i18next";
 
 const CommentInput = ({
   postId,
@@ -13,6 +14,8 @@ const CommentInput = ({
   parentCommentId = null,
 }) => {
   const [commentContent, setCommentContent] = useState("");
+
+  const { t: trans } = useTranslation();
 
   const handleCaptionChange = (event) => {
     setCommentContent(event.target.value);
@@ -40,7 +43,7 @@ const CommentInput = ({
       <InsertEmoticonOutlinedIcon className="emotion-icon" />
       <Typography className="comment-input" component="div">
         <InputBase
-          placeholder="Add a comment"
+          placeholder={trans("newFeed.addComment")}
           fullWidth={true}
           maxRows={4}
           multiline={true}
@@ -50,7 +53,7 @@ const CommentInput = ({
       </Typography>
       <Typography className="different-text-icon" component="div">
         <Button className="post-button" onClick={submitComment}>
-          Post
+          {trans("newFeed.post")}
         </Button>
       </Typography>
     </Typography>

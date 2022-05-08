@@ -164,25 +164,25 @@ export const messageList = [
 export const userOption = [
   {
     icon: <AccountCircleIcon />,
-    name: "Profile",
+    name: "settingUI.profile",
     onClickHandle: () => null,
     navigateUrl: "/profile",
   },
   {
     icon: <DashboardIcon />,
-    name: "Dashboard",
+    name: "dashboard.dashboard",
     onClickHandle: () => null,
     navigateUrl: "/dashboard",
   },
   {
     icon: <SettingsIcon />,
-    name: "Setting",
+    name: "settingUI.setting",
     onClickHandle: () => null,
     navigateUrl: "/",
   },
   {
     icon: <LogoutOutlinedIcon />,
-    name: "Log out",
+    name: "settingUI.logOut",
     onClickHandle: () => {
       removeJwtToken();
       removeRefreshToken();

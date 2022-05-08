@@ -14,6 +14,7 @@ import AppButtonsGroup from "components/common/AppButtonsGroup";
 import UserOption from "components/common/UserOption";
 import CreatePostModal from "components/common/CreatePostModal";
 import { useHistory } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { AuthUser } from "App";
 
 const Navbar = () => {
@@ -21,6 +22,8 @@ const Navbar = () => {
   const [openCreatePostModal, setOpenCreatePostModal] = useState(false);
   const history = useHistory();
   const Auth = useContext(AuthUser);
+
+  const { t: trans } = useTranslation();
 
   const handleClickAwayUserOption = () => {
     setUserOption(false);
@@ -46,11 +49,15 @@ const Navbar = () => {
       >
         VivaCon
       </Typography>
+
       {!Auth.auth.isAdmin && (
         <>
           <Typography className="app-search" component="div" align="center">
             <SearchIcon className="search-icon" />
-            <InputBase className="search-text" placeholder="Search..." />
+            <InputBase
+              className="search-text"
+              placeholder={`${trans("navbar.search")}...`}
+            />
           </Typography>
           <AppButtonsGroup
             handleOpenCreatePostModal={handleOpenCreatePostModal}

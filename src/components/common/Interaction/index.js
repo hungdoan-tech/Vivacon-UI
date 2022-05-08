@@ -10,6 +10,8 @@ import _ from "lodash";
 import CustomModal from "../CustomModal";
 import FollowUserItem from "../FollowUserItem";
 
+import { useTranslation } from "react-i18next";
+
 const Interaction = ({ currentPost }) => {
   const { isLiked, id: postId } = currentPost;
   const [like, setLike] = useState(isLiked);
@@ -19,6 +21,8 @@ const Interaction = ({ currentPost }) => {
   const [showLikeList, setShowLikeList] = useState(false);
   const [likeList, setLikeList] = useState([]);
   const [fetchInfo, setFetchInfo] = useState({});
+
+  const { t: trans } = useTranslation();
 
   useEffect(() => {
     setLike(isLiked);
@@ -105,12 +109,11 @@ const Interaction = ({ currentPost }) => {
         <ChatBubbleOutlineOutlinedIcon className="comment-icon" />
         <ShareOutlinedIcon className="share-icon" />
       </Typography>
-      <Typography
-        className="number-of-likes"
-        align="left"
-        onClick={handleGetLikeList}
-      >
-        {likeCount} {likeCount > 1 ? " likes" : "like"}
+      <Typography className="number-of-likes" align="left" onClick={handleGetLikeList}>
+        {likeCount}{" "}
+        {likeCount > 1
+          ? " " + trans("newFeed.like")
+          : trans("newFeed.like")}
       </Typography>
       <Typography className="post-caption" align="left">
         <strong>{currentPost.createdBy?.username}</strong> {currentPost.caption}

@@ -8,6 +8,7 @@ import CustomPopUp from "../CustomPopUp";
 import FollowButton from "../FollowButton";
 import CameraAltOutlinedIcon from "@mui/icons-material/CameraAltOutlined";
 import "./style.scss";
+import { useTranslation } from "react-i18next";
 
 const FollowUserItem = (props) => {
   const { handleCloseModal, user } = props;
@@ -22,7 +23,7 @@ const FollowUserItem = (props) => {
 
   const history = useHistory();
   const navigateToUser = (username) => {
-    handleCloseModal();
+    handleCloseModal(false);
     history.push(`/profile/${username}`);
   };
   const handleOpenPopUp = () => {
@@ -119,6 +120,7 @@ export const PopUpContent = ({
   localLoading,
   setIsUpdated,
 }) => {
+  const { t: trans } = useTranslation();
   const [followerCount, setFollowerCount] = useState(userInfo.followerCount);
   const [initialFollowerState, setInitialFollowerState] = useState(isFollowing);
 
@@ -163,7 +165,7 @@ export const PopUpContent = ({
           >
             <p className="number">
               <strong>{userInfo.postCount || 0} </strong>
-              <div className="label">posts</div>
+              <div className="label">{trans("profile.posts")}</div>
             </p>
           </Typography>
           <Typography
@@ -173,7 +175,7 @@ export const PopUpContent = ({
           >
             <p className="number">
               <strong>{followerCount || 0} </strong>
-              <div className="label">followers</div>
+              <div className="label">{trans("profile.followers")}</div>
             </p>
           </Typography>
           <Typography
@@ -183,7 +185,7 @@ export const PopUpContent = ({
           >
             <p className="number">
               <strong>{userInfo.followingCount || 0} </strong>
-              <div className="label">following</div>
+              <div className="label">{trans("profile.following")}</div>
             </p>
           </Typography>
         </Typography>
@@ -195,7 +197,9 @@ export const PopUpContent = ({
           ) : (
             <Typography component="div" align="center" className="no-data">
               <CameraAltOutlinedIcon className="no-data-icon" />
-              <Typography className="no-data-label">No Posts Yet</Typography>
+              <Typography className="no-data-label">
+                {trans("profile.haveNoPost")}
+              </Typography>
             </Typography>
           )}
         </Typography>
@@ -204,7 +208,9 @@ export const PopUpContent = ({
           {getCurrentUser().accountId !== userInfo.id && (
             <>
               {" "}
-              <Button className="message-btn">Message</Button>
+              <Button className="message-btn">
+                {trans("profile.message")}
+              </Button>
               <FollowButton
                 userProfile={userInfo}
                 isFollowing={isFollowing}

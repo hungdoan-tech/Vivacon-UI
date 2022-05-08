@@ -23,7 +23,7 @@ const CustomModal = ({
   return (
     <Modal
       open={open}
-      onClose={handleCloseModal}
+      onClose={() => handleCloseModal(true)}
       aria-labelledby="modal-modal-title"
       aria-describedby="modal-modal-description"
       className="custom-modal-container"

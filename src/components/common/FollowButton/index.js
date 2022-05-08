@@ -14,6 +14,7 @@ import CheckIcon from "@mui/icons-material/Check";
 import CustomModal from "components/common/CustomModal";
 import "./style.scss";
 import useUpdateProfile from "hooks/useUpdateProfile";
+import { useTranslation } from "react-i18next";
 
 const FollowButton = (props) => {
   const {
@@ -34,6 +35,8 @@ const FollowButton = (props) => {
   //   console.log("follow change", follow);
   //   setFollowing(follow);
   // }, [follow]);
+
+  const { t: trans } = useTranslation();
 
   const changeFormatByCondition = (condition) => {
     const followedButtonColor = classNames("followed-btn", {
@@ -89,15 +92,17 @@ const FollowButton = (props) => {
       });
   };
 
-  const renderUnfollowModal = () => {
+  const RenderUnfollowModal = () => {
     const userInfo = unfollowModal.data;
+
+    const { t: trans } = useTranslation();
 
     return (
       <Typography component="div" className="unfollow-container">
         <Typography component="div" className="unfollow-user-info">
           <img src={userInfo.avatar} width={100} height={100} />
           <Typography className="confirm-question">
-            Unfollow @{userInfo.username}?
+            {trans("profile.unfollow")} @{userInfo.username}?
           </Typography>
         </Typography>
         <Typography component="div" className="action-btns">
@@ -105,10 +110,10 @@ const FollowButton = (props) => {
             className="unfollow-btn"
             onClick={() => handleUnfollowUser(userInfo.id, userInfo.username)}
           >
-            Unfollow
+            {trans("profile.unfollow")}
           </Button>
           <Button className="cancel-btn" onClick={handleCloseUnfollowModal}>
-            Cancel
+            {trans("profile.cancel")}
           </Button>
         </Typography>
       </Typography>
@@ -130,7 +135,7 @@ const FollowButton = (props) => {
         ) : isFollowing ? (
           <CheckIcon />
         ) : (
-          "Follow"
+          trans("profile.follow")
         )}
       </Button>
       <CustomModal
@@ -140,7 +145,7 @@ const FollowButton = (props) => {
         open={unfollowModal.open}
         handleCloseModal={handleCloseUnfollowModal}
       >
-        {renderUnfollowModal()}
+        {RenderUnfollowModal()}
       </CustomModal>
     </Typography>
   );

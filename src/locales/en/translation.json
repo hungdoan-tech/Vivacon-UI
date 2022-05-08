@@ -1,0 +1,67 @@
+{
+    "navbar": {
+        "search": "Search"
+    },
+    "signIn": {
+        "login": "Log in",
+        "userName": "Username",
+        "password": "Password",
+        "haveNoAccount": "Don't have an account?",
+        "register": "Register",
+        "loginSuccessful": "Login successfully"
+    },
+    "newFeed": {
+        "like": "like",
+        "addComment": "Add a comment",
+        "post": "Post",
+        "viewMoreComment": "View more comments",
+        "reply": "Reply",
+        "hideReply": "Hide all replies",
+        "viewReply": "View replies"
+    },
+    "profile": {
+        "editInformation": "Edit information",
+        "post": "Post",
+        "followerCount": "Follower",
+        "followingCount": "Following",
+        "follow": "Follow",
+        "unfollow": "Unfollow",
+        "cancel": "Cancel",
+        "message": "Message",
+        "avatar": "Avatar",
+        "emptyPostCaseCaption": "Start capturing and sharing your moments with us",
+        "posts": "POSTS",
+        "avatars": "AVATAR",
+        "followers": "followers",
+        "following": "following",
+        "haveNoPost": "No Posts Yet"
+    },
+    "createPost": {
+        "uploadImages": "Upload image(s)",
+        "edit": "Edit",
+        "writeCaption": "Write caption",
+        "back": "Back",
+        "next": "Next",
+        "createNewPost": "Create new post",
+        "selectImage": "Select image from computer",
+        "text": "Text",
+        "deleteImage": "This action can delete all images on draft. Are you sure?",
+        "confirm": "Confirm",
+        "no": "No",
+        "yes": "Yes",
+        "successfully": "Create a post successfully"
+    },
+    "privacy": {
+        "public": "Public",
+        "onlyMe": "Only me",
+        "follower": "Follower"
+    },
+    "settingUI": {
+        "profile": "Profile",
+        "setting": "Setting",
+        "logOut": "Log out"
+    },
+    "dashboard": {
+        "dashboard": "Dashboard"
+    }
+}

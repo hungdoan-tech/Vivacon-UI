@@ -21,6 +21,7 @@ import { uploadImages } from "api/postService";
 import { Loading, Snackbar } from "App";
 import { privacyPostType } from "constant/types";
 import { createPost } from "api/postService";
+import { useTranslation } from "react-i18next";
 
 const TabPanel = (props) => {
   const { children, value, index, ...other } = props;
@@ -54,7 +55,13 @@ const CreatePostModal = (props) => {
   const { setLoading } = useContext(Loading);
   const { setSnackbarState } = useContext(Snackbar);
 
-  const steps = ["Upload image(s)", "Edit", "Write caption"];
+  const { t: trans } = useTranslation();
+
+  const steps = [
+    trans("createPost.uploadImages"),
+    trans("createPost.edit"),
+    trans("createPost.writeCaption"),
+  ];
 
   const handleNext = async () => {
     if (activeStep === steps.length - 1) {
@@ -150,8 +157,8 @@ const CreatePostModal = (props) => {
         setTimeout(() => {
           setSnackbarState({
             open: true,
-            content: "Create a post successfully",
-            type: 'SUCCESS'
+            content: trans("createPost.successfully"),
+            type: "SUCCESS",
           });
         }, 1000);
       })
@@ -190,18 +197,20 @@ const CreatePostModal = (props) => {
                 onClick={handleBack}
               >
                 <ChevronLeftOutlinedIcon />
-                Back
+                {trans("createPost.back")}
               </Button>
-              <Typography className="title">Create new post</Typography>
+              <Typography className="title">
+                {trans("createPost.createNewPost")}
+              </Typography>
               <Button
                 className={`btn-container ${hideButtonClass}`}
                 onClick={handleNext}
               >
                 {activeStep === steps.length - 1 ? (
-                  "Post"
+                  trans("profile.post")
                 ) : (
                   <>
-                    Next <ChevronRightOutlinedIcon />
+                    {trans("createPost.next")} <ChevronRightOutlinedIcon />
                   </>
                 )}
               </Button>
@@ -237,10 +246,8 @@ const CreatePostModal = (props) => {
             handleClose={handleCloseConfirmDialog}
             handleConfirm={handleConfirmDialog}
             open={openConfirmDialog}
-            title={"Confirm"}
-            description={
-              "This action can delete all images on draft. Are you sure?"
-            }
+            title={trans("createPost.confirm")}
+            description={trans("createPost.deleteImage")}
           />
         </CardContent>
       </Card>

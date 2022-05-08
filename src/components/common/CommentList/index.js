@@ -11,6 +11,7 @@ import { substringUsername } from "utils/resolveData";
 import CommentInput from "components/common/CommentInput";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import _ from "lodash";
+import { useTranslation } from "react-i18next";
 import { getCurrentUser } from "utils/jwtToken";
 import CustomModal from "../CustomModal";
 import useLoading from "hooks/useLoading";
@@ -23,6 +24,8 @@ const CommentList = ({
   const [commentList, setCommentList] = useState([]);
   const [fetchInfo, setFetchInfo] = useState({});
   const [pageNumber, setPageNumber] = useState(0);
+
+  const { t: trans } = useTranslation();
 
   const handleGetFirstLevelCommentList = (page, postId) => {
     console.log("new fetch");
@@ -91,7 +94,7 @@ const CommentList = ({
           ))}
           {!fetchInfo.last && (
             <Typography className="view-more" onClick={handleViewMore}>
-              View more comments
+              {trans("newFeed.viewMoreComment")}
             </Typography>
           )}
         </Typography>
@@ -119,6 +122,8 @@ const CommentItem = ({ comment, postId, handleFilterComment }) => {
   useEffect(() => {
     setCreatedTime(calculateFromNow(convertUTCtoLocalDate(comment.createdAt)));
   }, [comment.createdAt]);
+
+  const { t: trans } = useTranslation();
 
   const handleGetChildCommentList = (page, limit) => {
     console.log("data in fetch: ", { page, limit });
@@ -249,6 +254,7 @@ const CommentItem = ({ comment, postId, handleFilterComment }) => {
             <Typography className="date-time" component="div">
               {createdTime}
             </Typography>
+
             <Typography
               className="reply"
               component="div"
@@ -258,7 +264,7 @@ const CommentItem = ({ comment, postId, handleFilterComment }) => {
                 )
               }
             >
-              Reply
+              {trans("newFeed.reply")}
             </Typography>
             {showCommentOption &&
               getCurrentUser().accountId === comment.createdBy?.id && (
@@ -276,8 +282,8 @@ const CommentItem = ({ comment, postId, handleFilterComment }) => {
           onClick={handleToggleCommentChild}
         >
           {total === 0
-            ? "_____Hide all replies"
-            : `_____View replies (${total})`}
+            ? "_____" + trans("newFeed.hideReply")
+            : `_____${trans("newFeed.viewReply")} (${total})`}
         </Typography>
       )}
       {commentChildList.open &&
@@ -322,6 +328,7 @@ const CommentItem = ({ comment, postId, handleFilterComment }) => {
 
 const CommentChildItem = ({ childCmt, handleOpenReplyCmt }) => {
   const [showCommentOption, setShowCommentOption] = useState(false);
+  const { t: trans } = useTranslation();
   return (
     <Typography
       className="comment-content child"
@@ -357,7 +364,7 @@ const CommentChildItem = ({ childCmt, handleOpenReplyCmt }) => {
               )
             }
           >
-            Reply
+            {trans("newFeed.reply")}
           </Typography>
           {showCommentOption &&
             getCurrentUser().accountId === childCmt.createdBy?.id && (
