@@ -15,6 +15,8 @@ import useLoading from "hooks/useLoading";
 import useSnackbar from "hooks/useSnackbar";
 import { useState } from "react";
 import { useHistory } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+import "./style.scss";
 
 const RegisterPage = () => {
   const [username, setUsername] = useState("");
@@ -23,10 +25,12 @@ const RegisterPage = () => {
   const [password, setPassword] = useState("");
   const [matchingPassword, setMatchingPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [showMatchingPassword, setShowMatchingPassword] = useState(false);
 
   const { setLoading } = useLoading();
   const { setSnackbarState, snackbarState } = useSnackbar();
   const history = useHistory();
+  const { t: trans } = useTranslation();
 
   const handleChangeEmail = (event) => {
     setEmail(event.target.value);
@@ -52,6 +56,10 @@ const RegisterPage = () => {
     setShowPassword(!showPassword);
   };
 
+  const handleClickShowMatchingPassword = () => {
+    setShowMatchingPassword(!showMatchingPassword);
+  };
+
   const handleRegister = () => {
     setLoading(true);
     register({ username, fullName, email, password, matchingPassword })
@@ -63,7 +71,7 @@ const RegisterPage = () => {
             type: "SUCCESS",
           });
           setTimeout(() => {
-            history.push("/verify", email);
+            history.push("/verify", { email, type: "Register" });
           }, 1000);
         }
       })
@@ -76,11 +84,11 @@ const RegisterPage = () => {
   };
 
   return (
-    <Typography component="div" className="login-page">
+    <Typography component="div" className="register-page">
       <Typography component="div" className="intro-image">
         <img src={require("images/introduce3.png")} width="700" height="400" />
       </Typography>
-      <Card className="login-container">
+      <Card className="register-container">
         <CardContent>
           <Typography component="div" align="center" className="logo">
             <img src={require("images/LOGO4.png")} width="200" />
@@ -88,7 +96,7 @@ const RegisterPage = () => {
 
           <Typography className="form-container">
             <Typography align="left" className="title">
-              Register
+              {trans("register.register")}
             </Typography>
             <Typography component="div" align="center" className="text-input">
               <FormControl sx={{ m: 1, width: "100%" }} variant="standard">
@@ -103,7 +111,7 @@ const RegisterPage = () => {
             </Typography>
             <Typography component="div" align="center" className="text-input">
               <FormControl sx={{ m: 1, width: "100%" }} variant="standard">
-                <InputLabel htmlFor="fullname">Full Name</InputLabel>
+                <InputLabel htmlFor="fullname">{trans('register.fullName')}</InputLabel>
                 <Input
                   id="fullname"
                   type="text"
@@ -114,7 +122,7 @@ const RegisterPage = () => {
             </Typography>
             <Typography component="div" align="center" className="text-input">
               <FormControl sx={{ m: 1, width: "100%" }} variant="standard">
-                <InputLabel htmlFor="username">Username</InputLabel>
+                <InputLabel htmlFor="username">{trans('register.username')}</InputLabel>
                 <Input
                   id="username"
                   type="text"
@@ -125,7 +133,7 @@ const RegisterPage = () => {
             </Typography>
             <Typography component="div" align="center" className="text-input">
               <FormControl sx={{ m: 1, width: "100%" }} variant="standard">
-                <InputLabel htmlFor="password">Password</InputLabel>
+                <InputLabel htmlFor="password">{trans('register.password')}</InputLabel>
                 <Input
                   id="password"
                   type={showPassword ? "text" : "password"}
@@ -147,20 +155,24 @@ const RegisterPage = () => {
             <Typography component="div" align="center" className="text-input">
               <FormControl sx={{ m: 1, width: "100%" }} variant="standard">
                 <InputLabel htmlFor="matchingpassword">
-                  Matching Password
+                  {trans('register.confirmPassword')}
                 </InputLabel>
                 <Input
                   id="matchingpassword"
-                  type={showPassword ? "text" : "password"}
+                  type={showMatchingPassword ? "text" : "password"}
                   value={matchingPassword}
                   onChange={handleChangeMatchingPassword}
                   endAdornment={
                     <InputAdornment position="end">
                       <IconButton
                         aria-label="toggle password visibility"
-                        onClick={handleClickShowPassword}
+                        onClick={handleClickShowMatchingPassword}
                       >
-                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                        {showMatchingPassword ? (
+                          <VisibilityOff />
+                        ) : (
+                          <Visibility />
+                        )}
                       </IconButton>
                     </InputAdornment>
                   }
@@ -170,8 +182,8 @@ const RegisterPage = () => {
           </Typography>
 
           <Typography component="div" align="center">
-            <Button className="login-btn" onClick={handleRegister}>
-              Register
+            <Button className="register-btn" onClick={handleRegister}>
+              {trans('register.register')}
             </Button>
           </Typography>
         </CardContent>
@@ -181,22 +193,3 @@ const RegisterPage = () => {
 };
 
 export default RegisterPage;
-
-{
-  /* <Typography
-            component="div"
-            align="center"
-            className="or"
-          ></Typography>
-
-          <Typography
-            component="div"
-            align="center"
-            className="register-link-container"
-          >
-            <Typography className="dont-have-account">
-              Don't have an account?
-            </Typography>
-            <Typography className="register-link"> Register</Typography>
-          </Typography> */
-}

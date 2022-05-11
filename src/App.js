@@ -10,6 +10,7 @@ import {
   removeJwtToken,
   removeRefreshToken,
 } from "utils/cookie";
+import { getCurrentUser } from "utils/jwtToken";
 import classNames from "classnames";
 import { useCookies } from "react-cookie";
 import NotificationSnackbar from "components/common/NotificationSnackbar";
@@ -18,27 +19,45 @@ import Footer from "components/common/Footer";
 export const AuthUser = createContext();
 export const Loading = createContext();
 export const Snackbar = createContext();
+export const UpdateProfile = createContext();
 
 function App(props) {
   const [openApp, setOpenApp] = useState(false);
-  const [auth, setAuth] = useState(false);
+  const [auth, setAuth] = useState({
+    isLogin: false,
+    isAdmin: true,
+  });
   const [loading, setLoading] = useState(false);
   const [snackbarState, setSnackbarState] = useState({
     open: false,
     title: "",
     content: "",
-    type: 'SUCCESS'
+    type: "SUCCESS",
   });
   const [isExpiredToken, setIsExpiredToken] = useState(false);
   const [cookies, setCookie] = useCookies(["jwt-token", "refresh-token"]);
+  const [isUpdateProfile, setIsUpdateProfile] = useState(false);
 
   const readCookie = () => {
     const token = getJwtToken();
     const refreshToken = getRefreshToken();
     if (token && refreshToken) {
-      return true;
+      if (getCurrentUser().roles.includes("ADMIN")) {
+        return {
+          isLogin: true,
+          isAdmin: true,
+        };
+      } else {
+        return {
+          isLogin: true,
+          isAdmin: false,
+        };
+      }
     } else {
-      return false;
+      return {
+        isLogin: false,
+        isAdmin: false,
+      };
     }
   };
 
@@ -75,29 +94,31 @@ function App(props) {
   });
   return (
     <AuthUser.Provider value={{ auth, setAuth }}>
-      <Loading.Provider value={{ loading, setLoading }}>
-        <Snackbar.Provider value={{ snackbarState, setSnackbarState }}>
-          <div className="App">
-            {openApp ? (
-              <>
-                {auth && (
-                  <div className="navbar">
-                    <Navbar />
+      <UpdateProfile.Provider value={{ isUpdateProfile, setIsUpdateProfile }}>
+        <Loading.Provider value={{ loading, setLoading }}>
+          <Snackbar.Provider value={{ snackbarState, setSnackbarState }}>
+            <div className="App">
+              {openApp ? (
+                <>
+                  {auth.isLogin && (
+                    <div className="navbar">
+                      <Navbar />
+                    </div>
+                  )}
+                  <div className={appWidthClass}>
+                    <RouterList />
                   </div>
-                )}
-                <div className={appWidthClass}>
-                  <RouterList />
-                </div>
-                {loading && <ProgressLoading />}
-                <NotificationSnackbar snackbarState={snackbarState} />
-                <Footer />
-              </>
-            ) : (
-              <InitLoading />
-            )}
-          </div>{" "}
-        </Snackbar.Provider>
-      </Loading.Provider>
+                  {loading && <ProgressLoading />}
+                  <NotificationSnackbar snackbarState={snackbarState} />
+                  <Footer />
+                </>
+              ) : (
+                <InitLoading />
+              )}
+            </div>{" "}
+          </Snackbar.Provider>
+        </Loading.Provider>
+      </UpdateProfile.Provider>
     </AuthUser.Provider>
   );
 }

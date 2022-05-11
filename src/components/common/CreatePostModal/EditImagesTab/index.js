@@ -7,7 +7,8 @@ import b64toBlob from "b64-to-blob";
 import "./style.scss";
 import classNames from "classnames";
 import { config } from "./config/main";
-import {random} from 'lodash'
+import { random } from "lodash";
+import { useTranslation } from "react-i18next";
 
 const EditImagesTab = (props) => {
   const {
@@ -22,6 +23,9 @@ const EditImagesTab = (props) => {
   });
   const [openImages, setOpenImages] = useState(false);
   const [isSave, setIsSave] = useState(false);
+
+  const { t: trans } = useTranslation();
+
   const blobToFile = (blobUrl, fileName): File => {
     const blob = new File([blobUrl], fileName, {
       lastModifiedDate: Date.now(),
@@ -80,7 +84,7 @@ const EditImagesTab = (props) => {
               show={true}
               source={currentImage.src || ""}
               onSave={handleSaveImage}
-              Text={{ placeholder: "Text..." }}
+              Text={{ placeholder: `${trans("createPost.text")}...` }}
             />
           )}
         </Typography>

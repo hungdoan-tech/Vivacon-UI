@@ -1,39 +1,40 @@
-import { resendToken, verify } from "api/userService";
+import { resendToken, verifyChangePassword, activeNewAccount } from "api/userService";
 import useLoading from "hooks/useLoading";
 import useSnackbar from "hooks/useSnackbar";
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { saveJwtToken, saveRefreshToken } from "utils/cookie";
 import { useHistory } from "react-router-dom";
+import { Button, Typography } from "@mui/material";
+import { useTranslation } from "react-i18next";
+import "./style.scss";
 
 export default function VerifyPage(props) {
-  const [firstCode, setFirstCode] = useState("");
-  const [secondCode, setSecondCode] = useState("");
-  const [thirdCode, setThirdCode] = useState("");
-  const [fourthCode, setFourthCode] = useState("");
-  const [fifthCode, setFifthCode] = useState("");
-  const [sixthCode, setSixthCode] = useState("");
+  const [code, setCode] = useState([]);
+  const codeRef = [useRef(), useRef(), useRef(), useRef(), useRef(), useRef()];
 
   const { setLoading } = useLoading();
   const { setSnackbarState, snackbarState } = useSnackbar();
   const history = useHistory();
+  const { t: trans } = useTranslation();
 
   const [isButtonDisabled, setButtonDisabled] = useState(false);
 
   var token = "";
 
-  const handleSendToken = () => {
-    token =
-      firstCode + secondCode + thirdCode + fourthCode + fifthCode + sixthCode;
+  const handleConfirmRegister = () => {
+    token = code.reduce((prev, curr) => {
+      return prev + curr;
+    });
 
     setLoading(true);
-    verify(token)
+    activeNewAccount(token)
       .then((res) => {
         if (res.status === 200) {
           saveJwtToken(res.data.accessToken);
           saveRefreshToken(res.data.refreshToken);
           setSnackbarState({
             open: true,
-            content: "Login successfully",
+            content: trans('signIn.loginSuccessful'),
             type: "SUCCESS",
           });
           setTimeout(() => {
@@ -59,16 +60,11 @@ export default function VerifyPage(props) {
     resendToken(email)
       .then((res) => {
         if (res.status === 200) {
-          // saveJwtToken(res.data.accessToken);
-          // saveRefreshToken(res.data.refreshToken);
           setSnackbarState({
             open: true,
-            content: "Please enter again code was sent in your email",
+            content: trans('findAccount.pleaseEnterCode'),
             type: "SUCCESS",
           });
-          // setTimeout(() => {
-          //   window.location.href = "/";
-          // }, 1000);
           setTimeout(() => setButtonDisabled(false), 5000);
         }
       })
@@ -80,21 +76,15 @@ export default function VerifyPage(props) {
       });
   };
 
-  const handleConformForgotPassword = () => {
-    token =
-      firstCode + secondCode + thirdCode + fourthCode + fifthCode + sixthCode;
+  const handleConfirmForgotPassword = () => {
+    token = code.reduce((prev, curr) => {
+      return prev + curr;
+    });
 
     setLoading(true);
-    verify(token)
+    verifyChangePassword(token)
       .then((res) => {
         if (res.status === 200) {
-          saveJwtToken(res.data.accessToken);
-          saveRefreshToken(res.data.refreshToken);
-          setSnackbarState({
-            open: true,
-            content: "Go to page forgot password successfully",
-            type: "SUCCESS",
-          });
           setTimeout(() => {
             history.push("/forgot-password", token);
           }, 1000);
@@ -108,51 +98,90 @@ export default function VerifyPage(props) {
       });
   };
 
+  const handleSubmit = () => {
+    if (props.location.state.type === "ForgotPassword") {
+      handleConfirmForgotPassword();
+    }
+    if (props.location.state.type === "Register") {
+      handleConfirmRegister();
+    }
+  };
+
+  useEffect(() => {
+    if (code) {
+      const currIndex = code.length - 1;
+      if (
+        currIndex >= 0 &&
+        currIndex < codeRef.length - 1 &&
+        code[currIndex].length === 1
+      ) {
+        codeRef[currIndex + 1].focus();
+      }
+    }
+  }, [code]);
+
+  useEffect(() => {
+    if (!props.location.state?.type) {
+      history.replace("/not-found");
+    } else {
+      codeRef[0].focus();
+    }
+  }, []);
+
+  const setNewCode = (index, value) => {
+    const currentCode = [...code];
+    currentCode[index] = value;
+    setCode([...currentCode]);
+  };
   return (
-    <div>
-      <input
-        type="text"
-        className="form-control"
-        value={firstCode}
-        onChange={(e) => setFirstCode(e.target.value)}
-      />
-      <input
-        type="text"
-        className="form-control"
-        value={secondCode}
-        onChange={(e) => setSecondCode(e.target.value)}
-      />
-      <input
-        type="text"
-        className="form-control"
-        value={thirdCode}
-        onChange={(e) => setThirdCode(e.target.value)}
-      />
-      <input
-        type="text"
-        className="form-control"
-        value={fourthCode}
-        onChange={(e) => setFourthCode(e.target.value)}
-      />
-      <input
-        type="text"
-        className="form-control"
-        value={fifthCode}
-        onChange={(e) => setFifthCode(e.target.value)}
-      />
-      <input
-        type="text"
-        className="form-control"
-        value={sixthCode}
-        onChange={(e) => setSixthCode(e.target.value)}
-      />
-      <button onClick={handleSendToken}>Submit</button>
-      <button disabled={isButtonDisabled} onClick={handleResendToken}>
-        Resend Token
-      </button>
-      <button onClick={handleConformForgotPassword}>
-        Conform forgot password
-      </button>
-    </div>
+    <>
+      {props.location.state?.type && (
+        <Typography component="div" align="center" className="verify-container">
+          <Typography className="title" align="left">
+            {trans("verify.title")}
+          </Typography>
+          <Typography className="label" align="left">
+            {trans("verify.checkCodeLabel")}
+          </Typography>
+          <Typography
+            component="div"
+            align="center"
+            className="verify-number-group"
+          >
+            {codeRef.map((item, index) => {
+              return (
+                <input
+                  type="text"
+                  className="form-control"
+                  value={code[index]}
+                  onChange={(e) => setNewCode(index, e.target.value)}
+                  maxLength="1"
+                  ref={(input) => {
+                    codeRef[index] = input;
+                  }}
+                />
+              );
+            })}
+          </Typography>
+          <Typography component="div" className="action-btns">
+            <Button
+              className="resend-btn"
+              disabled={isButtonDisabled}
+              onClick={handleResendToken}
+            >
+              {trans("verify.resendCode")}
+            </Button>
+            <Typography>
+              <Button onClick={() => history.goBack()} className="cancel-btn">
+                {trans("verify.cancel")}
+              </Button>
+              <Button onClick={handleSubmit} className="submit-btn">
+                {trans("verify.submit")}
+              </Button>
+            </Typography>
+          </Typography>
+        </Typography>
+      )}
+    </>
   );
 }

@@ -11,14 +11,11 @@ const DynamicLoadingButton = (props) => {
     titleFalseCond,
     classNameByCond,
   } = props;
-  console.log({props})
   const [localLoading, setLocalLoading] = useState(false);
 
   const handleTrue = async () => {
     setLocalLoading(true);
-    console.log('start')
     await handleTrueCond();
-    console.log('end')
     setLocalLoading(false);
   };
 

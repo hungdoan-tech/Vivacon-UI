@@ -11,17 +11,17 @@ export const notificationType = {
 export const privacyPostType = [
   {
     value: "PUBLIC",
-    label: "Public",
+    label: "privacy.public",
     icon: <PublicIcon />,
   },
   {
     value: "ONLY_ME",
-    label: "Only me",
+    label: "privacy.onlyMe",
     icon: <LockIcon />,
   },
   {
     value: "FOLLOWER",
-    label: "Follower",
+    label: "privacy.follower",
     icon: <PermContactCalendarIcon />,
   },
 ];

@@ -1,9 +1,12 @@
 import { Typography } from "@mui/material";
 import ImageUploader from "react-images-upload";
 import "./style.scss";
+import { useTranslation } from "react-i18next";
 
 const UploadImageTab = (props) => {
   const { handleSaveImages } = props;
+
+  const { t: trans } = useTranslation();
 
   return (
     <Typography className="upload-image-tab-container" component="div">
@@ -30,7 +33,7 @@ const UploadImageTab = (props) => {
           fileSizeError=" file size is too big"
         />
         <Typography className="select-image-txt">
-          Select image from computer
+          {trans("createPost.selectImage")}
         </Typography>
       </Typography>
     </Typography>

@@ -32,6 +32,13 @@
       .text-input {
         margin: 10px 0;
       }
+      .forgot-password-link {
+        margin-left: 5px;
+        text-decoration: underline;
+        font-size: 14px;
+        color: var(--defaultColor);
+        cursor: pointer;
+      }
     }
     .login-btn {
       text-transform: capitalize !important;

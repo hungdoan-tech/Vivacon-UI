@@ -10,32 +10,32 @@ export const register = async (data) => {
   return await axiosConfig.post(API_ENDPOINT_KEYS.REGISTER, data);
 };
 
-export const verify = async (data) => {
-  var config = {
-    method: "post",
-    url: "http://localhost:8080/api/v1" + API_ENDPOINT_KEYS.VERIFY,
+export const verifyChangePassword = async (data) => {
+  const res = await axiosConfig.post(API_ENDPOINT_KEYS.VERIFY, data, {
     headers: {
-      accept: "*/*",
-      "Content-Type": "text/plain",
-    },
-    data,
-  };
+      "Content-Type": "text/plain" 
+    }
+  });
+  return res;
+};
 
-  return await axios(config);
+export const activeNewAccount = async (data) => {
+  const res = await axiosConfig.post(API_ENDPOINT_KEYS.ACTIVE_ACCOUNT, data, {
+    headers: {
+      "Content-Type": "text/plain" 
+    }
+  });
+  return res;
 };
 
 export const resendToken = async (data) => {
-  var config = {
-    method: "post",
-    url: "http://localhost:8080/api/v1" + API_ENDPOINT_KEYS.RESEND,
+  const res = await axiosConfig.post(API_ENDPOINT_KEYS.RESEND, data, {
     headers: {
-      accept: "*/*",
-      "Content-Type": "text/plain",
-    },
-    data,
-  };
+      "Content-Type": "text/plain" 
+    }
+  });
 
-  return await axios(config);
+  return res;
 };
 
 export const forgotPassword = async (data) => {
@@ -60,16 +60,40 @@ export const changeProfileAvatar = async (data) => {
   return await axiosConfig.post(`${API_ENDPOINT_KEYS.CHANGE_AVATAR}`, data);
 };
 
-export const getProfile = async (username) => {
-  return await axiosConfig.get(`${API_ENDPOINT_KEYS.GET_PROFILE}/${username}`);
+export const getProfile = async (username, data) => {
+  return await axiosConfig.get(`${API_ENDPOINT_KEYS.GET_PROFILE}/${username}`, {
+    params: data,
+  });
 };
 
-export const getFollowingUsersById = async (account) => {
-  return await axiosConfig.get(`${API_ENDPOINT_KEYS.FOLLOWING}/${account}`);
+export const getFollowingUsersById = async (data) => {
+  const { _sort, limit, _order } = data;
+  return await axiosConfig.get(
+    `${API_ENDPOINT_KEYS.FOLLOWING}/${data.account}`,
+    {
+      params: {
+        _sort,
+        _order,
+        limit,
+        page: data.page,
+      },
+    }
+  );
 };
 
-export const getFollowersById = async (account) => {
-  return await axiosConfig.get(`${API_ENDPOINT_KEYS.FOLLOWER}/${account}`);
+export const getFollowersById = async (data) => {
+  const { _sort, limit, _order } = data;
+  return await axiosConfig.get(
+    `${API_ENDPOINT_KEYS.FOLLOWER}/${data.account}`,
+    {
+      params: {
+        _sort,
+        _order,
+        limit,
+        page: data.page,
+      },
+    }
+  );
 };
 
 export const unfollowUserById = async (account) => {

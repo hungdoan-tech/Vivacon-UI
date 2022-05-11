@@ -6,9 +6,12 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import "./style.scss";
+import { useTranslation } from "react-i18next";
 
 const ConfirmDialog = (props) => {
   const { title, handleConfirm, handleClose, open, description } = props;
+
+  const { t: trans } = useTranslation();
 
   return (
     <div>
@@ -26,10 +29,10 @@ const ConfirmDialog = (props) => {
         </DialogContent>
         <DialogActions>
           <Button className="no-btn" onClick={handleClose}>
-            No
+            {trans("createPost.no")}
           </Button>
           <Button className="yes-btn" onClick={handleConfirm} autoFocus>
-            Yes
+            {trans("createPost.yes")}
           </Button>
         </DialogActions>
       </Dialog>

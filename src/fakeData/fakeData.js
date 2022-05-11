@@ -1,6 +1,7 @@
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import SettingsIcon from "@mui/icons-material/Settings";
 import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
+import DashboardIcon from '@mui/icons-material/Dashboard';
 import { removeJwtToken, removeRefreshToken } from "utils/cookie";
 import { useNavigate } from "react-router-dom";
 const notiType = {
@@ -163,19 +164,25 @@ export const messageList = [
 export const userOption = [
   {
     icon: <AccountCircleIcon />,
-    name: "Profile",
+    name: "settingUI.profile",
     onClickHandle: () => null,
     navigateUrl: "/profile",
   },
   {
+    icon: <DashboardIcon />,
+    name: "dashboard.dashboard",
+    onClickHandle: () => null,
+    navigateUrl: "/dashboard",
+  },
+  {
     icon: <SettingsIcon />,
-    name: "Setting",
+    name: "settingUI.setting",
     onClickHandle: () => null,
     navigateUrl: "/",
   },
   {
     icon: <LogoutOutlinedIcon />,
-    name: "Log out",
+    name: "settingUI.logOut",
     onClickHandle: () => {
       removeJwtToken();
       removeRefreshToken();

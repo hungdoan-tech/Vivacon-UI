@@ -13,27 +13,22 @@ import {
 import { changePassword, forgotPassword } from "api/userService";
 import useLoading from "hooks/useLoading";
 import useSnackbar from "hooks/useSnackbar";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom";
+import "./style.scss";
 
 export default function ForgotPasswordPage(props) {
-  const [verificationToken, setVerificationToken] = useState("");
-  const [oldPassword, setOldPassword] = useState("");
+  const [verificationToken] = useState(props.location.state);
   const [matchingNewPassword, setMatchingNewPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [showMatchingPassword, setShowMatchingPassword] = useState(false);
 
   const { setLoading } = useLoading();
   const { setSnackbarState, snackbarState } = useSnackbar();
   const history = useHistory();
-
-  const handleChangeVerificationToken = (event) => {
-    setVerificationToken(event.target.value);
-  };
-
-  const handleChangeOldPassword = (event) => {
-    setOldPassword(event.target.value);
-  };
+  const { t: trans } = useTranslation();
 
   const handleChangeMatchingNewPassword = (event) => {
     setMatchingNewPassword(event.target.value);
@@ -47,10 +42,14 @@ export default function ForgotPasswordPage(props) {
     setShowPassword(!showPassword);
   };
 
+  const handleClickShowMatchingPassword = () => {
+    setShowMatchingPassword(!showMatchingPassword);
+  };
+
   const handleForgotPassword = () => {
     setLoading(true);
-    changePassword({
-      oldPassword,
+    forgotPassword({
+      verificationToken,
       newPassword,
       matchingNewPassword,
     })
@@ -59,7 +58,7 @@ export default function ForgotPasswordPage(props) {
           setSnackbarState({
             open: true,
             content:
-              "You have changed password successfully. Please login to use this web",
+              trans('changePassword.changeSuccessfully'),
             type: "SUCCESS",
           });
           setTimeout(() => {
@@ -75,59 +74,30 @@ export default function ForgotPasswordPage(props) {
       });
   };
 
-  return (
-    <Typography component="div" className="login-page">
-      <Typography component="div" className="intro-image">
-        <img src={require("images/introduce3.png")} width="700" height="400" />
-      </Typography>
-      <Card className="login-container">
-        <CardContent>
-          <Typography component="div" align="center" className="logo">
-            <img src={require("images/LOGO4.png")} width="200" />
-          </Typography>
+  useEffect(() => {
+    if (!props.location.state) {
+      history.replace("/not-found");
+    }
+  }, []);
 
+  return (
+    <>
+      {props.location.state && (
+        <Typography component="div" className="forgot-password-container">
+          <Typography className="title" align="left">
+            {trans("changePassword.pleaseChangePassword")}
+          </Typography>
           <Typography className="form-container">
-            <Typography align="left" className="title">
-              Forgot password
-            </Typography>
+            <Typography
+              component="div"
+              align="center"
+              className="text-input"
+            ></Typography>
             <Typography component="div" align="center" className="text-input">
               <FormControl sx={{ m: 1, width: "100%" }} variant="standard">
-                <InputLabel htmlFor="verificationtoken">
-                  Verification Token
+                <InputLabel htmlFor="newpassword">
+                  {trans("changePassword.newPassword")}
                 </InputLabel>
-                <Input
-                  id="verificationtoken"
-                  type="text"
-                  value={props.location.state.token}
-                  //onChange={handleChangeVerificationToken}
-                  disabled
-                />
-              </FormControl>{" "}
-            </Typography>
-            <Typography component="div" align="center" className="text-input">
-              <FormControl sx={{ m: 1, width: "100%" }} variant="standard">
-                <InputLabel htmlFor="oldpassword">Old Password</InputLabel>
-                <Input
-                  id="oldpassword"
-                  type={showPassword ? "text" : "password"}
-                  value={oldPassword}
-                  onChange={handleChangeOldPassword}
-                  endAdornment={
-                    <InputAdornment position="end">
-                      <IconButton
-                        aria-label="toggle password visibility"
-                        onClick={handleClickShowPassword}
-                      >
-                        {showPassword ? <VisibilityOff /> : <Visibility />}
-                      </IconButton>
-                    </InputAdornment>
-                  }
-                />
-              </FormControl>
-            </Typography>
-            <Typography component="div" align="center" className="text-input">
-              <FormControl sx={{ m: 1, width: "100%" }} variant="standard">
-                <InputLabel htmlFor="newpassword">New Password</InputLabel>
                 <Input
                   id="newpassword"
                   type={showPassword ? "text" : "password"}
@@ -149,20 +119,24 @@ export default function ForgotPasswordPage(props) {
             <Typography component="div" align="center" className="text-input">
               <FormControl sx={{ m: 1, width: "100%" }} variant="standard">
                 <InputLabel htmlFor="matchingnewpassword">
-                  Matching New Password
+                  {trans("changePassword.confirmPassword")}
                 </InputLabel>
                 <Input
                   id="matchingnewpassword"
-                  type={showPassword ? "text" : "password"}
+                  type={showMatchingPassword ? "text" : "password"}
                   value={matchingNewPassword}
                   onChange={handleChangeMatchingNewPassword}
                   endAdornment={
                     <InputAdornment position="end">
                       <IconButton
                         aria-label="toggle password visibility"
-                        onClick={handleClickShowPassword}
+                        onClick={handleClickShowMatchingPassword}
                       >
-                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                        {showMatchingPassword ? (
+                          <VisibilityOff />
+                        ) : (
+                          <Visibility />
+                        )}
                       </IconButton>
                     </InputAdornment>
                   }
@@ -171,13 +145,22 @@ export default function ForgotPasswordPage(props) {
             </Typography>
           </Typography>
 
-          <Typography component="div" align="center">
-            <Button className="login-btn" onClick={handleForgotPassword}>
-              Forgot password
+          <Typography component="div" align="right" className="action-btns">
+            <Button
+              onClick={() => history.push("/login")}
+              className="cancel-btn"
+            >
+              {trans("changePassword.cancel")}
+            </Button>
+            <Button
+              onClick={handleForgotPassword}
+              className="forgot-password-btn"
+            >
+              {trans("changePassword.changePassword")}
             </Button>
           </Typography>
-        </CardContent>
-      </Card>
-    </Typography>
+        </Typography>
+      )}
+    </>
   );
 }

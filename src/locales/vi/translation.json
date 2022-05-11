@@ -1,0 +1,112 @@
+{
+    "navbar": {
+        "search": "Tìm kiếm"
+    },
+    "signIn": {
+        "login": "Đăng nhập",
+        "userName": "Tên tài khoản",
+        "password": "Mật khẩu",
+        "haveNoAccount": "Không có tài khoản?",
+        "register": "Đăng ký",
+        "loginSuccessful": "Đăng nhập thành công",
+        "forgotPassword": "Quên mật khẩu"
+    },
+    "register":{
+        "register":"Đăng ký",
+        "fullName": "Tên đầy đủ",
+        "username": "Tên đăng nhập",
+        "password": "Mật khẩu",
+        "confirmPassword": "Xác nhận lại mật khẩu"
+    },
+    "follow":{
+        "followed": "Đã theo dõi",
+        "unfollowed": "Đã bỏ theo dõi"
+    },
+    "newFeed": {
+        "like": " lượt thích",
+        "addComment": "Thêm một bình luận",
+        "post": "Gửi",
+        "viewMoreComment": "Xem thêm nhiều bình luận",
+        "reply": "Phản hồi",
+        "hideReply": "Ẩn hết các phản hồi",
+        "viewReply": "Hiển thị hết các phản hồi"
+    },
+    "profile": {
+        "editInformation": "Sửa thông tin",
+        "post": "Bài viết",
+        "followerCount": "Người theo dõi",
+        "followingCount": "Đang theo dõi",
+        "follow": "Theo dõi",
+        "unfollow": "Bỏ theo dõi",
+        "cancel": "Hủy",
+        "message": "Nhắn tin",
+        "avatar": "Ảnh đại diện",
+        "emptyPostCaseCaption": "Hãy chia sẻ ảnh và các khoảnh khắc của bạn với chúng tôi",
+        "posts": "CÁC BÀI VIẾT",
+        "avatars": "ẢNH ĐẠI DIỆN",
+        "followers": "người theo dõi",
+        "following": "đang theo dõi",
+        "haveNoPost": "Hiện không có bài viết nào",
+        "changeAvatarSuccessfully": "Thay đổi ảnh đại diện thành công"
+    },
+    "createPost": {
+        "uploadImages": "Tải 1 hoặc nhiều ảnh lên",
+        "edit": "Chỉnh sửa",
+        "writeCaption": "Viết trạng thái",
+        "back": "Quay lại",
+        "next": "Kế tiếp",
+        "createNewPost": "Tạo bài viết mới",
+        "selectImage": "Vui lòng chọn ảnh từ máy tính của bạn",
+        "text": "Đoạn văn bản",
+        "deleteImage": "Bạn có chắc chắn muốn xóa các ảnh này?",
+        "confirm": "Xác nhận",
+        "no": "Không",
+        "yes": "Đồng ý",
+        "successfully": "Tạo bài đăng thành công"
+    },
+    "privacy": {
+        "public": "Công khai",
+        "onlyMe": "Chỉ mình tôi",
+        "follower": "Người theo dõi"
+    },
+    "settingUI": {
+        "profile": "Thông tin cá nhân",
+        "setting": "Cài đặt",
+        "logOut": "Đăng xuất"
+    },
+    "dashboard": {
+        "dashboard": "Thống kê"
+    },
+    "verify": {
+        "title": "Nhập mã bảo mật",
+        "checkCodeLabel": "Hãy kiểm tra email của bạn. Trong đó chứa mã xác nhận bao gồm 6 ký tự số.",
+        "sendTo": "Chúng tôi đã gửi mã xác nhận đến: ",
+        "resendCode": "Gửi lại mã",
+        "submit": "Xác nhận",
+        "cancel": "Hủy"
+    },
+    "findAccount": {
+        "title": "Tìm kiếm tài khoản của bạn",
+        "pleaseEnterLabel": "Hãy nhập địa chỉ email hoặc tên đăng nhập của bạn để tìm kiếm tài khoản.",
+        "emailOrUsernameInput": "Địa chỉ email hoặc tên đăng nhập",
+        "search": "Tìm kiếm",
+        "cancel": "Hủy",
+        "pleaseEnterCode":"Hãy nhập mã đã được gửi đến email của bạn"
+    },
+    "resetPassword": {
+        "title": "Khôi phục Mật khẩu",
+        "recievedCodeLabel": "Bạn muốn nhận mã xác nhận bằng cách nào để khôi phục mật khẩu?",
+        "optionViaEmail": "Gửi mã xác nhận qua email",
+        "notYou": "Không phải bạn?",
+        "continue": "Tiếp tục"
+    },
+    "changePassword": {
+        "oldPassword": "Mật khẩu cũ",
+        "newPassword": "Mật khẩu mới",
+        "confirmPassword": "Xác nhận lại mật khẩu",
+        "changePassword": "Thay đổi mật khẩu",
+        "pleaseChangePassword": "Hãy thay đổi Mật khẩu của bạn",
+        "cancel": "Hủy",
+        "changeSuccessfully": "Bạn đã đổi mật khẩu thành công"
+    }
+}

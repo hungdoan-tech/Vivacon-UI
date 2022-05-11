@@ -17,6 +17,8 @@ import "./style.scss";
 import { saveJwtToken, saveRefreshToken } from "utils/cookie";
 import useLoading from "hooks/useLoading";
 import useSnackbar from "hooks/useSnackbar";
+import { useTranslation } from "react-i18next";
+import { useHistory } from "react-router-dom";
 
 const LoginPage = () => {
   const [username, setUsername] = useState("");
@@ -24,6 +26,10 @@ const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const { setLoading } = useLoading();
   const { setSnackbarState, snackbarState } = useSnackbar();
+
+  const history = useHistory();
+
+  const { t: trans } = useTranslation();
 
   const handleChangeUsername = (event) => {
     setUsername(event.target.value);
@@ -46,7 +52,7 @@ const LoginPage = () => {
           saveRefreshToken(res.data.refreshToken);
           setSnackbarState({
             open: true,
-            content: "Login successfully",
+            content: trans("signIn.loginSuccessful"),
             type: "SUCCESS",
           });
           setTimeout(() => {
@@ -75,11 +81,13 @@ const LoginPage = () => {
 
           <Typography className="form-container">
             <Typography align="left" className="title">
-              Log in
+              {trans("signIn.login")}
             </Typography>
             <Typography component="div" align="center" className="text-input">
               <FormControl sx={{ m: 1, width: "100%" }} variant="standard">
-                <InputLabel htmlFor="username">Username</InputLabel>
+                <InputLabel htmlFor="username">
+                  {trans("signIn.userName")}
+                </InputLabel>
                 <Input
                   id="username"
                   type="text"
@@ -90,7 +98,9 @@ const LoginPage = () => {
             </Typography>
             <Typography component="div" align="center" className="text-input">
               <FormControl sx={{ m: 1, width: "100%" }} variant="standard">
-                <InputLabel htmlFor="password">Password</InputLabel>
+                <InputLabel htmlFor="password">
+                  {trans("signIn.password")}
+                </InputLabel>
                 <Input
                   id="password"
                   type={showPassword ? "text" : "password"}
@@ -109,11 +119,19 @@ const LoginPage = () => {
                 />
               </FormControl>
             </Typography>
+            <Typography
+              className="forgot-password-link"
+              onClick={() =>
+                history.push("/find-account", { type: "FindAccount" })
+              }
+            >
+              {trans("signIn.forgotPassword")}
+            </Typography>{" "}
           </Typography>
 
           <Typography component="div" align="center">
             <Button className="login-btn" onClick={handleLogin}>
-              Log In
+              {trans("signIn.login")}
             </Button>
           </Typography>
 
@@ -129,28 +147,10 @@ const LoginPage = () => {
             className="register-link-container"
           >
             <Typography className="dont-have-account">
-              Don't have an account?
+              {trans("signIn.haveNoAccount")}
             </Typography>
-            <Typography className="register-link"> Register</Typography>{" "}
-          </Typography>
-
-          <Typography
-            component="div"
-            align="center"
-            className="or"
-          ></Typography>
-
-          <Typography
-            component="div"
-            align="center"
-            className="register-link-container"
-          >
-            <Typography className="dont-have-account">
-              Did you forgot your password?
-            </Typography>
-            <Typography className="register-link">
-              {" "}
-              Forgot your password
+            <Typography className="register-link" onClick={() => history.push('/register')}>
+              {trans("signIn.register")}
             </Typography>{" "}
           </Typography>
         </CardContent>

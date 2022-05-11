@@ -104,6 +104,8 @@
     border-radius: 4px !important;
   }
 }
-:not(button) > svg:not([color]) {
-  color: rgba(0, 0, 0, 0.38) !important;
+.MuiStep-root {
+  :not(button) > svg:not([color]) {
+    color: rgba(0, 0, 0, 0.38) !important;
+  }
 }

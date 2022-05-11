@@ -24,14 +24,22 @@ import ReactLoading from "react-loading";
 import classNames from "classnames";
 import { useHistory } from "react-router-dom";
 import ImageUploader from "react-images-upload";
-// import UserInfoPopUp from "components/common/UserInfoPopUp";
+import CustomPopUp from "components/common/CustomPopUp";
+import CameraAltOutlinedIcon from "@mui/icons-material/CameraAltOutlined";
+import FollowButton from "components/common/FollowButton";
+import { substringUsername } from "utils/resolveData";
+import FollowUserItem from "components/common/FollowUserItem";
 
-const ModalType = {
-  FOLLOWER: "FOLLOWERS",
-  FOLLOWING: "FOLLOWING",
-};
+import { useTranslation } from "react-i18next";
 
 const ProfilePage = (props) => {
+  const { t: trans } = useTranslation();
+
+  const ModalType = {
+    FOLLOWER: trans("profile.followerCount"),
+    FOLLOWING: trans("profile.followingCount"),
+  };
+
   const [username, setUsername] = useState(props.match.params.username);
   const [userProfile, setUserProfile] = useState({});
   const { setLoading } = useLoading();
@@ -39,33 +47,27 @@ const ProfilePage = (props) => {
   const [showModal, setShowModal] = useState({
     open: false,
     type: ModalType.FOLLOWER,
-    data: {},
+    data: [],
   });
   const [unfollowModal, setUnfollowModal] = useState({
     open: false,
     data: {},
   });
-  const [isUpdated, setUpdated] = useState(false);
   const [isLocalLoading, setLocalLoading] = useState({
     status: false,
     index: -1,
   });
-  //Pop up
-  const [openPopUp, setOpenPopUp] = useState(false);
-  const [anchorEl, setAnchorEl] = useState(null);
 
-  const [file, setFile] = useState(null);
+  const [changeAvatarLoading, setChangeAvatarLoading] = useState(false);
+
   const [img, setImg] = useState(null);
+  const [pageNumber, setPageNumber] = useState(0);
+  const [currentModalType, setCurrentModalType] = useState(null);
+  const [fetchInfo, setFetchInfo] = useState({});
 
-  const handleOpenPopUp = (event) => {
-    setAnchorEl(event.currentTarget);
-    setOpenPopUp((previousOpen) => !previousOpen);
-  };
-
-  const history = useHistory();
-
+  //--GET DATA--
   const handleGetProfile = (username) => {
-    getProfile(username)
+    getProfile(username, {})
       .then((res) => {
         if (res.status === 200) {
           setUserProfile(res.data);
@@ -83,14 +85,28 @@ const ProfilePage = (props) => {
 
   const handleGetFollowingUsers = (id) => {
     setLoading(true);
-    getFollowingUsersById(id)
+    getFollowingUsersById({
+      account: id,
+      // _order: "desc",
+      limit: 15,
+      page: pageNumber,
+    })
       .then((res) => {
         if (res.status === 200) {
-          setShowModal({
-            open: true,
-            type: ModalType.FOLLOWING,
-            data: res.data,
-          });
+          if (pageNumber > 0) {
+            setShowModal({
+              open: true,
+              type: ModalType.FOLLOWING,
+              data: [...showModal.data, ...res.data.content],
+            });
+          } else {
+            setShowModal({
+              open: true,
+              type: ModalType.FOLLOWING,
+              data: [...res.data.content],
+            });
+          }
+          setFetchInfo(res.data);
         }
       })
       .catch((err) => {
@@ -103,14 +119,28 @@ const ProfilePage = (props) => {
 
   const handleGetFollowers = (id) => {
     setLoading(true);
-    getFollowersById(id)
+    getFollowersById({
+      account: id,
+      // _order: "desc",
+      limit: 15,
+      page: pageNumber,
+    })
       .then((res) => {
         if (res.status === 200) {
-          setShowModal({
-            open: true,
-            type: ModalType.FOLLOWER,
-            data: res.data,
-          });
+          if (pageNumber > 0) {
+            setShowModal({
+              open: true,
+              type: ModalType.FOLLOWER,
+              data: [...showModal.data, ...res.data.content],
+            });
+          } else {
+            setShowModal({
+              open: true,
+              type: ModalType.FOLLOWER,
+              data: [...res.data.content],
+            });
+          }
+          setFetchInfo(res.data);
         }
       })
       .catch((err) => {
@@ -121,8 +151,8 @@ const ProfilePage = (props) => {
       });
   };
 
+  //--ACTION--
   const handleUnfollowUser = (id, username, index) => {
-    const { content } = showModal.data;
     handleCloseUnfollowModal();
     setLocalLoading({ status: true, index });
     unfollowUserById(id)
@@ -130,22 +160,8 @@ const ProfilePage = (props) => {
         if (res.status === 200) {
           setSnackbarState({
             open: true,
-            content: `Unfollowed @${username}`,
+            content: `${trans('follow.followed')} @${username}`,
             type: "SUCCESS",
-          });
-          setUpdated(true);
-          const filteredFollowingUser = content.filter(
-            (item) => item.id === id
-          );
-          const index = content.indexOf(filteredFollowingUser[0]);
-          content[index].isFollowing = false;
-
-          setShowModal({
-            ...showModal,
-            data: {
-              ...showModal.data,
-              content: [...content],
-            },
           });
         }
       })
@@ -158,29 +174,14 @@ const ProfilePage = (props) => {
   };
 
   const handleFollowUser = (id, username, index) => {
-    const { content } = showModal.data;
     setLocalLoading({ status: true, index });
     followUserById(id)
       .then((res) => {
         if (res.status === 200) {
           setSnackbarState({
             open: true,
-            content: `Followed @${username}`,
+            content: `${trans('follow.unfollowed')} @${username}`,
             type: "SUCCESS",
-          });
-          setUpdated(true);
-          const filteredFollowingUser = content.filter(
-            (item) => item.id === id
-          );
-          const index = content.indexOf(filteredFollowingUser[0]);
-          content[index].isFollowing = true;
-
-          setShowModal({
-            ...showModal,
-            data: {
-              ...showModal.data,
-              content: [...content],
-            },
           });
         }
       })
@@ -191,13 +192,6 @@ const ProfilePage = (props) => {
         // setLocalLoading(false);
       });
   };
-
-  useEffect(() => {
-    if (isUpdated) {
-      handleGetProfile(username);
-      setUpdated(false);
-    }
-  }, [isUpdated]);
 
   useEffect(() => {
     setUsername(props.match.params.username);
@@ -215,10 +209,10 @@ const ProfilePage = (props) => {
 
   useEffect(() => {
     if (showModal.open) {
-      const { content } = showModal.data;
+      const content = showModal.data;
       const { type } = showModal;
       if (content.length === 0 && type === ModalType.FOLLOWING) {
-        handleCloseModal();
+        handleCloseModal(true);
       }
     }
   }, [showModal]);
@@ -227,17 +221,31 @@ const ProfilePage = (props) => {
     handleGetProfile(props.match.params.username);
   }, [props.match.params.username]);
 
-  const handleOpenModal = (type) => {
-    if (type === ModalType.FOLLOWER) {
+  useEffect(() => {
+    console.log("open");
+    if (currentModalType === ModalType.FOLLOWER) {
       handleGetFollowers(userProfile.id);
     }
-    if (type === ModalType.FOLLOWING) {
+    if (currentModalType === ModalType.FOLLOWING) {
       handleGetFollowingUsers(userProfile.id);
+    }
+  }, [pageNumber, currentModalType]);
+
+  const handleOpenModal = (type) => {
+    setCurrentModalType(type);
+  };
+
+  const handleCloseModal = (isUpdate) => {
+    setShowModal({ ...showModal, data: [], open: false });
+    setPageNumber(0);
+    setCurrentModalType(null);
+    if (isUpdate) {
+      handleUpdateProfile();
     }
   };
 
-  const handleCloseModal = () => {
-    setShowModal({ ...showModal, open: false });
+  const handleUpdateProfile = () => {
+    handleGetProfile(props.match.params.username);
   };
 
   const handleOpenUnfollowModal = (userInfo) => {
@@ -251,79 +259,20 @@ const ProfilePage = (props) => {
     setUnfollowModal({ ...unfollowModal, open: false });
   };
 
-  const navigateToUser = (username) => {
-    handleCloseModal();
-    history.push(`/profile/${username}`);
-  };
-
-  const renderFollowModal = () => {
-    const { content } = showModal.data;
-
-    return (
-      <Typography component="div" className="follow-container">
-        {content.map((user, index) => {
-          console.log("compare", getCurrentUser(), user.id);
-          return (
-            <Typography component="div" className="follow-item">
-              <Typography
-                component="div"
-                className="follow-avatar"
-                onMouseMove={handleOpenPopUp}
-              >
-                <img src={user.avatar} width={35} height={35} />
-              </Typography>
-              <Typography
-                component="div"
-                className="follow-name"
-                onClick={() => navigateToUser(user.username)}
-              >
-                <Typography className="username">{user.username}</Typography>
-                <Typography className="fullName">{user.fullName}</Typography>
-              </Typography>
-              {getCurrentUser().accountId !== user.id && (
-                <Button
-                  className={`${changeFormatByCondition(user.isFollowing)}`}
-                  onClick={() =>
-                    user.isFollowing
-                      ? handleOpenUnfollowModal(user)
-                      : handleFollowUser(user.id, user.username, index)
-                  }
-                >
-                  {isLocalLoading.index === index && isLocalLoading.status ? (
-                    <ReactLoading
-                      type="spokes"
-                      color="#00000"
-                      height={18}
-                      width={18}
-                    />
-                  ) : user.isFollowing ? (
-                    <CheckIcon className="followed-icon" />
-                  ) : (
-                    " Follow"
-                  )}
-                </Button>
-              )}
-              <div className="pops-up-container">
-                {/* <UserInfoPopUp open={openPopUp} anchorEl={anchorEl} /> */}
-              </div>
-            </Typography>
-          );
-        })}
-      </Typography>
-    );
+  const handleViewMore = () => {
+    setPageNumber(pageNumber + 1);
   };
 
   const renderUnfollowModal = () => {
     const userInfo = unfollowModal.data;
-    const { content } = showModal.data;
-    console.log(content, userInfo);
+    const content = showModal.data;
 
     return (
       <Typography component="div" className="unfollow-container">
         <Typography component="div" className="unfollow-user-info">
           <img src={userInfo.avatar} width={100} height={100} />
           <Typography className="confirm-question">
-            Unfollow @{userInfo.username}?
+            {trans("profile.unfollow")} @{userInfo.username}?
           </Typography>
         </Typography>
         <Typography component="div" className="action-btns">
@@ -337,10 +286,10 @@ const ProfilePage = (props) => {
               )
             }
           >
-            Unfollow
+            {trans("profile.unfollow")}
           </Button>
           <Button className="cancel-btn" onClick={handleCloseUnfollowModal}>
-            Cancel
+            {trans("profile.cancel")}
           </Button>
         </Typography>
       </Typography>
@@ -356,7 +305,7 @@ const ProfilePage = (props) => {
   };
 
   const handleChangeImg = (img) => {
-    console.log(img);
+    setChangeAvatarLoading(true);
     const data = new FormData();
     data.append("file", img);
     uploadImage(data)
@@ -370,7 +319,7 @@ const ProfilePage = (props) => {
             if (res.status === 200) {
               setSnackbarState({
                 open: true,
-                content: "You have changed your profile avatar successfully!",
+                content: trans("profile.changeAvatarSuccessfully"),
                 type: "SUCCESS",
               });
               setImg(res.data.url);
@@ -380,25 +329,51 @@ const ProfilePage = (props) => {
       })
       .catch((err) => {
         throw err;
+      })
+      .finally(() => {
+        setChangeAvatarLoading(false);
       });
   };
 
   return (
     <Typography component="div" align="center" className="profile-container">
       <Helmet>
-        <title>{userProfile.fullName}</title>
+        <title>{`${userProfile.fullName} (@${userProfile.username})`} </title>
       </Helmet>
       <Typography component="div" align="center" className="info-container">
-        <Typography component="div" align="center" className="user-avatar">
-          <input
-            className="form-control "
-            type="file"
-            id="ccomment"
-            name="comment"
-            required
-            onChange={(e) => handleChangeImg(e.target.files[0])}
-          />
-          <img src={img} />
+        <Typography
+          component="div"
+          align="center"
+          className="user-avatar-container"
+        >
+          <Typography component="div" align="center" className="user-avatar">
+            {getCurrentUser().accountId === userProfile.id && (
+              <>
+                {" "}
+                <input
+                  className="change-user-avatar"
+                  type="file"
+                  id="change-avatar"
+                  name="comment"
+                  required
+                  onChange={(e) => handleChangeImg(e.target.files[0])}
+                />
+                <label for="change-avatar" className="change-user-avatar-btn">
+                  Change
+                </label>
+              </>
+            )}
+            <img src={img} />
+            {changeAvatarLoading && (
+              <ReactLoading
+                className="change-avatar-loading"
+                type="spokes"
+                color="#00000"
+                height={20}
+                width={20}
+              />
+            )}
+          </Typography>
         </Typography>
         <Typography component="div" align="left" className="info-details">
           <Typography
@@ -412,12 +387,16 @@ const ProfilePage = (props) => {
             <Typography className="action-btns">
               {getCurrentUser().username === userProfile.username ? (
                 <>
-                  <Button className="edit-btn">Edit Profile</Button>
+                  <Button className="edit-btn">
+                    {trans("profile.editInformation")}
+                  </Button>
                   <SettingsIcon className="edit-icon" />
                 </>
               ) : (
                 <>
-                  <Button className="message-btn">Message</Button>
+                  <Button className="message-btn">
+                    {trans("profile.message")}
+                  </Button>
                   <Button
                     className={`${changeFormatByCondition(
                       userProfile.following
@@ -442,7 +421,7 @@ const ProfilePage = (props) => {
                     ) : userProfile.following ? (
                       <CheckIcon className="followed-icon" />
                     ) : (
-                      "Follow"
+                      trans("profile.follow")
                     )}
                   </Button>
                 </>
@@ -461,7 +440,8 @@ const ProfilePage = (props) => {
               className="number-of-container"
             >
               <p className="number">
-                <strong className="label">{userProfile.postCount} </strong>posts
+                <strong className="label">{userProfile.postCount} </strong>{" "}
+                {trans("profile.post")}
               </p>
             </Typography>
             <Typography
@@ -476,7 +456,7 @@ const ProfilePage = (props) => {
             >
               <p className="number">
                 <strong className="label">{userProfile.followerCount} </strong>
-                followers
+                {trans("profile.followerCount")}
               </p>
             </Typography>
             <Typography
@@ -491,7 +471,7 @@ const ProfilePage = (props) => {
             >
               <p className="number">
                 <strong className="label">{userProfile.followingCount} </strong>
-                following
+                {trans("profile.followingCount")}
               </p>
             </Typography>
           </Typography>
@@ -507,22 +487,44 @@ const ProfilePage = (props) => {
           </Typography>
         </Typography>
       </Typography>
-      <UserImagesTabs username={username} />
+      <UserImagesTabs
+        username={username}
+        handleUpdateProfile={handleUpdateProfile}
+      />
       <CustomModal
+        isRadius
         open={showModal.open}
-        component={() => renderFollowModal()}
         title={_.startCase(_.toLower(showModal.type))}
         handleCloseModal={handleCloseModal}
         width={400}
         height={400}
-      />
+      >
+        <Typography component="div" className="follow-container">
+          {showModal.data?.map((user) => {
+            return (
+              <FollowUserItem
+                user={user}
+                handleCloseModal={handleCloseModal}
+                key={user.id}
+              />
+            );
+          })}
+          {!fetchInfo.last && (
+            <Typography className="view-more" onClick={handleViewMore}>
+              View more
+            </Typography>
+          )}
+        </Typography>
+      </CustomModal>
       <CustomModal
+        isRadius
         width={400}
         height={300}
         open={unfollowModal.open}
-        component={() => renderUnfollowModal()}
         handleCloseModal={handleCloseUnfollowModal}
-      />
+      >
+        {renderUnfollowModal()}
+      </CustomModal>
     </Typography>
   );
 };

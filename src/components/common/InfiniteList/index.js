@@ -10,6 +10,7 @@ const InfiniteList = (props) => {
     container: Container,
     noDataComponent: NoDataComponent,
     handleGetData,
+    handleClickItem,
     data,
   } = props;
   const { dataList, isLoading, hasMore, isNoData } = useInfiniteList(
@@ -25,8 +26,8 @@ const InfiniteList = (props) => {
   }, []);
 
   useEffect(() => {
-setPageNumber(0)
-  }, [data.username])
+    setPageNumber(0);
+  }, [data.username]);
 
   const lastItemRef = useCallback(
     (node) => {
@@ -54,14 +55,26 @@ setPageNumber(0)
               {dataList.map((item, index) => {
                 if (dataList.length === index + 1) {
                   return (
-                    <div ref={lastItemRef} key={item}>
-                      <Component item={item} />
+                    <div ref={lastItemRef} key={index}>
+                      <Component
+                        item={item}
+                        key={index}
+                        handleClick={handleClickItem}
+                        index={index}
+                        dataList={dataList}
+                      />
                     </div>
                   );
                 } else {
                   return (
-                    <div key={item}>
-                      <Component item={item} />
+                    <div key={index}>
+                      <Component
+                        item={item}
+                        key={index}
+                        handleClick={handleClickItem}
+                        index={index}
+                        dataList={dataList}
+                      />
                     </div>
                   );
                 }

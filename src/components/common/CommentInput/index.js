@@ -1,36 +1,61 @@
-import * as React from "react";
-import { Typography, InputBase } from "@mui/material";
+import { useState, useEffect } from "react";
+import { Typography, InputBase, Button } from "@mui/material";
 import CameraAltOutlinedIcon from "@mui/icons-material/CameraAltOutlined";
 import InsertEmoticonOutlinedIcon from "@mui/icons-material/InsertEmoticonOutlined";
 import SendIcon from "@mui/icons-material/Send";
 import "./style.scss";
+import { comment } from "api/postService";
+import { useTranslation } from "react-i18next";
 
-const CommentInput = () => {
+const CommentInput = ({
+  postId,
+  setSubmittedComment,
+  hastag,
+  parentCommentId = null,
+}) => {
+  const [commentContent, setCommentContent] = useState("");
+
+  const { t: trans } = useTranslation();
+
+  const handleCaptionChange = (event) => {
+    setCommentContent(event.target.value);
+  };
+
+  const submitComment = () => {
+    comment({
+      content: commentContent,
+      parentCommentId,
+      postId,
+    }).then((res) => {
+      if (res.status === 200) {
+        setSubmittedComment(res.data);
+        setCommentContent("");
+      }
+    });
+  };
+
   return (
     <Typography
       component="div"
       align="left"
       className="draft-comment-container"
     >
-      <img
-        src={require("images/avatar.png")}
-        width="40"
-        height="40"
-        alt=""
-      />
+      <InsertEmoticonOutlinedIcon className="emotion-icon" />
       <Typography className="comment-input" component="div">
         <InputBase
-          placeholder="Add a comment"
+          placeholder={trans("newFeed.addComment")}
           fullWidth={true}
-          maxRows={10}
+          maxRows={4}
           multiline={true}
-        />
-        <Typography className="different-text-icon" component="div">
-          <InsertEmoticonOutlinedIcon />
-          <CameraAltOutlinedIcon />
-        </Typography>
+          onChange={handleCaptionChange}
+          value={commentContent}
+        />{" "}
       </Typography>
-      <SendIcon className="send-icon" />
+      <Typography className="different-text-icon" component="div">
+        <Button className="post-button" onClick={submitComment}>
+          {trans("newFeed.post")}
+        </Button>
+      </Typography>
     </Typography>
   );
 };

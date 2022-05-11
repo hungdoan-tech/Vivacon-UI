@@ -15,6 +15,10 @@ import PhotoLibraryIcon from "@mui/icons-material/PhotoLibrary";
 import "./style.scss";
 import { getPostsByUserName } from "api/postService";
 import InfiniteList from "../InfiniteList";
+import PostDetailsModal from "../PostDetailsModal";
+import _ from "lodash";
+import CustomModal from "../CustomModal";
+import { useTranslation } from "react-i18next";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -52,6 +56,33 @@ function a11yProps(index) {
 const UserImagesTabs = (props) => {
   const [value, setValue] = useState(0);
   const [username, setUsername] = useState(props.match.params.username);
+  const { handleUpdateProfile } = props;
+
+  const { t: trans } = useTranslation();
+
+  const [showPostDetailsModal, setShowPostDetailsModal] = useState({
+    open: false,
+    index: -1,
+    item: {},
+    dataList: [],
+  });
+  const handleOpenPostDetailsModal = (index, item, dataList) => {
+    setShowPostDetailsModal({
+      open: true,
+      index,
+      item,
+      dataList,
+    });
+  };
+
+  const handleCloseOpenPostDetailsModal = (id) => {
+    setShowPostDetailsModal({
+      open: false,
+      index: -1,
+      dataLength: 0,
+    });
+    handleUpdateProfile();
+  };
   // const { username } = props.match.params;
 
   useEffect(() => {
@@ -83,11 +114,17 @@ const UserImagesTabs = (props) => {
           aria-label="basic tabs example"
         >
           <Tab
-            label={renderTabLabel({ icon: AppsIcon, label: "POSTS" })}
+            label={renderTabLabel({
+              icon: AppsIcon,
+              label: `${trans("profile.posts")}`,
+            })}
             {...a11yProps(0)}
           />
           <Tab
-            label={renderTabLabel({ icon: RecentActorsIcon, label: "AVATAR" })}
+            label={renderTabLabel({
+              icon: RecentActorsIcon,
+              label: `${trans("profile.avatars")}`,
+            })}
             {...a11yProps(1)}
           />
         </Tabs>
@@ -103,8 +140,22 @@ const UserImagesTabs = (props) => {
             limit: 9,
           }}
           component={ImageItem}
-          noDataComponent={noDataComponent}
+          noDataComponent={NoDataComponent}
+          handleClickItem={handleOpenPostDetailsModal}
         />
+        <CustomModal
+          open={showPostDetailsModal.open}
+          title={_.startCase(_.toLower(""))}
+          handleCloseModal={handleCloseOpenPostDetailsModal}
+          width={1200}
+          height={800}
+        >
+          <PostDetailsModal
+            index={showPostDetailsModal.index}
+            item={showPostDetailsModal.item}
+            dataList={showPostDetailsModal.dataList}
+          />
+        </CustomModal>
       </TabPanel>
       <TabPanel value={value} index={1}>
         Item Two
@@ -113,9 +164,13 @@ const UserImagesTabs = (props) => {
   );
 };
 
-const ImageItem = ({ item, key }) => {
+const ImageItem = ({ item, key, handleClick, index, dataList }) => {
   return (
-    <ImageListItem key={key} className="image-item">
+    <ImageListItem
+      key={index}
+      className="image-item"
+      onClick={() => handleClick(index, item, dataList)}
+    >
       <img
         src={`${item.firstImage}`}
         srcSet={`${item.firstImage}`}
@@ -141,19 +196,23 @@ const ImageItem = ({ item, key }) => {
 
 const ImagesListContainer = ({ _renderItem }) => {
   return (
-    <ImageList
-      sx={{ width: "100%",}}
-      cols={3}
-      gap={30}
-      style={{ position: "relative", overflow: 'hidden' }}
-      rowHeight={280}
-    >
-      {_renderItem}
-    </ImageList>
+    <>
+      <ImageList
+        sx={{ width: "100%" }}
+        cols={3}
+        gap={30}
+        style={{ position: "relative", overflow: "hidden" }}
+        rowHeight={280}
+      >
+        {_renderItem}
+      </ImageList>
+    </>
   );
 };
 
-const noDataComponent = () => {
+const NoDataComponent = () => {
+  const { t: trans } = useTranslation();
+
   return (
     <Typography component="div" className="no-data-container">
       <ImageList
@@ -174,7 +233,7 @@ const noDataComponent = () => {
         ))}
       </ImageList>
       <Typography className="start-post-text">
-        Start capturing and sharing your moments with us.
+        `${trans("profile.emptyPostCaseCaption")}`
       </Typography>
     </Typography>
   );

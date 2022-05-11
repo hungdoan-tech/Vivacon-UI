@@ -10,36 +10,39 @@ import {
 import "./style.scss";
 
 const CustomModal = ({
-  component: Component,
   title,
   open,
   handleCloseModal,
   width,
   height,
+  isRadius = false,
+  children
 }) => {
   const [modalWidth, setModalWidth] = useState(0);
+  console.log({children})
   return (
     <Modal
       open={open}
-      onClose={handleCloseModal}
+      onClose={() => handleCloseModal(true)}
       aria-labelledby="modal-modal-title"
       aria-describedby="modal-modal-description"
       className="custom-modal-container"
       style={{
         "--modalWidth": `${width || 600}px`,
         "--modalHeight": `${height || 600}px`,
+        "--radius": `${isRadius ? 14 : 6}px`,
       }}
     >
       <Card className="custom-modal-card">
         <CardContent>
-          <Box sx={{ width: "100%", height: "100%" }}>
+          <Box sx={{ width: "100%" }}>
             {title && (
               <AppBar className="custom-modal-header">
                 <Typography className="title">{title}</Typography>
               </AppBar>
             )}
-            <Component />
           </Box>
+          {children}
         </CardContent>
       </Card>
     </Modal>

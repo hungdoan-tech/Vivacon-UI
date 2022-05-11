@@ -1,0 +1,112 @@
+{
+    "navbar": {
+        "search": "Search"
+    },
+    "signIn": {
+        "login": "Log in",
+        "userName": "Username",
+        "password": "Password",
+        "haveNoAccount": "Don't have an account?",
+        "register": "Register",
+        "loginSuccessful": "Login successfully",
+        "forgotPassword": "Forgot password"
+    },
+    "register":{
+        "register":"Register",
+        "fullName": "Full name",
+        "username": "Username",
+        "password": "Password",
+        "confirmPassword": "Confirm password"
+    },
+    "follow":{
+        "followed": "Followed",
+        "unfollowed": "Unfollowed"
+    },
+    "newFeed": {
+        "like": "like",
+        "addComment": "Add a comment",
+        "post": "Post",
+        "viewMoreComment": "View more comments",
+        "reply": "Reply",
+        "hideReply": "Hide all replies",
+        "viewReply": "View replies"
+    },
+    "profile": {
+        "editInformation": "Edit information",
+        "post": "Post",
+        "followerCount": "Follower",
+        "followingCount": "Following",
+        "follow": "Follow",
+        "unfollow": "Unfollow",
+        "cancel": "Cancel",
+        "message": "Message",
+        "avatar": "Avatar",
+        "emptyPostCaseCaption": "Start capturing and sharing your moments with us",
+        "posts": "POSTS",
+        "avatars": "AVATAR",
+        "followers": "followers",
+        "following": "following",
+        "haveNoPost": "No Posts Yet",
+        "changeAvatarSuccessfully": "Changed Avatar Successfully"
+    },
+    "createPost": {
+        "uploadImages": "Upload image(s)",
+        "edit": "Edit",
+        "writeCaption": "Write caption",
+        "back": "Back",
+        "next": "Next",
+        "createNewPost": "Create new post",
+        "selectImage": "Select image from computer",
+        "text": "Text",
+        "deleteImage": "This action can delete all images on draft. Are you sure?",
+        "confirm": "Confirm",
+        "no": "No",
+        "yes": "Yes",
+        "successfully": "Create a post successfully"
+    },
+    "privacy": {
+        "public": "Public",
+        "onlyMe": "Only me",
+        "follower": "Follower"
+    },
+    "settingUI": {
+        "profile": "Profile",
+        "setting": "Setting",
+        "logOut": "Log out"
+    },
+    "dashboard": {
+        "dashboard": "Dashboard"
+    },
+    "verify": {
+        "title": "Enter security code",
+        "checkCodeLabel": "Please check your emails for a message with your code. Your code is 6 numbers long",
+        "sendTo": "We send code to: ",
+        "resendCode": "Resend code",
+        "submit": "Submit",
+        "cancel": "Cancel"
+    },
+    "findAccount": {
+        "title": "Find Your Account",
+        "pleaseEnterLabel": "Please enter your email address or username to search for your account.",
+        "emailOrUsernameInput": "Email address or username",
+        "search": "Search",
+        "cancel": "Cancel",
+        "pleaseEnterCode":"Please enter code was sent in your email"
+    },
+    "resetPassword": {
+        "title": "Reset Your Password",
+        "recievedCodeLabel": "How do you want to receive the code to reset your password?",
+        "optionViaEmail": "Send code via email",
+        "notYou": "Not you?",
+        "continue": "Continue"
+    },
+    "changePassword": {
+        "oldPassword": "Old Password",
+        "newPassword": "New Password",
+        "confirmPassword": "Confirm Password",
+        "changePassword": "Change Password",
+        "pleaseChangePassword": "Please change your Password",
+        "cancel": "Cancel",
+        "changeSuccessfully": "You have changed password successfully"
+    }
+}

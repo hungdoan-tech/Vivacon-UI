@@ -1,10 +1,12 @@
 import SimpleReactFooter from "simple-react-footer";
-import "./style.scss"
+import i18n from "translation/i18n";
+import { getCurrentLanguage } from "translation/util";
+import "./style.scss";
 
 const Footer = () => {
-//   const description =
-//     "According to wikipedia, the cat (Felis catus) is a domestic species of small carnivorous mammal. It is the only domesticated species in the family Felidae and is often referred to as the domestic cat to distinguish it from the wild members of the family. A cat can either be a house cat, a farm cat or a feral cat; the latter ranges freely and avoids human contact.";
-//   const title = "Cats";
+  const changeLanguage = (e) => {
+    i18n.changeLanguage(e.target.value);
+  };
   const columns = [
     {
       title: "Resources",
@@ -41,36 +43,42 @@ const Footer = () => {
       ],
     },
     {
-      title: "Visit",
+      title: "Language",
       resources: [
         {
-          name: "Locations",
-          link: "/locations",
-        },
-        {
-          name: "Culture",
-          link: "/culture",
+          name: (
+            <div className="d-flex align-items-center">
+              <select onChange={changeLanguage} onClick={() => null}>
+                <option value="vi">Vietnamese</option>
+                <option value="en">English</option>
+              </select>
+            </div>
+          ),
+          // link: "",
         },
       ],
     },
   ];
+
   return (
-    <SimpleReactFooter
-    //   description={description}
-    //   title={title}
-      columns={columns}
-    //   linkedin="fluffy_cat_on_linkedin"
-    //   facebook="fluffy_cat_on_fb"
-    //   twitter="fluffy_cat_on_twitter"
-    //   instagram="fluffy_cat_live"
-    //   youtube="UCFt6TSF464J8K82xeA?"
-      pinterest="fluffy_cats_collections"
-      copyright="darkgrey"
-      iconColor="darkgrey"
-      backgroundColor="white"
-      fontColor="darkgrey"
-      copyrightColor="darkgrey"
-    />
+    <>
+      <SimpleReactFooter
+        //   description={description}
+        //   title={title}
+        columns={columns}
+        //   linkedin="fluffy_cat_on_linkedin"
+        //   facebook="fluffy_cat_on_fb"
+        //   twitter="fluffy_cat_on_twitter"
+        //   instagram="fluffy_cat_live"
+        //   youtube="UCFt6TSF464J8K82xeA?"
+        pinterest="fluffy_cats_collections"
+        copyright="darkgrey"
+        iconColor="darkgrey"
+        backgroundColor="transparent"
+        fontColor="darkgrey"
+        copyrightColor="darkgrey"
+      />
+    </>
   );
 };
 
