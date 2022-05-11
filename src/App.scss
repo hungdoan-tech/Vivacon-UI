@@ -7,6 +7,7 @@
   &.notFullWidth {
     margin-top: 80px;
     width: 100%;
+    min-height: calc(100vh - 350px);
   }
 }
 :root {

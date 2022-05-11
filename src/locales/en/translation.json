@@ -8,7 +8,19 @@
         "password": "Password",
         "haveNoAccount": "Don't have an account?",
         "register": "Register",
-        "loginSuccessful": "Login successfully"
+        "loginSuccessful": "Login successfully",
+        "forgotPassword": "Forgot password"
+    },
+    "register":{
+        "register":"Register",
+        "fullName": "Full name",
+        "username": "Username",
+        "password": "Password",
+        "confirmPassword": "Confirm password"
+    },
+    "follow":{
+        "followed": "Followed",
+        "unfollowed": "Unfollowed"
     },
     "newFeed": {
         "like": "like",
@@ -34,7 +46,8 @@
         "avatars": "AVATAR",
         "followers": "followers",
         "following": "following",
-        "haveNoPost": "No Posts Yet"
+        "haveNoPost": "No Posts Yet",
+        "changeAvatarSuccessfully": "Changed Avatar Successfully"
     },
     "createPost": {
         "uploadImages": "Upload image(s)",
@@ -63,5 +76,37 @@
     },
     "dashboard": {
         "dashboard": "Dashboard"
+    },
+    "verify": {
+        "title": "Enter security code",
+        "checkCodeLabel": "Please check your emails for a message with your code. Your code is 6 numbers long",
+        "sendTo": "We send code to: ",
+        "resendCode": "Resend code",
+        "submit": "Submit",
+        "cancel": "Cancel"
+    },
+    "findAccount": {
+        "title": "Find Your Account",
+        "pleaseEnterLabel": "Please enter your email address or username to search for your account.",
+        "emailOrUsernameInput": "Email address or username",
+        "search": "Search",
+        "cancel": "Cancel",
+        "pleaseEnterCode":"Please enter code was sent in your email"
+    },
+    "resetPassword": {
+        "title": "Reset Your Password",
+        "recievedCodeLabel": "How do you want to receive the code to reset your password?",
+        "optionViaEmail": "Send code via email",
+        "notYou": "Not you?",
+        "continue": "Continue"
+    },
+    "changePassword": {
+        "oldPassword": "Old Password",
+        "newPassword": "New Password",
+        "confirmPassword": "Confirm Password",
+        "changePassword": "Change Password",
+        "pleaseChangePassword": "Please change your Password",
+        "cancel": "Cancel",
+        "changeSuccessfully": "You have changed password successfully"
     }
 }

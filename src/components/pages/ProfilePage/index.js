@@ -9,6 +9,8 @@ import {
   getFollowingUsersById,
   getProfile,
   unfollowUserById,
+  uploadImage,
+  changeProfileAvatar,
 } from "api/userService";
 import UserImagesTabs from "components/common/UserImagesTabs";
 import useLoading from "hooks/useLoading";
@@ -21,6 +23,7 @@ import useSnackbar from "hooks/useSnackbar";
 import ReactLoading from "react-loading";
 import classNames from "classnames";
 import { useHistory } from "react-router-dom";
+import ImageUploader from "react-images-upload";
 import CustomPopUp from "components/common/CustomPopUp";
 import CameraAltOutlinedIcon from "@mui/icons-material/CameraAltOutlined";
 import FollowButton from "components/common/FollowButton";
@@ -54,6 +57,10 @@ const ProfilePage = (props) => {
     status: false,
     index: -1,
   });
+
+  const [changeAvatarLoading, setChangeAvatarLoading] = useState(false);
+
+  const [img, setImg] = useState(null);
   const [pageNumber, setPageNumber] = useState(0);
   const [currentModalType, setCurrentModalType] = useState(null);
   const [fetchInfo, setFetchInfo] = useState({});
@@ -64,6 +71,7 @@ const ProfilePage = (props) => {
       .then((res) => {
         if (res.status === 200) {
           setUserProfile(res.data);
+          setImg(res.data.avatar);
         }
       })
       .catch((err) => {
@@ -152,7 +160,7 @@ const ProfilePage = (props) => {
         if (res.status === 200) {
           setSnackbarState({
             open: true,
-            content: `Unfollowed @${username}`,
+            content: `${trans('follow.followed')} @${username}`,
             type: "SUCCESS",
           });
         }
@@ -172,7 +180,7 @@ const ProfilePage = (props) => {
         if (res.status === 200) {
           setSnackbarState({
             open: true,
-            content: `Followed @${username}`,
+            content: `${trans('follow.unfollowed')} @${username}`,
             type: "SUCCESS",
           });
         }
@@ -296,14 +304,76 @@ const ProfilePage = (props) => {
     return followedButtonColor;
   };
 
+  const handleChangeImg = (img) => {
+    setChangeAvatarLoading(true);
+    const data = new FormData();
+    data.append("file", img);
+    uploadImage(data)
+      .then((res) => {
+        if (res.status === 200) {
+          changeProfileAvatar({
+            actualName: res.data.actualName,
+            uniqueName: res.data.uniqueName,
+            url: res.data.url,
+          }).then((res) => {
+            if (res.status === 200) {
+              setSnackbarState({
+                open: true,
+                content: trans("profile.changeAvatarSuccessfully"),
+                type: "SUCCESS",
+              });
+              setImg(res.data.url);
+            }
+          });
+        }
+      })
+      .catch((err) => {
+        throw err;
+      })
+      .finally(() => {
+        setChangeAvatarLoading(false);
+      });
+  };
+
   return (
     <Typography component="div" align="center" className="profile-container">
       <Helmet>
         <title>{`${userProfile.fullName} (@${userProfile.username})`} </title>
       </Helmet>
       <Typography component="div" align="center" className="info-container">
-        <Typography component="div" align="center" className="user-avatar">
-          <img src={userProfile.avatar} />
+        <Typography
+          component="div"
+          align="center"
+          className="user-avatar-container"
+        >
+          <Typography component="div" align="center" className="user-avatar">
+            {getCurrentUser().accountId === userProfile.id && (
+              <>
+                {" "}
+                <input
+                  className="change-user-avatar"
+                  type="file"
+                  id="change-avatar"
+                  name="comment"
+                  required
+                  onChange={(e) => handleChangeImg(e.target.files[0])}
+                />
+                <label for="change-avatar" className="change-user-avatar-btn">
+                  Change
+                </label>
+              </>
+            )}
+            <img src={img} />
+            {changeAvatarLoading && (
+              <ReactLoading
+                className="change-avatar-loading"
+                type="spokes"
+                color="#00000"
+                height={20}
+                width={20}
+              />
+            )}
+          </Typography>
         </Typography>
         <Typography component="div" align="left" className="info-details">
           <Typography

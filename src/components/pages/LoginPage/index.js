@@ -18,6 +18,7 @@ import { saveJwtToken, saveRefreshToken } from "utils/cookie";
 import useLoading from "hooks/useLoading";
 import useSnackbar from "hooks/useSnackbar";
 import { useTranslation } from "react-i18next";
+import { useHistory } from "react-router-dom";
 
 const LoginPage = () => {
   const [username, setUsername] = useState("");
@@ -25,6 +26,8 @@ const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const { setLoading } = useLoading();
   const { setSnackbarState, snackbarState } = useSnackbar();
+
+  const history = useHistory();
 
   const { t: trans } = useTranslation();
 
@@ -49,7 +52,7 @@ const LoginPage = () => {
           saveRefreshToken(res.data.refreshToken);
           setSnackbarState({
             open: true,
-            content: trans('signIn.loginSuccessful'),
+            content: trans("signIn.loginSuccessful"),
             type: "SUCCESS",
           });
           setTimeout(() => {
@@ -116,6 +119,14 @@ const LoginPage = () => {
                 />
               </FormControl>
             </Typography>
+            <Typography
+              className="forgot-password-link"
+              onClick={() =>
+                history.push("/find-account", { type: "FindAccount" })
+              }
+            >
+              {trans("signIn.forgotPassword")}
+            </Typography>{" "}
           </Typography>
 
           <Typography component="div" align="center">
@@ -138,7 +149,7 @@ const LoginPage = () => {
             <Typography className="dont-have-account">
               {trans("signIn.haveNoAccount")}
             </Typography>
-            <Typography className="register-link">
+            <Typography className="register-link" onClick={() => history.push('/register')}>
               {trans("signIn.register")}
             </Typography>{" "}
           </Typography>
