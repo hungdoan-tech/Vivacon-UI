@@ -25,3 +25,9 @@ export const privacyPostType = [
     icon: <PermContactCalendarIcon />,
   },
 ];
+
+export const PERIOD = {
+  MONTHS: "months",
+  QUARTERS: "quarters",
+  YEARS: "years",
+};

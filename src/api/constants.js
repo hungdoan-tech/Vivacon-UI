@@ -17,4 +17,5 @@ export const API_ENDPOINT_KEYS = {
   LIKE: "/like",
   COMMENT: "/comment",
   NEWFEED: "/newsfeed",
+  STATISTIC: "/statistic",
 };

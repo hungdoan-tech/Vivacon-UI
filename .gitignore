@@ -4,6 +4,7 @@
 /node_modules
 /.pnp
 /package-lock.json
+/yarn.lock
 .pnp.js
 
 # testing
