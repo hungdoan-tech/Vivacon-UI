@@ -14,6 +14,9 @@
 .homepage {
   margin-top: 3.6rem;
   padding-top: 2rem;
+  img {
+    border-radius: 100px;
+  }
 }
 
 .homepage__hero {
@@ -407,12 +410,25 @@
 
 .homepage__summary-chart-section {
   padding: 1rem 1.5rem;
+  position: relative;
 }
 
 .homepage__summary-chart-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  .homepage__summary-filter-wrapper {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+  }
+  .homepage__summary-chart-box {
+    position: absolute;
+    top: 100px;
+    left: 50px;
+    right: 50px;
+    bottom: 0;
+  }
 }
 
 .homepage__summary-chart-header h4 {

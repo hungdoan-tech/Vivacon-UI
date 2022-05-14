@@ -117,7 +117,7 @@ export default function Dashboard() {
     getTheTopPostInteraction({ limit: 5 }).then((res) =>
       setPostInteractionData(res.data)
     );
-    getPostByNewestCreatedAt({ limit: 5 }).then((res) =>
+    getPostByNewestCreatedAt({ limit: 4 }).then((res) =>
       setNewestPostData(res.data)
     );
     getTheTopAccountMostFollowerStatistic({ limit: 5 }).then((res) =>
