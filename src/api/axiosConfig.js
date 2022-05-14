@@ -22,6 +22,7 @@ const axiosConfig = axios.create({
   headers: {
     "Content-Type": "application/json",
   },
+  withCredentials: true,
 });
 
 axiosConfig.interceptors.request.use(async (config) => {

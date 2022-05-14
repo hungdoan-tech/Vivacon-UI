@@ -38,34 +38,36 @@ const ChatPage = () => {
       `/conversations/${data.id}/queue/messages`,
       onMessageReceived,
       {
-        "X-Authorization": getJwtToken(),
+        "WS-Authorization": getJwtToken(),
       }
     );
   };
 
   const onActiveUser = (payload) => {
+    console.log({payload})
     setActiveUsers(JSON.parse(payload.body));
   };
 
   const onConnected = () => {
-    stompClient.subscribe(`/topic/active`, onActiveUser, {
-      "X-Authorization": getJwtToken(),
+    stompClient.subscribe(`/topic/active/account`, onActiveUser, {
+      "WS-Authorization": getJwtToken(),
     });
     stompClient.subscribe(
       `/user/${getCurrentUser().username}/new/conversation`,
       onConversation,
       {
-        "X-Authorization": getJwtToken(),
+        "WS-Authorization": getJwtToken(),
       }
     );
     getConversations().then((res) => {
+      console.log({res})
       rooms = res.data;
       rooms.forEach((room) => {
         stompClient.subscribe(
           `/conversations/${room.id}/queue/messages`,
           onMessageReceived,
           {
-            "X-Authorization": getJwtToken(),
+            "WS-Authorization": getJwtToken(),
           }
         );
       });
@@ -79,13 +81,10 @@ const ChatPage = () => {
   };
 
   const connect = () => {
-    console.log({jwt:  getJwtToken()})
-    const token = getJwtToken();
-
     const sock = new SockJS(SOCKET_URL);
     stompClient = Stomp.over(sock);
     stompClient.connect(
-      { "X-Authorization": ` ${token}` },
+      { "WS-Authorization": getJwtToken() },
       onConnected,
       onError
     );
@@ -107,7 +106,7 @@ const ChatPage = () => {
         if (error.response.status === 404) {
           stompClient.send(
             "/app/conversations",
-            { "X-Authorization": getJwtToken() },
+            { "WS-Authorization": getJwtToken() },
             JSON.stringify({ usernames: [username] })
           );
         }
@@ -118,7 +117,7 @@ const ChatPage = () => {
     if (conversationID === null) return;
     stompClient.send(
       "/app/chat",
-      { "X-Authorization": getJwtToken() },
+      { "WS-Authorization": getJwtToken() },
       JSON.stringify({ conversationId: conversationID, content: inputMessage })
     );
     setInputMessage("");
