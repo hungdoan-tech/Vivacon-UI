@@ -1,0 +1,32 @@
+import axiosConfig from "./axiosConfig";
+import { API_ENDPOINT_KEYS } from "./constants";
+
+export const getConversations = async () => {
+  return axiosConfig.get(API_ENDPOINT_KEYS.CONVERSATION, {});
+};
+
+export const getConversationByUsername = async (data) => {
+  const { _sort, limit, _order, username: keyword } = data;
+  return axiosConfig.get(`${API_ENDPOINT_KEYS.CONVERSATION}/search`, {
+    params: {
+      _sort,
+      _order,
+      limit,
+      page: data.page,
+      keyword,
+    },
+  });
+};
+
+export const getMessagesByConversationId = async (data) => {
+  const { _sort, limit, _order, username: keyword, id } = data;
+  return axiosConfig.get(`${API_ENDPOINT_KEYS.CONVERSATION}/${id}/messages`, {
+    params: {
+      _sort,
+      _order,
+      limit,
+      page: data.page,
+      keyword,
+    },
+  });
+}

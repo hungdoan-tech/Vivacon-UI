@@ -1,4 +1,3 @@
-import axios from "axios";
 import axiosConfig from "./axiosConfig";
 import { API_ENDPOINT_KEYS } from "./constants";
 

@@ -8,8 +8,7 @@ import {
   removeJwtToken,
 } from "utils/cookie";
 import { renewToken } from "api/userService";
-
-const CURRENT_VERSION = "v1";
+import { API_URL, CURRENT_VERSION } from "./constants";
 
 let refreshTokenRequest = null;
 
@@ -19,7 +18,7 @@ const renewAccessToken = async (refreshToken) => {
 };
 
 const axiosConfig = axios.create({
-  baseURL: `http://localhost:8080/api/${CURRENT_VERSION}`,
+  baseURL: `${API_URL}${CURRENT_VERSION}`,
   headers: {
     "Content-Type": "application/json",
   },
