@@ -12,6 +12,7 @@ import "./style.scss";
 import {
   getConversationByUsername,
   getConversations,
+  getListOfConversationId,
   getMessagesByConversationId,
 } from "api/chatService";
 import { getJwtToken } from "utils/cookie";
@@ -20,6 +21,7 @@ import { SOCKET_URL } from "api/constants";
 import { resolveName, resolveUserName, splitUserName } from "utils/resolveData";
 import classNames from "classnames";
 import InfiniteScrollReverse from "react-infinite-scroll-reverse";
+import InfiniteScroll from "react-infinite-scroll-component";
 
 let stompClient = null;
 
@@ -33,7 +35,9 @@ const ChatPage = () => {
   const [conversationID, setConversationID] = useState(null);
   const [conversationList, setConversationList] = useState([]);
 
-  const onMessageReceived = (payload) => {};
+  const onMessageReceived = (payload) => {
+    console.log("receiveddd")
+  };
 
   const onConversation = (payload) => {
     const data = JSON.parse(payload.body);
@@ -63,21 +67,29 @@ const ChatPage = () => {
         "WS-Authorization": getJwtToken(),
       }
     );
-    getConversations().then((res) => {
-      console.log({ res });
-      rooms = res.data;
+    getListOfConversationId().then((res) => {
+      if (res.status === 200) {
+        console.log('ids: ', {res})
+        rooms = res.data;
+        rooms.forEach((room) => {
+          stompClient.subscribe(
+            `/conversation/${room}/message`,
+            onMessageReceived,
+            {
+              "WS-Authorization": getJwtToken(),
+            }
+          );
+        });
+      }
+    });
+    getConversations({
+      limit: 10,
+      page: 0,
+    }).then((res) => {
+      console.log('convid',{res})
       setConversationList(res.data);
-      setUserChatting(splitUserName(res.data.content[0].name));
+      setUserChatting(splitUserName(res.data.content[0].participants));
       setConversationID(res.data.content[0].id);
-      rooms.forEach((room) => {
-        stompClient.subscribe(
-          `/conversation/${room.id}/message`,
-          onMessageReceived,
-          {
-            "WS-Authorization": getJwtToken(),
-          }
-        );
-      });
     });
   };
 
@@ -100,25 +112,25 @@ const ChatPage = () => {
     setInputMessage(e.target.value);
   };
 
-  const onCreateNewChatting = (username) => {
-    setUserChatting(username);
-    getConversationByUsername({ username })
-      .then((res) => {
-        setConversationID(res.data.id);
-        getMessagesByConversationId({ id: res.data.content[0].id }).then(
-          (response) => {}
-        );
-      })
-      .catch((error) => {
-        if (error.response.status === 404) {
-          stompClient.send(
-            "/app/conversation",
-            { "WS-Authorization": getJwtToken() },
-            JSON.stringify({ usernames: [username] })
-          );
-        }
-      });
-  };
+  // const onCreateNewChatting = (username) => {
+  //   setUserChatting(username);
+  //   getConversationByUsername({ username })
+  //     .then((res) => {
+  //       setConversationID(res.data.id);
+  //       getMessagesByConversationId({ id: res.data.content[0].id }).then(
+  //         (response) => {}
+  //       );
+  //     })
+  //     .catch((error) => {
+  //       if (error.response.status === 404) {
+  //         stompClient.send(
+  //           "/app/conversation",
+  //           { "WS-Authorization": getJwtToken() },
+  //           JSON.stringify({ usernames: [username] })
+  //         );
+  //       }
+  //     });
+  // };
 
   const onClickUserChatting = (id, username) => {
     setUserChatting(username);
@@ -128,6 +140,7 @@ const ChatPage = () => {
       _order: "desc",
     }).then((response) => {
       console.log({ response });
+      setConversationID(id)
       setMessageList(response.data.content);
     });
   };
@@ -157,16 +170,16 @@ const ChatPage = () => {
       <Typography
         component="div"
         className="user-item"
-        onClick={() => onClickUserChatting(conv.id, splitUserName(conv.name))}
+        onClick={() => onClickUserChatting(conv.id, splitUserName(conv.participants))}
       >
         <img src={require("images/avatar.png")} />
         <Typography component="div" className="user-name-container">
           <Typography className="username">
-            {splitUserName(conv.name)}
+            {splitUserName(conv.participants)}
           </Typography>
           <Typography className="active">
-            {resolveName(conv.latestMessage.sender.fullName, "fullName")}:{" "}
-            {conv.latestMessage.content}
+            {resolveName(conv.latestMessage?.sender.fullName, "fullName")}:{" "}
+            {conv.latestMessage?.content}
           </Typography>
         </Typography>
       </Typography>
@@ -174,13 +187,18 @@ const ChatPage = () => {
   };
 
   const renderMessageList = (list) => {
-    console.log({ list });
     return (
-      <InfiniteScrollReverse
+      <InfiniteScroll
+        dataLength={100}
         hasMore={true}
         isLoading={true}
         loadMore={() => null}
         loadArea={30}
+        // style={{ display: "flex", flexDirection: "column-reverse" }} //To put endMessage and loader to the top.
+        inverse={true}
+        scrollableTarget="scrollableDiv"
+        scrollThreshold={"555px"}
+        initialScrollY={0}
       >
         {list.map((message, index) => {
           const condition =
@@ -218,7 +236,7 @@ const ChatPage = () => {
             </Typography>
           );
         })}
-      </InfiniteScrollReverse>
+      </InfiniteScroll>
     );
   };
 
@@ -233,7 +251,7 @@ const ChatPage = () => {
             <DriveFileRenameOutlineIcon className="icon" />
           </Typography>
         </Typography>
-        {conversationList.content?.map((room) => {
+        {conversationList.content?.length > 0 && conversationList.content?.map((room) => {
           return renderUserItem(room);
         })}
       </Typography>

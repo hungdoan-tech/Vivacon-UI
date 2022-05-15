@@ -8456,6 +8456,13 @@
     "react" "^16.12.0"
     "react-flip-move" "^3.0.4"
 
+"react-infinite-scroll-component@^6.1.0":
+  "integrity" "sha512-SQu5nCqy8DxQWpnUVLx7V7b7LcA37aM7tvoWjTLZp1dk6EJibM5/4EJKzOnl07/BsM1Y40sKLuqjCwwH/xV0TQ=="
+  "resolved" "https://registry.npmjs.org/react-infinite-scroll-component/-/react-infinite-scroll-component-6.1.0.tgz"
+  "version" "6.1.0"
+  dependencies:
+    "throttle-debounce" "^2.1.0"
+
 "react-infinite-scroll-reverse@^2.0.2":
   "integrity" "sha512-wBrgUZvKsFu9VSiF/6qBf10q61l6T+DaM6pgTROBjyKqlkzf32QmXUCNVbqH8ePQjtsTP9TknAjNjPype1363g=="
   "resolved" "https://registry.npmjs.org/react-infinite-scroll-reverse/-/react-infinite-scroll-reverse-2.0.2.tgz"
@@ -8667,7 +8674,7 @@
     "loose-envify" "^1.4.0"
     "prop-types" "^15.6.2"
 
-"react@^0.14.0 || ^15.0.0 || ^16.0.0 || ^17.0.0", "react@^0.14.0 || ^17.0.0", "react@^15.0.0 || ^16.0.0", "react@^15.3.0 || ^16.0.0 || ^17.0.0", "react@^16.0.0-0", "react@^16.13.1", "react@^16.3.0 || ^17.0.0", "react@^16.8.0 || ^17", "react@^16.8.0 || ^17.0.0", "react@^16.8.0 || ^17.0.0 || ^18.0.0", "react@^16.8.3 || ^17 || ^18", "react@^17.0.0", "react@^17.0.1", "react@^17.0.2", "react@<18.0.0", "react@>= 16", "react@>= 16.3.0", "react@>= 16.8.0", "react@>=0.13", "react@>=0.14.0", "react@>=15", "react@>=15.4", "react@>=16.3.0", "react@>=16.3.x", "react@>=16.6.0", "react@>=16.8 || ^17.0.0", "react@>=16.8 || ^17.0.0 || ^18.0.0", "react@>=16.8.0", "react@15 - 17", "react@17.0.2":
+"react@^0.14.0 || ^15.0.0 || ^16.0.0 || ^17.0.0", "react@^0.14.0 || ^17.0.0", "react@^15.0.0 || ^16.0.0", "react@^15.3.0 || ^16.0.0 || ^17.0.0", "react@^16.0.0-0", "react@^16.13.1", "react@^16.3.0 || ^17.0.0", "react@^16.8.0 || ^17", "react@^16.8.0 || ^17.0.0", "react@^16.8.0 || ^17.0.0 || ^18.0.0", "react@^16.8.3 || ^17 || ^18", "react@^17.0.0", "react@^17.0.1", "react@^17.0.2", "react@<18.0.0", "react@>= 16", "react@>= 16.3.0", "react@>= 16.8.0", "react@>=0.13", "react@>=0.14.0", "react@>=15", "react@>=15.4", "react@>=16.0.0", "react@>=16.3.0", "react@>=16.3.x", "react@>=16.6.0", "react@>=16.8 || ^17.0.0", "react@>=16.8 || ^17.0.0 || ^18.0.0", "react@>=16.8.0", "react@15 - 17", "react@17.0.2":
   "integrity" "sha512-gnhPt75i/dq/z3/6q/0asP78D0u592D5L1pd7M8P+dck6Fu/jJeL6iVVK23fptSUZj8Vjf++7wXA8UNclGQcbA=="
   "resolved" "https://registry.npmjs.org/react/-/react-17.0.2.tgz"
   "version" "17.0.2"
@@ -9925,6 +9932,11 @@
   "integrity" "sha512-8hmiGIJMDlwjg7dlJ4yKGLK8EsYqKgPWbG3b4wjJddKNwc7N7Dpn08Df4szr/sZdMVeOstrdYSsqzX6BYbcB+w=="
   "resolved" "https://registry.npmjs.org/throat/-/throat-6.0.1.tgz"
   "version" "6.0.1"
+
+"throttle-debounce@^2.1.0":
+  "integrity" "sha512-H7oLPV0P7+jgvrk+6mwwwBDmxTaxnu9HMXmloNLXwnNO0ZxZ31Orah2n8lU1eMPvsaowP2CX+USCgyovXfdOFQ=="
+  "resolved" "https://registry.npmjs.org/throttle-debounce/-/throttle-debounce-2.3.0.tgz"
+  "version" "2.3.0"
 
 "thunky@^1.0.2":
   "integrity" "sha512-eHY7nBftgThBqOyHGVN+l8gF0BucP09fMo0oO/Lb0w1OF80dJv+lDVpXG60WMQvkcxAkNybKsrEIE3ZtKGmPrA=="
