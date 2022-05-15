@@ -80,10 +80,44 @@
     }
     .chat-content {
       width: 100%;
-      //   min-height: calc(100vh - 270px);
-      //   max-height: calc(100vh - 210px);
       flex: 1;
       overflow: auto;
+      padding: 10px;
+      .message-item-container {
+        width: calc(100% - 20px);
+        display: flex;
+        flex-direction: row;
+        &.owner {
+          justify-content: flex-end;
+        }
+        &.target {
+          justify-content: flex-start;
+        }
+        .sender-avatar {
+          width: 20px;
+          display: flex;
+          flex-direction: column !important;
+          justify-content: center !important;
+          img {
+            width: 20px;
+            height: 20px;
+            border-radius: 20px;
+          }
+        }
+        .message-item {
+          border-radius: 10px;
+          padding: 10px;
+          margin: 5px;
+          width: fit-content;
+          &.owner {
+            background-color: var(--mainColor);
+            color: var(--backgroundColor);
+          }
+          &.target {
+            background-color: var(--lightColor);
+          }
+        }
+      }
     }
     .chat-input-container {
       min-height: 40px;

@@ -17,17 +17,21 @@ import {
 import { getJwtToken } from "utils/cookie";
 import { getCurrentUser } from "utils/jwtToken";
 import { SOCKET_URL } from "api/constants";
+import { resolveName, resolveUserName, splitUserName } from "utils/resolveData";
+import classNames from "classnames";
+import InfiniteScrollReverse from "react-infinite-scroll-reverse";
 
 let stompClient = null;
 
 const ChatPage = () => {
   let rooms = [];
   const [inputMessage, setInputMessage] = useState("");
-  const [message, setMessage] = useState([]);
+  const [messageList, setMessageList] = useState([]);
   const [listSupporter, setListSupporter] = useState([]);
   const [activeUsers, setActiveUsers] = useState([]);
   const [userChatting, setUserChatting] = useState("");
   const [conversationID, setConversationID] = useState(null);
+  const [conversationList, setConversationList] = useState([]);
 
   const onMessageReceived = (payload) => {};
 
@@ -35,7 +39,7 @@ const ChatPage = () => {
     const data = JSON.parse(payload.body);
     setConversationID(data.id);
     stompClient.subscribe(
-      `/conversations/${data.id}/queue/messages`,
+      `/conversation/${data.id}/message`,
       onMessageReceived,
       {
         "WS-Authorization": getJwtToken(),
@@ -44,27 +48,30 @@ const ChatPage = () => {
   };
 
   const onActiveUser = (payload) => {
-    console.log({payload})
+    console.log({ payload });
     setActiveUsers(JSON.parse(payload.body));
   };
 
   const onConnected = () => {
-    stompClient.subscribe(`/topic/active/account`, onActiveUser, {
+    stompClient.subscribe(`/topic/account/online`, onActiveUser, {
       "WS-Authorization": getJwtToken(),
     });
     stompClient.subscribe(
-      `/user/${getCurrentUser().username}/new/conversation`,
+      `/user/${getCurrentUser().username}/conversation/new`,
       onConversation,
       {
         "WS-Authorization": getJwtToken(),
       }
     );
     getConversations().then((res) => {
-      console.log({res})
+      console.log({ res });
       rooms = res.data;
+      setConversationList(res.data);
+      setUserChatting(splitUserName(res.data.content[0].name));
+      setConversationID(res.data.content[0].id);
       rooms.forEach((room) => {
         stompClient.subscribe(
-          `/conversations/${room.id}/queue/messages`,
+          `/conversation/${room.id}/message`,
           onMessageReceived,
           {
             "WS-Authorization": getJwtToken(),
@@ -75,9 +82,7 @@ const ChatPage = () => {
   };
 
   const onError = (err) => {
-    console.log(
-      {err}
-    )
+    console.log({ err });
   };
 
   const connect = () => {
@@ -88,24 +93,26 @@ const ChatPage = () => {
       onConnected,
       onError
     );
-    console.log({sock, stompClient})
+    console.log({ sock, stompClient });
   };
 
   const changeMessage = (e) => {
     setInputMessage(e.target.value);
   };
 
-  const onClickUserChatting = (username) => {
+  const onCreateNewChatting = (username) => {
     setUserChatting(username);
     getConversationByUsername({ username })
       .then((res) => {
         setConversationID(res.data.id);
-        getMessagesByConversationId({ id: res.data.id }).then((response) => {});
+        getMessagesByConversationId({ id: res.data.content[0].id }).then(
+          (response) => {}
+        );
       })
       .catch((error) => {
         if (error.response.status === 404) {
           stompClient.send(
-            "/app/conversations",
+            "/app/conversation",
             { "WS-Authorization": getJwtToken() },
             JSON.stringify({ usernames: [username] })
           );
@@ -113,19 +120,107 @@ const ChatPage = () => {
       });
   };
 
-  const sendMessage = () => {
-    if (conversationID === null) return;
-    stompClient.send(
-      "/app/chat",
-      { "WS-Authorization": getJwtToken() },
-      JSON.stringify({ conversationId: conversationID, content: inputMessage })
-    );
-    setInputMessage("");
+  const onClickUserChatting = (id, username) => {
+    setUserChatting(username);
+    getMessagesByConversationId({
+      id,
+      _sort: "timestamp",
+      _order: "desc",
+    }).then((response) => {
+      console.log({ response });
+      setMessageList(response.data.content);
+    });
+  };
+
+  const sendMessage = (event) => {
+    if (event.key === "Enter") {
+      console.log({ conversationID });
+      if (conversationID === null) return;
+      stompClient.send(
+        "/app/chat",
+        { "WS-Authorization": getJwtToken() },
+        JSON.stringify({
+          conversationId: conversationID,
+          content: inputMessage,
+        })
+      );
+      setInputMessage("");
+    }
   };
 
   useEffect(() => {
     connect();
   }, []);
+
+  const renderUserItem = (conv) => {
+    return (
+      <Typography
+        component="div"
+        className="user-item"
+        onClick={() => onClickUserChatting(conv.id, splitUserName(conv.name))}
+      >
+        <img src={require("images/avatar.png")} />
+        <Typography component="div" className="user-name-container">
+          <Typography className="username">
+            {splitUserName(conv.name)}
+          </Typography>
+          <Typography className="active">
+            {resolveName(conv.latestMessage.sender.fullName, "fullName")}:{" "}
+            {conv.latestMessage.content}
+          </Typography>
+        </Typography>
+      </Typography>
+    );
+  };
+
+  const renderMessageList = (list) => {
+    console.log({ list });
+    return (
+      <InfiniteScrollReverse
+        hasMore={true}
+        isLoading={true}
+        loadMore={() => null}
+        loadArea={30}
+      >
+        {list.map((message, index) => {
+          const condition =
+            message.sender.username === getCurrentUser().username;
+          const messageClassName = classNames("message-item", {
+            owner: condition,
+            target: !condition,
+          });
+
+          const messageContainerClassName = classNames(
+            "message-item-container",
+            {
+              owner: condition,
+              target: !condition,
+            }
+          );
+
+          const showAvatar =
+            message.sender.username !== list[index + 1]?.sender.username;
+
+          return (
+            <Typography component="div" className={messageContainerClassName}>
+              {!condition && (
+                <Typography className="sender-avatar">
+                  {showAvatar && <img src={require("images/avatar.png")} />}
+                </Typography>
+              )}
+              <Typography
+                className={messageClassName}
+                align={condition ? "right" : "left"}
+                component="div"
+              >
+                {message.content}
+              </Typography>
+            </Typography>
+          );
+        })}
+      </InfiniteScrollReverse>
+    );
+  };
 
   return (
     <Typography component="div" className="chat-container">
@@ -138,14 +233,9 @@ const ChatPage = () => {
             <DriveFileRenameOutlineIcon className="icon" />
           </Typography>
         </Typography>
-
-        <Typography component="div" className="user-item">
-          <img src={require("images/avatar.png")} />
-          <Typography component="div" className="user-name-container">
-            <Typography className="username">Queen Elizabeth</Typography>
-            <Typography className="active">Active today</Typography>
-          </Typography>
-        </Typography>
+        {conversationList.content?.map((room) => {
+          return renderUserItem(room);
+        })}
       </Typography>
 
       <Typography component="div" className="chat-with-user-container">
@@ -153,7 +243,7 @@ const ChatPage = () => {
           <Typography component="div" className="user-item">
             <img src={require("images/avatar.png")} />
             <Typography component="div" className="user-name-container">
-              <Typography className="username">Queen Elizabeth</Typography>
+              <Typography className="username">{userChatting}</Typography>
               <Typography className="active">Active today</Typography>
             </Typography>
           </Typography>
@@ -162,7 +252,9 @@ const ChatPage = () => {
           </Typography>
         </Typography>
 
-        <Typography component="div" className="chat-content"></Typography>
+        <Typography component="div" className="chat-content">
+          {renderMessageList(messageList)}
+        </Typography>
 
         <Typography component="div" className="chat-input-container">
           <Typography component="div" className="emoji">
@@ -174,8 +266,9 @@ const ChatPage = () => {
               fullWidth={true}
               maxRows={3}
               multiline={true}
-              // onChange={handleCaptionChange}
-              // value={commentContent}
+              onChange={changeMessage}
+              value={inputMessage}
+              onKeyDown={sendMessage}
             />{" "}
           </Typography>
           <Typography component="div" className="send-images">

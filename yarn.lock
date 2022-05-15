@@ -8456,6 +8456,15 @@
     "react" "^16.12.0"
     "react-flip-move" "^3.0.4"
 
+"react-infinite-scroll-reverse@^2.0.2":
+  "integrity" "sha512-wBrgUZvKsFu9VSiF/6qBf10q61l6T+DaM6pgTROBjyKqlkzf32QmXUCNVbqH8ePQjtsTP9TknAjNjPype1363g=="
+  "resolved" "https://registry.npmjs.org/react-infinite-scroll-reverse/-/react-infinite-scroll-reverse-2.0.2.tgz"
+  "version" "2.0.2"
+  dependencies:
+    "prop-types" "15.7.2"
+    "react" "17.0.2"
+    "react-dom" "17.0.2"
+
 "react-is@^16.13.1":
   "integrity" "sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ=="
   "resolved" "https://registry.npmjs.org/react-is/-/react-is-16.13.1.tgz"
