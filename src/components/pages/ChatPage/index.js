@@ -18,7 +18,13 @@ import {
 import { getJwtToken } from "utils/cookie";
 import { getCurrentUser } from "utils/jwtToken";
 import { SOCKET_URL } from "api/constants";
-import { resolveName, resolveUserName, splitUserName } from "utils/resolveData";
+import {
+  resolveName,
+  resolveUserName,
+  splitUserName,
+  filterParticipants,
+  targetAvatarLayout,
+} from "utils/resolveData";
 import classNames from "classnames";
 import InfiniteScrollReverse from "react-infinite-scroll-reverse";
 import InfiniteScroll from "react-infinite-scroll-component";
@@ -29,15 +35,47 @@ const ChatPage = () => {
   let rooms = [];
   const [inputMessage, setInputMessage] = useState("");
   const [messageList, setMessageList] = useState([]);
-  const [listSupporter, setListSupporter] = useState([]);
+  const [submitMessage, setSubmitMessage] = useState({});
   const [activeUsers, setActiveUsers] = useState([]);
   const [userChatting, setUserChatting] = useState("");
   const [conversationID, setConversationID] = useState(null);
-  const [conversationList, setConversationList] = useState([]);
+  const [conversationList, setConversationList] = useState({});
+  const [currentTargetAvatar, setCurrentTargetAvatar] = useState([]);
 
   const onMessageReceived = (payload) => {
-    console.log("receiveddd")
+    setSubmitMessage(JSON.parse(payload.body));
   };
+
+  const getIndexOfCurrentConversation = () => {
+    if (conversationList.content) {
+      const currConvList = [...conversationList?.content];
+      const index = currConvList.map((conv, i) => {
+        if (conv.id === conversationID) return i;
+      });
+      return index;
+    }
+  };
+
+  useEffect(() => {
+    if (submitMessage.id) {
+      setMessageList([submitMessage, ...messageList]);
+      setSubmitMessage({});
+      const currConvList = [...conversationList?.content];
+      const index = getIndexOfCurrentConversation();
+      currConvList[index].latestMessage = { ...submitMessage };
+      setConversationList({ ...conversationList, content: currConvList });
+    }
+  }, [submitMessage]);
+
+  useEffect(() => {
+    if (conversationID && conversationList.content) {
+      const index = getIndexOfCurrentConversation();
+      const filtered = filterParticipants(
+        conversationList.content[index]?.participants
+      );
+      setCurrentTargetAvatar(filtered);
+    }
+  }, [conversationID]);
 
   const onConversation = (payload) => {
     const data = JSON.parse(payload.body);
@@ -69,7 +107,7 @@ const ChatPage = () => {
     );
     getListOfConversationId().then((res) => {
       if (res.status === 200) {
-        console.log('ids: ', {res})
+        console.log("ids: ", { res });
         rooms = res.data;
         rooms.forEach((room) => {
           stompClient.subscribe(
@@ -86,7 +124,6 @@ const ChatPage = () => {
       limit: 10,
       page: 0,
     }).then((res) => {
-      console.log('convid',{res})
       setConversationList(res.data);
       setUserChatting(splitUserName(res.data.content[0].participants));
       setConversationID(res.data.content[0].id);
@@ -133,6 +170,7 @@ const ChatPage = () => {
   // };
 
   const onClickUserChatting = (id, username) => {
+    console.log("ON CLICK CHATTING");
     setUserChatting(username);
     getMessagesByConversationId({
       id,
@@ -140,15 +178,16 @@ const ChatPage = () => {
       _order: "desc",
     }).then((response) => {
       console.log({ response });
-      setConversationID(id)
+      setConversationID(id);
       setMessageList(response.data.content);
     });
   };
 
   const sendMessage = (event) => {
     if (event.key === "Enter") {
+      event.preventDefault();
       console.log({ conversationID });
-      if (conversationID === null) return;
+      if (conversationID === null || inputMessage === "") return;
       stompClient.send(
         "/app/chat",
         { "WS-Authorization": getJwtToken() },
@@ -166,13 +205,29 @@ const ChatPage = () => {
   }, []);
 
   const renderUserItem = (conv) => {
+    const participants = filterParticipants(conv.participants);
     return (
       <Typography
         component="div"
         className="user-item"
-        onClick={() => onClickUserChatting(conv.id, splitUserName(conv.participants))}
+        onClick={() =>
+          onClickUserChatting(conv.id, splitUserName(conv.participants))
+        }
       >
-        <img src={require("images/avatar.png")} />
+        <Typography component="div" className="target-avatar">
+          {participants.map((user, index) => {
+            return (
+              <img
+                src={user.avatar}
+                style={targetAvatarLayout(
+                  currentTargetAvatar.length,
+                  index,
+                  40
+                )}
+              />
+            );
+          })}
+        </Typography>
         <Typography component="div" className="user-name-container">
           <Typography className="username">
             {splitUserName(conv.participants)}
@@ -186,7 +241,8 @@ const ChatPage = () => {
     );
   };
 
-  const renderMessageList = (list) => {
+  const renderMessageList = (messageList) => {
+    console.log({ messageList });
     return (
       <InfiniteScroll
         dataLength={100}
@@ -194,13 +250,13 @@ const ChatPage = () => {
         isLoading={true}
         loadMore={() => null}
         loadArea={30}
-        // style={{ display: "flex", flexDirection: "column-reverse" }} //To put endMessage and loader to the top.
+        style={{ display: "flex", flexDirection: "column-reverse" }} //To put endMessage and loader to the top.
         inverse={true}
         scrollableTarget="scrollableDiv"
         scrollThreshold={"555px"}
         initialScrollY={0}
       >
-        {list.map((message, index) => {
+        {messageList.map((message, index) => {
           const condition =
             message.sender.username === getCurrentUser().username;
           const messageClassName = classNames("message-item", {
@@ -215,15 +271,14 @@ const ChatPage = () => {
               target: !condition,
             }
           );
-
           const showAvatar =
-            message.sender.username !== list[index + 1]?.sender.username;
+            message.sender.username !== messageList[index - 1]?.sender.username;
 
           return (
             <Typography component="div" className={messageContainerClassName}>
               {!condition && (
                 <Typography className="sender-avatar">
-                  {showAvatar && <img src={require("images/avatar.png")} />}
+                  {showAvatar && <img src={message.sender.avatar} />}
                 </Typography>
               )}
               <Typography
@@ -251,15 +306,29 @@ const ChatPage = () => {
             <DriveFileRenameOutlineIcon className="icon" />
           </Typography>
         </Typography>
-        {conversationList.content?.length > 0 && conversationList.content?.map((room) => {
-          return renderUserItem(room);
-        })}
+        {conversationList.content?.length > 0 &&
+          conversationList.content?.map((room) => {
+            return renderUserItem(room);
+          })}
       </Typography>
 
       <Typography component="div" className="chat-with-user-container">
         <Typography component="div" className="header">
           <Typography component="div" className="user-item">
-            <img src={require("images/avatar.png")} />
+            <Typography component="div" className="target-avatar">
+              {currentTargetAvatar.map((user, index) => {
+                return (
+                  <img
+                    src={user.avatar}
+                    style={targetAvatarLayout(
+                      currentTargetAvatar.length,
+                      index,
+                      40
+                    )}
+                  />
+                );
+              })}
+            </Typography>
             <Typography component="div" className="user-name-container">
               <Typography className="username">{userChatting}</Typography>
               <Typography className="active">Active today</Typography>
