@@ -11,7 +11,7 @@ import RegisterPage from "components/pages/RegisterPage";
 import VerifyPage from "components/pages/VerifyPage";
 import FindAccountPage from "components/pages/FindAccountPage";
 import ForgotPasswordPage from "components/pages/ForgotPasswordPage";
-import Dashboard from "components/dashboard/charts";
+import Dashboard from "components/dashboard/src";
 
 const RouterList = () => {
   const Auth = useContext(AuthUser);
