@@ -5,6 +5,7 @@ import moment from "moment";
 import "./style.scss";
 import { Slide } from "react-slideshow-image";
 import "react-slideshow-image/dist/styles.css";
+import Carousel from "react-material-ui-carousel";
 
 const MainDash = ({
   statisticData,
@@ -63,7 +64,6 @@ const MainDash = ({
                     </div>
                   </div>
                   <div className="homepage__top-card-user-box">
-                    <h3>{item.caption}</h3>
                     <span>{item.userName}</span>
                   </div>
                 </div>
@@ -85,10 +85,12 @@ const MainDash = ({
                   </div>
                 </div>
                 <div className="homepage__top-card-img">
-                  <img
-                    src={require("../../../../../assets/img/card_innovation_img.png")}
-                    alt="innovation card"
-                  />
+                  <h3>{item.caption}</h3>
+                  <Carousel autoPlay={false} className="details-carousel">
+                    {item.lstAttachmentDTO?.map((item, i) => (
+                      <img key={i} src={item.url} alt="" />
+                    ))}
+                  </Carousel>
                 </div>
               </div>
             ))}
