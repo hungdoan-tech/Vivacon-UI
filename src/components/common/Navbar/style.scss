@@ -14,25 +14,6 @@
     cursor: pointer;
   }
 
-  .app-search {
-    grid-column-start: 5;
-    grid-column-end: span 2;
-    display: flex;
-    flex-direction: row;
-    color: var(--charColor);
-    background-color: var(--lightColor);
-    border-radius: 10px;
-    .search-icon {
-      margin: 5px;
-      align-items: center;
-      left: 5px;
-      top: 5px;
-    }
-    .search-text {
-      width: 80%;
-    }
-  }
-
   .app-user {
     grid-column-start: 10;
     grid-column-end: 10;

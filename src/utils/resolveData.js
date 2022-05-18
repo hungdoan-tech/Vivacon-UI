@@ -110,3 +110,16 @@ export const targetAvatarLayout = (length, index, containerDemenssion) => {
     };
   }
 };
+
+export const saveSearchList = (list, item) => {
+  if (!list.find((listItem) => listItem.id === item.id)) {
+    list.push(item);
+    return _.reverse(_.slice(list, 0, 4));
+  }
+  else{
+    const filtered = list.filter((listItem) => listItem.id !== item.id);
+    filtered.push(item);
+    return _.reverse(_.slice(filtered, 0, 4));
+  }
+  
+};

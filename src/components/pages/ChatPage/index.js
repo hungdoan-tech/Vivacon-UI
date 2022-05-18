@@ -56,26 +56,17 @@ const ChatPage = () => {
     }
   };
 
-  useEffect(() => {
-    if (submitMessage.id) {
-      setMessageList([submitMessage, ...messageList]);
-      setSubmitMessage({});
-      const currConvList = [...conversationList?.content];
-      const index = getIndexOfCurrentConversation();
-      currConvList[index].latestMessage = { ...submitMessage };
-      setConversationList({ ...conversationList, content: currConvList });
-    }
-  }, [submitMessage]);
-
-  useEffect(() => {
-    if (conversationID && conversationList.content) {
-      const index = getIndexOfCurrentConversation();
-      const filtered = filterParticipants(
-        conversationList.content[index]?.participants
-      );
-      setCurrentTargetAvatar(filtered);
-    }
-  }, [conversationID]);
+  const getMessageList = (id) => {
+    getMessagesByConversationId({
+      id,
+      _sort: "timestamp",
+      _order: "desc",
+    }).then((response) => {
+      console.log({ response });
+      setConversationID(id);
+      setMessageList(response.data.content);
+    });
+  }
 
   const onConversation = (payload) => {
     const data = JSON.parse(payload.body);
@@ -127,6 +118,7 @@ const ChatPage = () => {
       setConversationList(res.data);
       setUserChatting(splitUserName(res.data.content[0].participants));
       setConversationID(res.data.content[0].id);
+      getMessageList(res.data.content[0].id);
     });
   };
 
@@ -142,7 +134,6 @@ const ChatPage = () => {
       onConnected,
       onError
     );
-    console.log({ sock, stompClient });
   };
 
   const changeMessage = (e) => {
@@ -170,17 +161,8 @@ const ChatPage = () => {
   // };
 
   const onClickUserChatting = (id, username) => {
-    console.log("ON CLICK CHATTING");
     setUserChatting(username);
-    getMessagesByConversationId({
-      id,
-      _sort: "timestamp",
-      _order: "desc",
-    }).then((response) => {
-      console.log({ response });
-      setConversationID(id);
-      setMessageList(response.data.content);
-    });
+    getMessageList(id);
   };
 
   const sendMessage = (event) => {
@@ -203,6 +185,27 @@ const ChatPage = () => {
   useEffect(() => {
     connect();
   }, []);
+
+  useEffect(() => {
+    if (submitMessage.id) {
+      setMessageList([submitMessage, ...messageList]);
+      setSubmitMessage({});
+      const currConvList = [...conversationList?.content];
+      const index = getIndexOfCurrentConversation();
+      currConvList[index].latestMessage = { ...submitMessage };
+      setConversationList({ ...conversationList, content: currConvList });
+    }
+  }, [submitMessage]);
+
+  useEffect(() => {
+    if (conversationID && conversationList.content) {
+      const index = getIndexOfCurrentConversation();
+      const filtered = filterParticipants(
+        conversationList.content[index]?.participants
+      );
+      setCurrentTargetAvatar(filtered);
+    }
+  }, [conversationID]);
 
   const renderUserItem = (conv) => {
     const participants = filterParticipants(conv.participants);

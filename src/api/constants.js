@@ -21,5 +21,6 @@ export const API_ENDPOINT_KEYS = {
   LIKE: "/like",
   COMMENT: "/comment",
   NEWFEED: "/newsfeed",
-  CONVERSATION: '/conversation'
+  CONVERSATION: '/conversation',
+  ACCOUNT: '/account'
 };
