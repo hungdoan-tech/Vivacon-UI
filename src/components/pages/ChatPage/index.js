@@ -28,6 +28,7 @@ import {
 import classNames from "classnames";
 import InfiniteScrollReverse from "react-infinite-scroll-reverse";
 import InfiniteScroll from "react-infinite-scroll-component";
+import { chattingType } from "constant/types";
 
 let stompClient = null;
 
@@ -43,14 +44,18 @@ const ChatPage = () => {
   const [currentTargetAvatar, setCurrentTargetAvatar] = useState([]);
 
   const onMessageReceived = (payload) => {
+    console.log({ recieved: JSON.parse(payload.body) });
     setSubmitMessage(JSON.parse(payload.body));
   };
 
-  const getIndexOfCurrentConversation = () => {
+  const getIndexOfConversation = (id) => {
     if (conversationList.content) {
       const currConvList = [...conversationList?.content];
-      const index = currConvList.map((conv, i) => {
-        if (conv.id === conversationID) return i;
+      let index;
+      currConvList.map((conv, i) => {
+        if (conv.id === id) {
+          index = i;
+        }
       });
       return index;
     }
@@ -66,7 +71,7 @@ const ChatPage = () => {
       setConversationID(id);
       setMessageList(response.data.content);
     });
-  }
+  };
 
   const onConversation = (payload) => {
     const data = JSON.parse(payload.body);
@@ -114,6 +119,8 @@ const ChatPage = () => {
     getConversations({
       limit: 10,
       page: 0,
+      _sort: "lastModifiedAt",
+      _order: "desc",
     }).then((res) => {
       setConversationList(res.data);
       setUserChatting(splitUserName(res.data.content[0].participants));
@@ -188,18 +195,35 @@ const ChatPage = () => {
 
   useEffect(() => {
     if (submitMessage.id) {
-      setMessageList([submitMessage, ...messageList]);
+      let index
+      if (conversationID === submitMessage.conversationId) {
+        setMessageList([submitMessage, ...messageList]);
+        index = getIndexOfConversation(conversationID);
+      }
+      else {
+        index = getIndexOfConversation(submitMessage.conversationId);
+      }
       setSubmitMessage({});
+      //Save current conversation list and current index
       const currConvList = [...conversationList?.content];
-      const index = getIndexOfCurrentConversation();
-      currConvList[index].latestMessage = { ...submitMessage };
-      setConversationList({ ...conversationList, content: currConvList });
+
+      //Declare target
+      const target = currConvList[index];
+      target.latestMessage = { ...submitMessage };
+
+      //Update list
+      const filtered = currConvList.filter(
+        (item) => item.id !== submitMessage.conversationId
+      );
+      const result = [target, ...filtered];
+
+      setConversationList({ ...conversationList, content: result });
     }
   }, [submitMessage]);
 
   useEffect(() => {
     if (conversationID && conversationList.content) {
-      const index = getIndexOfCurrentConversation();
+      const index = getIndexOfConversation(conversationID);
       const filtered = filterParticipants(
         conversationList.content[index]?.participants
       );
@@ -209,10 +233,13 @@ const ChatPage = () => {
 
   const renderUserItem = (conv) => {
     const participants = filterParticipants(conv.participants);
+    const userItemClassName = classNames("user-item", {
+      active: conv.id === conversationID,
+    });
     return (
       <Typography
         component="div"
-        className="user-item"
+        className={userItemClassName}
         onClick={() =>
           onClickUserChatting(conv.id, splitUserName(conv.participants))
         }
@@ -222,11 +249,7 @@ const ChatPage = () => {
             return (
               <img
                 src={user.avatar}
-                style={targetAvatarLayout(
-                  currentTargetAvatar.length,
-                  index,
-                  40
-                )}
+                style={targetAvatarLayout(participants.length, index, 40)}
               />
             );
           })}
@@ -236,8 +259,9 @@ const ChatPage = () => {
             {splitUserName(conv.participants)}
           </Typography>
           <Typography className="active">
-            {resolveName(conv.latestMessage?.sender.fullName, "fullName")}:{" "}
-            {conv.latestMessage?.content}
+            {conv.latestMessage &&
+              `${resolveName(conv.latestMessage?.sender.fullName, "fullName")}:
+            ${conv.latestMessage?.content}`}
           </Typography>
         </Typography>
       </Typography>

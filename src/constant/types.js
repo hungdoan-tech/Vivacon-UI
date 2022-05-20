@@ -25,3 +25,9 @@ export const privacyPostType = [
     icon: <PermContactCalendarIcon />,
   },
 ];
+
+export const chattingType = {
+  TYPING: "TYPING",
+  USUAL_TEXT: "USUAL_TEXT",
+  NEW_PARTICIPANT: "NEW_PARTICIPANT",
+};

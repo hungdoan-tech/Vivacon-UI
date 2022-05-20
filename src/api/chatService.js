@@ -26,7 +26,7 @@ export const getConversationByUsername = async (data) => {
 
 export const getMessagesByConversationId = async (data) => {
   const { _sort, limit, _order, username: keyword, id } = data;
-  return axiosConfig.get(`${API_ENDPOINT_KEYS.CONVERSATION}/${id}/messages`, {
+  return axiosConfig.get(`${API_ENDPOINT_KEYS.CONVERSATION}/${id}/message`, {
     params: {
       _sort,
       _order,

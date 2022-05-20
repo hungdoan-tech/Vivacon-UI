@@ -47,6 +47,15 @@
           color: var(--defaultColor);
         }
       }
+      &:hover{
+        cursor: pointer;
+      }
+      &.active{
+        background-color: var(--lightColor);
+        .username {
+          font-weight: 900;
+        }
+      }
     }
   }
   .chat-with-user-container {

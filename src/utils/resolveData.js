@@ -12,9 +12,7 @@ export const splitUserName = (participants) => {
     }
   });
   if (participants.length > 2) {
-    return participants.reduce(
-      (prev, next) => prev.fullName + ", " + next.fullName
-    );
+    return participants.map((user) => user.fullName).join(", ");
   } else {
     return participants.filter((user) => user.fullName !== "Me")[0].fullName;
   }
@@ -29,20 +27,25 @@ export const resolveName = (name, field) => {
 };
 
 export const filterParticipants = (participants) => {
-  if (participants.length > 2) {
-    return _.slice(
-      participants,
-      0,
-      participants.length > 4 ? 4 : participants.length
-    );
+  if (participants) {
+    if (participants.length > 2) {
+      return _.slice(
+        participants,
+        0,
+        participants.length > 4 ? 4 : participants.length
+      );
+    } else {
+      return participants.filter(
+        (user) => user.username !== getCurrentUser().username
+      );
+    }
   } else {
-    return participants.filter(
-      (user) => user.username !== getCurrentUser().username
-    );
+    return [];
   }
 };
 
 export const targetAvatarLayout = (length, index, containerDemenssion) => {
+  console.log("length is", { length });
   let returnStyle = {};
   if (length >= 4) {
     if (index === 0) {
@@ -115,11 +118,9 @@ export const saveSearchList = (list, item) => {
   if (!list.find((listItem) => listItem.id === item.id)) {
     list.push(item);
     return _.reverse(_.slice(list, 0, 4));
-  }
-  else{
+  } else {
     const filtered = list.filter((listItem) => listItem.id !== item.id);
     filtered.push(item);
     return _.reverse(_.slice(filtered, 0, 4));
   }
-  
 };
