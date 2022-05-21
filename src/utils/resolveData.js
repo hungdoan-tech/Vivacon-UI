@@ -52,29 +52,34 @@ export const targetAvatarLayout = (length, index, containerDemenssion) => {
       returnStyle = {
         top: 0,
         left: 0,
+        borderTopLeftRadius: containerDemenssion,
       };
     }
     if (index === 1) {
       returnStyle = {
         right: 0,
         top: 0,
+        borderTopRightRadius: containerDemenssion,
       };
     }
     if (index === 3) {
       returnStyle = {
         bottom: 0,
         left: 0,
+        borderBottomLeftRadius: containerDemenssion,
       };
     }
     if (index === 4) {
       returnStyle = {
         bottom: 0,
         right: 0,
+        borderBottomRightRadius: containerDemenssion,
       };
     }
     return {
-      width: containerDemenssion / 2,
-      height: containerDemenssion / 2,
+      width: containerDemenssion / 2 - 2,
+      height: containerDemenssion / 2 - 2,
+      border: "1px solid white",
       ...returnStyle,
     };
   }
@@ -85,22 +90,27 @@ export const targetAvatarLayout = (length, index, containerDemenssion) => {
         left: 0,
         width: containerDemenssion,
         height: containerDemenssion,
+        borderRadius: containerDemenssion,
       };
     }
     if (index === 1) {
       returnStyle = {
         top: 0,
         right: 0,
-        width: containerDemenssion / 2,
-        height: containerDemenssion / 2,
+        width: containerDemenssion / 2 - 2,
+        height: containerDemenssion / 2 - 2,
+        border: "1px solid white",
+        borderTopRightRadius: containerDemenssion,
       };
     }
     if (index === 2) {
       returnStyle = {
         bottom: 0,
         right: 0,
-        width: containerDemenssion / 2,
-        height: containerDemenssion / 2,
+        width: containerDemenssion / 2 - 2,
+        height: containerDemenssion / 2 - 2,
+        border: "1px solid white",
+        borderBottomRightRadius: containerDemenssion,
       };
     }
     return {
@@ -110,6 +120,7 @@ export const targetAvatarLayout = (length, index, containerDemenssion) => {
     return {
       width: containerDemenssion,
       height: containerDemenssion,
+      borderRadius: containerDemenssion,
     };
   }
 };
@@ -123,4 +134,14 @@ export const saveSearchList = (list, item) => {
     filtered.push(item);
     return _.reverse(_.slice(filtered, 0, 4));
   }
+};
+
+export const getStatusOfConversation = (participants) => {
+  let result = false;
+  participants.map((user) => {
+    if (user.isOnline && user.username !== getCurrentUser().username) {
+      result = true;
+    }
+  });
+  return result;
 };

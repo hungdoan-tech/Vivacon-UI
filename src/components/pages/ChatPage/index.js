@@ -1,4 +1,4 @@
-import { InputBase, Typography } from "@mui/material";
+import { InputBase, Typography, Badge, Button } from "@mui/material";
 import { useState, useEffect } from "react";
 import SockJS from "sockjs-client";
 import Stomp from "stompjs";
@@ -24,11 +24,13 @@ import {
   splitUserName,
   filterParticipants,
   targetAvatarLayout,
+  getStatusOfConversation,
 } from "utils/resolveData";
 import classNames from "classnames";
 import InfiniteScrollReverse from "react-infinite-scroll-reverse";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { chattingType } from "constant/types";
+import { useTranslation } from "react-i18next";
 
 let stompClient = null;
 
@@ -38,12 +40,23 @@ const ChatPage = () => {
   const [messageList, setMessageList] = useState([]);
   const [submitMessage, setSubmitMessage] = useState({});
   const [activeUsers, setActiveUsers] = useState([]);
-  const [userChatting, setUserChatting] = useState("");
+  const [userChatting, setUserChatting] = useState({
+    name: "",
+    isOnline: false,
+  });
   const [conversationID, setConversationID] = useState(null);
   const [conversationList, setConversationList] = useState({});
   const [currentTargetAvatar, setCurrentTargetAvatar] = useState([]);
 
+  const { t: trans } = useTranslation();
+
+  const startAudio = () => {
+    const notificationAudio = new Audio(require("audio/chat.mp3"));
+    notificationAudio.play();
+  };
+
   const onMessageReceived = (payload) => {
+    startAudio();
     console.log({ recieved: JSON.parse(payload.body) });
     setSubmitMessage(JSON.parse(payload.body));
   };
@@ -123,9 +136,12 @@ const ChatPage = () => {
       _order: "desc",
     }).then((res) => {
       setConversationList(res.data);
-      setUserChatting(splitUserName(res.data.content[0].participants));
-      setConversationID(res.data.content[0].id);
-      getMessageList(res.data.content[0].id);
+      // setUserChatting({
+      //   name: splitUserName(res.data.content[0].participants),
+      //   ...userChatting,
+      // });
+      // setConversationID(res.data.content[0].id);
+      // getMessageList(res.data.content[0].id);
     });
   };
 
@@ -167,8 +183,8 @@ const ChatPage = () => {
   //     });
   // };
 
-  const onClickUserChatting = (id, username) => {
-    setUserChatting(username);
+  const onClickUserChatting = (id, username, isOnline) => {
+    setUserChatting({ name: username, isOnline });
     getMessageList(id);
   };
 
@@ -195,12 +211,11 @@ const ChatPage = () => {
 
   useEffect(() => {
     if (submitMessage.id) {
-      let index
+      let index;
       if (conversationID === submitMessage.conversationId) {
         setMessageList([submitMessage, ...messageList]);
         index = getIndexOfConversation(conversationID);
-      }
-      else {
+      } else {
         index = getIndexOfConversation(submitMessage.conversationId);
       }
       setSubmitMessage({});
@@ -229,28 +244,66 @@ const ChatPage = () => {
       );
       setCurrentTargetAvatar(filtered);
     }
-  }, [conversationID]);
+  }, [conversationID, conversationList]);
+
+  useEffect(() => {
+    if (activeUsers.length > 0) {
+      const currConvList = [...conversationList.content];
+      currConvList.map((conversation) => {
+        conversation.participants?.map((user, index) => {
+          if (activeUsers.find((activeUser) => activeUser === user.username)) {
+            user.isOnline = true;
+          } else {
+            user.isOnline = false;
+          }
+        });
+      });
+      setConversationList({ ...conversationList, content: currConvList });
+    }
+  }, [activeUsers]);
+
+  useEffect(() => {
+    conversationList.content?.map((conv) => {
+      if (conv.id === conversationID) {
+        setUserChatting({
+          name: splitUserName(conv.participants),
+          isOnline: getStatusOfConversation(conv.participants),
+        });
+      }
+    });
+  }, [conversationList]);
 
   const renderUserItem = (conv) => {
+    console.log({ conv });
     const participants = filterParticipants(conv.participants);
     const userItemClassName = classNames("user-item", {
       active: conv.id === conversationID,
     });
+    const isOnline = getStatusOfConversation(conv.participants);
     return (
       <Typography
         component="div"
         className={userItemClassName}
         onClick={() =>
-          onClickUserChatting(conv.id, splitUserName(conv.participants))
+          onClickUserChatting(
+            conv.id,
+            splitUserName(conv.participants),
+            isOnline
+          )
         }
       >
         <Typography component="div" className="target-avatar">
           {participants.map((user, index) => {
             return (
-              <img
-                src={user.avatar}
-                style={targetAvatarLayout(participants.length, index, 40)}
-              />
+              <>
+                <img
+                  src={user.avatar}
+                  style={targetAvatarLayout(participants.length, index, 40)}
+                />
+                {isOnline && (
+                  <Typography className="status-badge online-status"></Typography>
+                )}
+              </>
             );
           })}
         </Typography>
@@ -329,7 +382,7 @@ const ChatPage = () => {
           <Typography component="div" className="search-btn">
             <SearchIcon className="icon" />
           </Typography>
-          <Typography component="div" className="new-btn">
+          <Typography component="div" className="new-chatting-btn">
             <DriveFileRenameOutlineIcon className="icon" />
           </Typography>
         </Typography>
@@ -338,61 +391,78 @@ const ChatPage = () => {
             return renderUserItem(room);
           })}
       </Typography>
-
-      <Typography component="div" className="chat-with-user-container">
-        <Typography component="div" className="header">
-          <Typography component="div" className="user-item">
-            <Typography component="div" className="target-avatar">
-              {currentTargetAvatar.map((user, index) => {
-                return (
-                  <img
-                    src={user.avatar}
-                    style={targetAvatarLayout(
-                      currentTargetAvatar.length,
-                      index,
-                      40
-                    )}
-                  />
-                );
-              })}
+      {conversationID ? (
+        <Typography component="div" className="chat-with-user-container">
+          <Typography component="div" className="header">
+            <Typography component="div" className="user-item">
+              <Typography component="div" className="target-avatar">
+                {currentTargetAvatar.map((user, index) => {
+                  return (
+                    <img
+                      src={user.avatar}
+                      style={targetAvatarLayout(
+                        currentTargetAvatar.length,
+                        index,
+                        40
+                      )}
+                    />
+                  );
+                })}
+                {userChatting.isOnline && (
+                  <Typography className="status-badge online-status"></Typography>
+                )}
+              </Typography>
+              <Typography component="div" className="user-name-container">
+                <Typography className="username">
+                  {userChatting.name}
+                </Typography>
+                {userChatting.isOnline && (
+                  <Typography className="active">{trans("chatting.active")}</Typography>
+                )}
+              </Typography>
             </Typography>
-            <Typography component="div" className="user-name-container">
-              <Typography className="username">{userChatting}</Typography>
-              <Typography className="active">Active today</Typography>
+            <Typography component="div" className="action-btn">
+              <InfoOutlinedIcon className="icon" />
             </Typography>
           </Typography>
-          <Typography component="div" className="action-btn">
-            <InfoOutlinedIcon className="icon" />
-          </Typography>
-        </Typography>
 
-        <Typography component="div" className="chat-content">
-          {renderMessageList(messageList)}
-        </Typography>
+          <Typography component="div" className="chat-content">
+            {renderMessageList(messageList)}
+          </Typography>
 
-        <Typography component="div" className="chat-input-container">
-          <Typography component="div" className="emoji">
-            <SentimentSatisfiedAltOutlinedIcon className="icon" />
-          </Typography>
-          <Typography component="div" className="chat-input">
-            <InputBase
-              placeholder={"Message..."}
-              fullWidth={true}
-              maxRows={3}
-              multiline={true}
-              onChange={changeMessage}
-              value={inputMessage}
-              onKeyDown={sendMessage}
-            />{" "}
-          </Typography>
-          <Typography component="div" className="send-images">
-            <ImageOutlinedIcon className="icon" />
-          </Typography>
-          <Typography component="div" className="like-icon">
-            <FavoriteBorderOutlinedIcon className="icon" />
+          <Typography component="div" className="chat-input-container">
+            <Typography component="div" className="emoji">
+              <SentimentSatisfiedAltOutlinedIcon className="icon" />
+            </Typography>
+            <Typography component="div" className="chat-input">
+              <InputBase
+                placeholder={"Message..."}
+                fullWidth={true}
+                maxRows={3}
+                multiline={true}
+                onChange={changeMessage}
+                value={inputMessage}
+                onKeyDown={sendMessage}
+              />{" "}
+            </Typography>
+            <Typography component="div" className="send-images">
+              <ImageOutlinedIcon className="icon" />
+            </Typography>
+            <Typography component="div" className="like-icon">
+              <FavoriteBorderOutlinedIcon className="icon" />
+            </Typography>
           </Typography>
         </Typography>
-      </Typography>
+      ) : (
+        <Typography component="div" className="initial-chat-container">
+          <img src={require("images/chat.png")} width="100" height="100" />
+          <Typography className="your-messages">{trans("chatting.yourMessages")}</Typography>
+          <Typography className="let-send-messages">
+            {trans("chatting.letSend")}
+          </Typography>
+          <Button className="send-message-btn">{trans("chatting.sendMessage")}</Button>
+        </Typography>
+      )}
     </Typography>
   );
 };

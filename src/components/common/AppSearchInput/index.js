@@ -246,7 +246,7 @@ const AppSearchInput = () => {
                               className="view-more"
                               onClick={handleViewMore}
                             >
-                              View more
+                              {trans("navbar.viewMore")}
                             </Typography>
                           )}
                           {isLocalLoading && (
@@ -261,7 +261,7 @@ const AppSearchInput = () => {
                         </>
                       ) : (
                         <Typography className="no-data" align="center">
-                          No data
+                          {trans("navbar.noData")}
                         </Typography>
                       )}
                     </Typography>
@@ -271,12 +271,14 @@ const AppSearchInput = () => {
               {showRecentSearch && recentSearchList.length > 0 && (
                 <Typography component="div" className="account-result">
                   <Typography component="div" className="recent-header">
-                    <Typography className="recent">Recent</Typography>
+                    <Typography className="recent">
+                      {trans("navbar.recent")}
+                    </Typography>
                     <Typography
                       className="clear-all"
                       onClick={() => setShowClearModal(true)}
                     >
-                      Clear all
+                      {trans("navbar.clearAll")}
                     </Typography>
                   </Typography>
                   {recentSearchList.map((item, index) => {
@@ -324,22 +326,21 @@ const AppSearchInput = () => {
       >
         <Typography component="div" className="clear-all-modal-container">
           <Typography component="div" className="header">
-            Clear search history?
+            {trans("navbar.questionHeader")}
           </Typography>
           <Typography component="div" className="warning">
-            You won't be able to undo this. If you clear your search history,
-            you may still see accounts you've searched for as suggested results.
+            {trans("navbar.questionWarning")}
           </Typography>
           <Typography component="div" className="action-btns">
             <Button className="clear-all-btn" onClick={handleClearAll}>
-              Clear all
+              {trans("navbar.clearAll")}
             </Button>
             <Button
               className="not-now-btn"
               onClick={() => setShowClearModal(false)}
             >
               {" "}
-              Not now
+              {trans("navbar.notNow")}
             </Button>
           </Typography>
         </Typography>

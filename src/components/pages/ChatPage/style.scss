@@ -19,9 +19,13 @@
       border-bottom: 0.25px solid var(--lightColor);
       padding: 20px;
       .search-btn,
-      .new-btn {
+      .new-chatting-btn {
         .icon {
           font-size: 24px;
+        }
+        &:hover {
+          cursor: pointer;
+          opacity: 0.6;
         }
       }
     }
@@ -34,7 +38,7 @@
         width: 40px;
         height: 40px;
         position: relative;
-        overflow: hidden;
+        // overflow: hidden;
         border-radius: 40px;
         img {
           position: absolute;
@@ -47,10 +51,10 @@
           color: var(--defaultColor);
         }
       }
-      &:hover{
+      &:hover {
         cursor: pointer;
       }
-      &.active{
+      &.active {
         background-color: var(--lightColor);
         .username {
           font-weight: 900;
@@ -77,7 +81,7 @@
           width: 40px;
           height: 40px;
           position: relative;
-          overflow: hidden;
+          // overflow: hidden;
           border-radius: 40px;
           img {
             position: absolute;
@@ -173,6 +177,24 @@
         flex: 1;
         min-width: 200px;
       }
+    }
+  }
+  .initial-chat-container {
+    margin: auto;
+    text-align: center;
+    .your-messages {
+      font-size: 18px;
+      margin: 5px;
+    }
+    .let-send-messages {
+      margin: 5px;
+    }
+    .send-message-btn {
+      margin: 5px;
+      text-transform: capitalize;
+      background-color: var(--mainColor);
+      color: var(--backgroundColor);
+      font-weight: 900;
     }
   }
 }
