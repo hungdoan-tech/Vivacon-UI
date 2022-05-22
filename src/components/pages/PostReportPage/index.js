@@ -33,11 +33,17 @@ export default function PostReportPage() {
   console.log({ page, limit });
 
   useEffect(() => {
-    if (postReportList && postReportList?.totalElements <= limit) {
+    fetchListPostReport(page, limit);
+  }, [page]);
+
+  useEffect(() => {
+    console.log("changed limit: ");
+    if (page === 1) {
+      fetchListPostReport(1, limit);
+    } else {
       setPage(1);
     }
-    fetchListPostReport(page, limit);
-  }, [page, limit]);
+  }, [limit]);
 
   const fetchListPostReport = (page, limit) => {
     getListPostReport({
