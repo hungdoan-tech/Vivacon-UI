@@ -1,6 +1,5 @@
 import {
   getListPostReport,
-  deletePostReport,
   rejectedPostReport,
   approvedPostReport,
 } from "api/reportService";
@@ -17,6 +16,8 @@ import CustomModal from "../../common/CustomModal";
 import PostDetailsModal from "components/common/PostDetailsModal";
 import Pagination from "@mui/material/Pagination";
 import { limitPerPage } from "../../../constant/types";
+import useLoading from "hooks/useLoading";
+import useSnackbar from "hooks/useSnackbar";
 
 export default function PostReportPage() {
   const [showPostReportModal, setShowPostReportModal] = useState({
@@ -29,6 +30,9 @@ export default function PostReportPage() {
   const [postReportList, setPostReportList] = useState([]);
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(5);
+
+  const { setLoading } = useLoading();
+  const { setSnackbarState } = useSnackbar();
 
   console.log({ page, limit });
 
@@ -46,12 +50,17 @@ export default function PostReportPage() {
   }, [limit]);
 
   const fetchListPostReport = (page, limit) => {
+    setLoading(true);
     getListPostReport({
       _sort: null,
       limit,
       _order: null,
       page: page - 1,
-    }).then((res) => setPostReportList(res?.data));
+    })
+      .then((res) => setPostReportList(res?.data))
+      .finally(() => {
+        setLoading(false);
+      });
   };
 
   const handleOpenPostReportModal = (index, item, dataList) => {
@@ -73,7 +82,14 @@ export default function PostReportPage() {
 
   const handleRejectedPostReport = (id) => {
     handleCloseOpenReportModal();
-    rejectedPostReport(id).then(() => {
+    rejectedPostReport(id).then((res) => {
+      if (res.status === 200) {
+        setSnackbarState({
+          open: true,
+          content: `You have rejected a post report successfully`,
+          type: "SUCCESS",
+        });
+      }
       if (postReportList && postReportList?.content.length === 1) {
         fetchListPostReport(page - 1, limit);
         setPage(page - 1);
@@ -85,7 +101,14 @@ export default function PostReportPage() {
 
   const handleApprovedPostReport = (id) => {
     handleCloseOpenReportModal();
-    approvedPostReport(id).then(() => {
+    approvedPostReport(id).then((res) => {
+      if (res.status === 200) {
+        setSnackbarState({
+          open: true,
+          content: `You have approved a post report successfully`,
+          type: "SUCCESS",
+        });
+      }
       if (postReportList && postReportList?.content.length === 1) {
         fetchListPostReport(page - 1, limit);
         setPage(page - 1);
