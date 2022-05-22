@@ -2,7 +2,7 @@ export const API_ENDPOINT_KEYS = {
   LOGIN: "/login",
   REGISTER: "/registration",
   VERIFY: "/account/verify",
-  POST: '/post',
+  POST: "/post",
   ACTIVE_ACCOUNT: "/account/active",
   UPLOAD_IMAGE: "/attachments",
   RENEW_TOKEN: "/refresh-token",
@@ -18,4 +18,7 @@ export const API_ENDPOINT_KEYS = {
   LIKE: "/like",
   COMMENT: "/comment",
   NEWFEED: "/newsfeed",
+  ACCOUNT_REPORT: "/accountReport",
+  POST_REPORT: "/postReport",
+  COMMENT_REPORT: "/commentReport",
 };

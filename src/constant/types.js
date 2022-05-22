@@ -25,3 +25,5 @@ export const privacyPostType = [
     icon: <PermContactCalendarIcon />,
   },
 ];
+
+export const limitPerPage = [5, 10, 20, 30, 50];

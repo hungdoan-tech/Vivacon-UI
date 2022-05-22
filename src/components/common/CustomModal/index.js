@@ -16,10 +16,10 @@ const CustomModal = ({
   width,
   height,
   isRadius = false,
-  children
+  children,
 }) => {
   const [modalWidth, setModalWidth] = useState(0);
-  console.log({children})
+  //console.log({children})
   return (
     <Modal
       open={open}

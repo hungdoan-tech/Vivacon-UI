@@ -147,7 +147,6 @@ const PostDetailsModal = ({ index, dataList }) => {
                   currentPost={currentPost}
                   submittedComment={submittedComment}
                   setSubmittedComment={setSubmittedComment}
-
                 />
               </Typography>
             </Typography>
