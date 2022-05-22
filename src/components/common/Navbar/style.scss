@@ -5,6 +5,8 @@
   grid-template-columns: repeat(12, 1fr);
   align-items: center;
   height: 70px;
+  box-shadow: none !important;
+  border: 0.25px solid var(--lightColor);
 
   .app-logo {
     grid-column-start: 3;

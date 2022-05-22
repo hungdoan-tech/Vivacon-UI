@@ -10,6 +10,7 @@ import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlin
 import SentimentSatisfiedAltOutlinedIcon from "@mui/icons-material/SentimentSatisfiedAltOutlined";
 import "./style.scss";
 import {
+  checkConversationIsExistOrNot,
   getConversationByUsername,
   getConversations,
   getListOfConversationId,
@@ -25,12 +26,17 @@ import {
   filterParticipants,
   targetAvatarLayout,
   getStatusOfConversation,
+  getAllCurrentInteractionUser,
 } from "utils/resolveData";
 import classNames from "classnames";
 import InfiniteScrollReverse from "react-infinite-scroll-reverse";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { chattingType } from "constant/types";
 import { useTranslation } from "react-i18next";
+import CustomModal from "components/common/CustomModal";
+import ChattingSearch from "components/common/ChattingSearch";
+import ThreeDotsAnimation from "components/common/ThreeDotsAnimation"
+import _ from "lodash";
 
 let stompClient = null;
 
@@ -45,8 +51,10 @@ const ChatPage = () => {
     isOnline: false,
   });
   const [conversationID, setConversationID] = useState(null);
-  const [conversationList, setConversationList] = useState({});
+  const [conversationList, setConversationList] = useState({ content: [] });
   const [currentTargetAvatar, setCurrentTargetAvatar] = useState([]);
+  const [openChattingSearch, setOpenChattingSearch] = useState(false);
+  const [newConversation, setNewConversation] = useState({});
 
   const { t: trans } = useTranslation();
 
@@ -57,7 +65,6 @@ const ChatPage = () => {
 
   const onMessageReceived = (payload) => {
     startAudio();
-    console.log({ recieved: JSON.parse(payload.body) });
     setSubmitMessage(JSON.parse(payload.body));
   };
 
@@ -77,20 +84,17 @@ const ChatPage = () => {
   const getMessageList = (id) => {
     getMessagesByConversationId({
       id,
-      _sort: "timestamp",
-      _order: "desc",
     }).then((response) => {
-      console.log({ response });
       setConversationID(id);
       setMessageList(response.data.content);
     });
   };
 
-  const onConversation = (payload) => {
-    const data = JSON.parse(payload.body);
-    setConversationID(data.id);
+  const onNewConversation = (payload) => {
+    const newConv = JSON.parse(payload.body);
+    setNewConversation(newConv);
     stompClient.subscribe(
-      `/conversation/${data.id}/message`,
+      `/conversation/${newConv.id}/message`,
       onMessageReceived,
       {
         "WS-Authorization": getJwtToken(),
@@ -98,8 +102,52 @@ const ChatPage = () => {
     );
   };
 
+  useEffect(() => {
+    if (newConversation.id) {
+      //If new conversation is chat 1vs1
+      if (newConversation.participants.length === 2) {
+        const currConversationList = [...conversationList.content];
+        let isExistedConv = false;
+        let isOnConv = false;
+
+        //Check per item on current conversation list
+        currConversationList.map((item, index) => {
+          if (item.id === conversationID) {
+            isOnConv = true;
+          }
+          //If found a conversation like new conversation
+          if (
+            splitUserName(item.participants) ===
+            splitUserName(newConversation.participants)
+          ) {
+            startAudio()
+            isExistedConv = true;
+            currConversationList[index] = newConversation;
+            setConversationList({
+              ...conversationList,
+              content: currConversationList,
+            });
+          }
+        });
+
+        //If existed conversation
+        if (!isExistedConv) {
+          setConversationList({
+            ...conversationList,
+            content: [newConversation, ...currConversationList],
+          });
+        }
+        //If on new conversation now
+        if (isOnConv) {
+          setConversationID(newConversation.id);
+          setMessageList([...messageList, newConversation.latestMessage])
+        }
+        setNewConversation({});
+      }
+    }
+  }, [newConversation]);
+
   const onActiveUser = (payload) => {
-    console.log({ payload });
     setActiveUsers(JSON.parse(payload.body));
   };
 
@@ -109,14 +157,13 @@ const ChatPage = () => {
     });
     stompClient.subscribe(
       `/user/${getCurrentUser().username}/conversation/new`,
-      onConversation,
+      onNewConversation,
       {
         "WS-Authorization": getJwtToken(),
       }
     );
     getListOfConversationId().then((res) => {
       if (res.status === 200) {
-        console.log("ids: ", { res });
         rooms = res.data;
         rooms.forEach((room) => {
           stompClient.subscribe(
@@ -126,6 +173,13 @@ const ChatPage = () => {
               "WS-Authorization": getJwtToken(),
             }
           );
+          // stompClient.subscribe(
+          //   `/conversation/${room}/message`,
+          //   onMessageReceived,
+          //   {
+          //     "WS-Authorization": getJwtToken(),
+          //   }
+          // );
         });
       }
     });
@@ -136,12 +190,6 @@ const ChatPage = () => {
       _order: "desc",
     }).then((res) => {
       setConversationList(res.data);
-      // setUserChatting({
-      //   name: splitUserName(res.data.content[0].participants),
-      //   ...userChatting,
-      // });
-      // setConversationID(res.data.content[0].id);
-      // getMessageList(res.data.content[0].id);
     });
   };
 
@@ -163,47 +211,121 @@ const ChatPage = () => {
     setInputMessage(e.target.value);
   };
 
-  // const onCreateNewChatting = (username) => {
-  //   setUserChatting(username);
-  //   getConversationByUsername({ username })
-  //     .then((res) => {
-  //       setConversationID(res.data.id);
-  //       getMessagesByConversationId({ id: res.data.content[0].id }).then(
-  //         (response) => {}
-  //       );
-  //     })
-  //     .catch((error) => {
-  //       if (error.response.status === 404) {
-  //         stompClient.send(
-  //           "/app/conversation",
-  //           { "WS-Authorization": getJwtToken() },
-  //           JSON.stringify({ usernames: [username] })
-  //         );
-  //       }
-  //     });
-  // };
-
-  const onClickUserChatting = (id, username, isOnline) => {
-    setUserChatting({ name: username, isOnline });
-    getMessageList(id);
+  const onClickUserChatting = (conversationId, name, isOnline) => {
+    setUserChatting({ name, isOnline });
+    getMessageList(conversationId);
+    setInputMessage("");
   };
 
   const sendMessage = (event) => {
     if (event.key === "Enter") {
       event.preventDefault();
-      console.log({ conversationID });
       if (conversationID === null || inputMessage === "") return;
-      stompClient.send(
-        "/app/chat",
-        { "WS-Authorization": getJwtToken() },
-        JSON.stringify({
-          conversationId: conversationID,
-          content: inputMessage,
-        })
-      );
+      // Chat in existed conversation
+      if (conversationID >= 0) {
+        stompClient.send(
+          "/app/chat",
+          { "WS-Authorization": getJwtToken() },
+          JSON.stringify({
+            conversationId: conversationID,
+            content: inputMessage,
+          })
+        );
+      }
+      //Chat in virtual conversation
+      else {
+        const participantsOfVirtualConv = conversationList.content.filter(
+          (conv) => conv.id === conversationID
+        )[0].participants;
+        stompClient.send(
+          "/app/conversation",
+          {
+            "WS-Authorization": getJwtToken(),
+          },
+          JSON.stringify({
+            usernames: participantsOfVirtualConv.map((user) => {
+              return user.username;
+            }),
+            firstMessageContent: inputMessage,
+          })
+        );
+      }
       setInputMessage("");
     }
   };
+
+  const handleCloseChattingSearchModal = () => {
+    setOpenChattingSearch(false);
+  };
+
+  const handleOpenChattingSearchModal = () => {
+    const suggestedUsers = getAllCurrentInteractionUser(
+      _.slice(conversationList.content, 0, 4)
+    );
+    localStorage.setItem("suggested_users", JSON.stringify(suggestedUsers));
+    setOpenChattingSearch(true);
+  };
+
+  const handleCreateNewMessage = (selectedList) => {
+    //If length of selected user list = 1 => check existed conversation
+    if (selectedList.length === 1) {
+      checkConversationIsExistOrNot(selectedList[0].id)
+        .then((res) => {
+          if (res.status === 200) {
+            const { fullName, isOnline } = selectedList[0];
+            const { id: conversationId } = res.data;
+            setOpenChattingSearch(false);
+            onClickUserChatting(conversationId, fullName, isOnline);
+          }
+        })
+        // Create virtual conversation
+        .catch(() => {
+          const { fullName, isOnline } = selectedList[0];
+          setOpenChattingSearch(false);
+          const currConvList = [
+            {
+              id: -1,
+              latestMessage: null,
+              participants: [selectedList[0], getCurrentUser()],
+            },
+            ...conversationList.content,
+          ];
+          setConversationList({
+            ...conversationList,
+            content: currConvList,
+          });
+          setUserChatting({ name: fullName, isOnline });
+          setMessageList([]);
+          setConversationID(-1);
+        });
+    }
+    // If length of selected user list > 1 => Create virtual conversation
+    else {
+      console.log({ selectedList });
+    }
+  };
+
+  const handleTyping = () => {
+    stompClient.send(
+      "/app/conversation/typing",
+      { "WS-Authorization": getJwtToken() },
+      JSON.stringify({
+        conversationId: conversationID,
+        isTyping: true,
+      })
+    );
+  }
+
+  const handleUntyping = () => {
+    stompClient.send(
+      "/app/conversation/typing",
+      { "WS-Authorization": getJwtToken() },
+      JSON.stringify({
+        conversationId: conversationID,
+        isTyping: false,
+      })
+    );
+  }
 
   useEffect(() => {
     connect();
@@ -244,6 +366,15 @@ const ChatPage = () => {
       );
       setCurrentTargetAvatar(filtered);
     }
+
+    conversationList.content?.map((conv) => {
+      if (conv.id === conversationID) {
+        setUserChatting({
+          name: splitUserName(conv.participants),
+          isOnline: getStatusOfConversation(conv.participants),
+        });
+      }
+    });
   }, [conversationID, conversationList]);
 
   useEffect(() => {
@@ -262,19 +393,7 @@ const ChatPage = () => {
     }
   }, [activeUsers]);
 
-  useEffect(() => {
-    conversationList.content?.map((conv) => {
-      if (conv.id === conversationID) {
-        setUserChatting({
-          name: splitUserName(conv.participants),
-          isOnline: getStatusOfConversation(conv.participants),
-        });
-      }
-    });
-  }, [conversationList]);
-
   const renderUserItem = (conv) => {
-    console.log({ conv });
     const participants = filterParticipants(conv.participants);
     const userItemClassName = classNames("user-item", {
       active: conv.id === conversationID,
@@ -322,7 +441,6 @@ const ChatPage = () => {
   };
 
   const renderMessageList = (messageList) => {
-    console.log({ messageList });
     return (
       <InfiniteScroll
         dataLength={100}
@@ -376,94 +494,121 @@ const ChatPage = () => {
   };
 
   return (
-    <Typography component="div" className="chat-container">
-      <Typography component="div" className="list-user-container">
-        <Typography component="div" className="header">
-          <Typography component="div" className="search-btn">
-            <SearchIcon className="icon" />
-          </Typography>
-          <Typography component="div" className="new-chatting-btn">
-            <DriveFileRenameOutlineIcon className="icon" />
-          </Typography>
-        </Typography>
-        {conversationList.content?.length > 0 &&
-          conversationList.content?.map((room) => {
-            return renderUserItem(room);
-          })}
-      </Typography>
-      {conversationID ? (
-        <Typography component="div" className="chat-with-user-container">
+    <>
+      <Typography component="div" className="chat-container">
+        <Typography component="div" className="list-user-container">
           <Typography component="div" className="header">
-            <Typography component="div" className="user-item">
-              <Typography component="div" className="target-avatar">
-                {currentTargetAvatar.map((user, index) => {
-                  return (
-                    <img
-                      src={user.avatar}
-                      style={targetAvatarLayout(
-                        currentTargetAvatar.length,
-                        index,
-                        40
-                      )}
-                    />
-                  );
-                })}
-                {userChatting.isOnline && (
-                  <Typography className="status-badge online-status"></Typography>
-                )}
-              </Typography>
-              <Typography component="div" className="user-name-container">
-                <Typography className="username">
-                  {userChatting.name}
+            <Typography component="div" className="search-btn">
+              <SearchIcon className="icon" />
+            </Typography>
+            <Typography
+              component="div"
+              className="new-chatting-btn"
+              onClick={handleOpenChattingSearchModal}
+            >
+              <DriveFileRenameOutlineIcon className="icon" />
+            </Typography>
+          </Typography>
+          {conversationList.content?.length > 0 &&
+            conversationList.content?.map((room) => {
+              return renderUserItem(room);
+            })}
+            <ThreeDotsAnimation />
+        </Typography>
+        {conversationID ? (
+          <Typography component="div" className="chat-with-user-container">
+            <Typography component="div" className="header">
+              <Typography component="div" className="user-item">
+                <Typography component="div" className="target-avatar">
+                  {currentTargetAvatar.map((user, index) => {
+                    return (
+                      <img
+                        src={user.avatar}
+                        style={targetAvatarLayout(
+                          currentTargetAvatar.length,
+                          index,
+                          40
+                        )}
+                      />
+                    );
+                  })}
+                  {userChatting.isOnline && (
+                    <Typography className="status-badge online-status"></Typography>
+                  )}
                 </Typography>
-                {userChatting.isOnline && (
-                  <Typography className="active">{trans("chatting.active")}</Typography>
-                )}
+                <Typography component="div" className="user-name-container">
+                  <Typography className="username">
+                    {userChatting.name}
+                  </Typography>
+                  {userChatting.isOnline && (
+                    <Typography className="active">
+                      {trans("chatting.active")}
+                    </Typography>
+                  )}
+                </Typography>
+              </Typography>
+              <Typography component="div" className="action-btn">
+                <InfoOutlinedIcon className="icon" />
               </Typography>
             </Typography>
-            <Typography component="div" className="action-btn">
-              <InfoOutlinedIcon className="icon" />
-            </Typography>
-          </Typography>
 
-          <Typography component="div" className="chat-content">
-            {renderMessageList(messageList)}
-          </Typography>
+            <Typography component="div" className="chat-content">
+              {renderMessageList(messageList)}
+            </Typography>
 
-          <Typography component="div" className="chat-input-container">
-            <Typography component="div" className="emoji">
-              <SentimentSatisfiedAltOutlinedIcon className="icon" />
-            </Typography>
-            <Typography component="div" className="chat-input">
-              <InputBase
-                placeholder={"Message..."}
-                fullWidth={true}
-                maxRows={3}
-                multiline={true}
-                onChange={changeMessage}
-                value={inputMessage}
-                onKeyDown={sendMessage}
-              />{" "}
-            </Typography>
-            <Typography component="div" className="send-images">
-              <ImageOutlinedIcon className="icon" />
-            </Typography>
-            <Typography component="div" className="like-icon">
-              <FavoriteBorderOutlinedIcon className="icon" />
+            <Typography component="div" className="chat-input-container">
+              <Typography component="div" className="emoji">
+                <SentimentSatisfiedAltOutlinedIcon className="icon" />
+              </Typography>
+              <Typography component="div" className="chat-input">
+                <InputBase
+                  placeholder={"Message..."}
+                  fullWidth={true}
+                  maxRows={3}
+                  multiline={true}
+                  onChange={changeMessage}
+                  value={inputMessage}
+                  onKeyDown={sendMessage}
+                  onFocus={handleTyping}
+                  onBlur={handleUntyping}
+                />{" "}
+              </Typography>
+              <Typography component="div" className="send-images">
+                <ImageOutlinedIcon className="icon" />
+              </Typography>
+              <Typography component="div" className="like-icon">
+                <FavoriteBorderOutlinedIcon className="icon" />
+              </Typography>
             </Typography>
           </Typography>
-        </Typography>
-      ) : (
-        <Typography component="div" className="initial-chat-container">
-          <img src={require("images/chat.png")} width="100" height="100" />
-          <Typography className="your-messages">{trans("chatting.yourMessages")}</Typography>
-          <Typography className="let-send-messages">
-            {trans("chatting.letSend")}
+        ) : (
+          <Typography component="div" className="initial-chat-container">
+            <img src={require("images/chat.png")} width="100" height="100" />
+            <Typography className="your-messages">
+              {trans("chatting.yourMessages")}
+            </Typography>
+            <Typography className="let-send-messages">
+              {trans("chatting.letSend")}
+            </Typography>
+            <Button
+              className="send-message-btn"
+              onClick={handleOpenChattingSearchModal}
+            >
+              {trans("chatting.sendMessage")}
+            </Button>
           </Typography>
-          <Button className="send-message-btn">{trans("chatting.sendMessage")}</Button>
-        </Typography>
-      )}
-    </Typography>
+        )}
+      </Typography>
+      <CustomModal
+        isRadius
+        width={400}
+        height={400}
+        open={openChattingSearch}
+        handleCloseModal={handleCloseChattingSearchModal}
+      >
+        <ChattingSearch handleNext={handleCreateNewMessage} />
+      </CustomModal>
+    </>
   );
 };
 

@@ -51,7 +51,6 @@ export default function VerifyPage(props) {
   };
 
   const handleResendToken = () => {
-    console.log("resend");
     setButtonDisabled(true);
 
     const email = props.location.state.emailForgot;

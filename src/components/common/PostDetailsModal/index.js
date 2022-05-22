@@ -32,10 +32,6 @@ const PostDetailsModal = ({ index, dataList }) => {
       _sort: "createdAt",
       _order: "desc",
     }).then((res) => {
-      console.log(
-        convertUTCtoLocalDate(res.data.lastModifiedAt),
-        res.data.lastModifiedAt
-      );
       setCurrentPost({
         ...res.data,
         lastModifiedAt: convertUTCtoLocalDate(res.data.lastModifiedAt),

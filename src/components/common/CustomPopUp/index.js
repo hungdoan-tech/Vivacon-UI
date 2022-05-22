@@ -16,7 +16,6 @@ const CustomPopUp = (props) => {
     top,
     right,
   });
-  console.log({ left, bottom, top, right });
 
   return (
     <>

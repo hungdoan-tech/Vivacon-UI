@@ -222,7 +222,6 @@ const ProfilePage = (props) => {
   }, [props.match.params.username]);
 
   useEffect(() => {
-    console.log("open");
     if (currentModalType === ModalType.FOLLOWER) {
       handleGetFollowers(userProfile.id);
     }

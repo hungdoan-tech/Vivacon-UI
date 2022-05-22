@@ -45,7 +45,6 @@ export const filterParticipants = (participants) => {
 };
 
 export const targetAvatarLayout = (length, index, containerDemenssion) => {
-  console.log("length is", { length });
   let returnStyle = {};
   if (length >= 4) {
     if (index === 0) {
@@ -142,6 +141,21 @@ export const getStatusOfConversation = (participants) => {
     if (user.isOnline && user.username !== getCurrentUser().username) {
       result = true;
     }
+  });
+  return result;
+};
+
+export const getAllCurrentInteractionUser = (currConvList) => {
+  let result = [];
+  currConvList.map((conv) => {
+    conv.participants.map((user) => {
+      if (
+        !result.find((item) => item.id === user.id) &&
+        user.username !== getCurrentUser().username
+      ) {
+        result.push(user);
+      }
+    });
   });
   return result;
 };

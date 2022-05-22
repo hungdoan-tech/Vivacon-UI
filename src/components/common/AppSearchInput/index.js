@@ -48,7 +48,6 @@ const AppSearchInput = () => {
     })
       .then((res) => {
         if (res.status === 200) {
-          console.log({ data: res.data.content });
           setFetchInfo(res.data);
           if (page === 0) {
             setResultList(res.data.content);
@@ -101,7 +100,6 @@ const AppSearchInput = () => {
   };
 
   const accessUserProfile = (list) => {
-    console.log("access");
     setSearchText("");
     saveResult(list[focusIndex]);
     hideResultList();
@@ -246,7 +244,7 @@ const AppSearchInput = () => {
                               className="view-more"
                               onClick={handleViewMore}
                             >
-                              {trans("navbar.viewMore")}
+                              {trans('navbar.viewMore')}
                             </Typography>
                           )}
                           {isLocalLoading && (
@@ -271,9 +269,7 @@ const AppSearchInput = () => {
               {showRecentSearch && recentSearchList.length > 0 && (
                 <Typography component="div" className="account-result">
                   <Typography component="div" className="recent-header">
-                    <Typography className="recent">
-                      {trans("navbar.recent")}
-                    </Typography>
+                    <Typography className="recent">{trans("navbar.recent")}</Typography>
                     <Typography
                       className="clear-all"
                       onClick={() => setShowClearModal(true)}
@@ -326,14 +322,14 @@ const AppSearchInput = () => {
       >
         <Typography component="div" className="clear-all-modal-container">
           <Typography component="div" className="header">
-            {trans("navbar.questionHeader")}
+            {trans('navbar.questionHeader')}
           </Typography>
           <Typography component="div" className="warning">
-            {trans("navbar.questionWarning")}
+            {trans('navbar.questionWarning')}
           </Typography>
           <Typography component="div" className="action-btns">
             <Button className="clear-all-btn" onClick={handleClearAll}>
-              {trans("navbar.clearAll")}
+              {trans('navbar.clearAll')}
             </Button>
             <Button
               className="not-now-btn"

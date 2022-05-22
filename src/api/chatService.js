@@ -40,3 +40,7 @@ export const getMessagesByConversationId = async (data) => {
 export const getListOfConversationId = async () => {
   return axiosConfig.get(`${API_ENDPOINT_KEYS.CONVERSATION}/id`, {});
 };
+
+export const checkConversationIsExistOrNot = async (id) => {
+  return axiosConfig.get(`${API_ENDPOINT_KEYS.CONVERSATION}/check/${id}`, {});
+}
