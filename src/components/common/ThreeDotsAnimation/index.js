@@ -1,9 +1,14 @@
+import classNames from "classnames";
 import React from "react";
-import "./style.scss"
+import "./style.scss";
 
-const ThreeDotsAnimation = () => {
+const ThreeDotsAnimation = ({ animation = true }) => {
+  const animationClassName = classNames({
+    "bouncing-loader": animation === true,
+    "fixed-loader": animation === false,
+  });
   return (
-    <div className="bouncing-loader">
+    <div className={animationClassName}>
       <div></div>
       <div></div>
       <div></div>

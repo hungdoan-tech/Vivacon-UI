@@ -35,7 +35,7 @@ import { chattingType } from "constant/types";
 import { useTranslation } from "react-i18next";
 import CustomModal from "components/common/CustomModal";
 import ChattingSearch from "components/common/ChattingSearch";
-import ThreeDotsAnimation from "components/common/ThreeDotsAnimation"
+import ThreeDotsAnimation from "components/common/ThreeDotsAnimation";
 import _ from "lodash";
 
 let stompClient = null;
@@ -45,6 +45,7 @@ const ChatPage = () => {
   const [inputMessage, setInputMessage] = useState("");
   const [messageList, setMessageList] = useState([]);
   const [submitMessage, setSubmitMessage] = useState({});
+  const [typingMessage, setTypingMessage] = useState({});
   const [activeUsers, setActiveUsers] = useState([]);
   const [userChatting, setUserChatting] = useState({
     name: "",
@@ -55,6 +56,8 @@ const ChatPage = () => {
   const [currentTargetAvatar, setCurrentTargetAvatar] = useState([]);
   const [openChattingSearch, setOpenChattingSearch] = useState(false);
   const [newConversation, setNewConversation] = useState({});
+  const [newestVirtualConvId, setNewestVirtualConvId] = useState(0);
+  const [typingOnConvList, setTypingOnConvList] = useState([]);
 
   const { t: trans } = useTranslation();
 
@@ -64,9 +67,60 @@ const ChatPage = () => {
   };
 
   const onMessageReceived = (payload) => {
-    startAudio();
-    setSubmitMessage(JSON.parse(payload.body));
+    const message = JSON.parse(payload.body);
+    console.log({ message });
+    switch (message.messageType) {
+      case chattingType.USUAL_TEXT: {
+        startAudio();
+        setSubmitMessage(message);
+        break;
+      }
+      case chattingType.TYPING: {
+        setTypingMessage(message);
+        break;
+      }
+      default: {
+        break;
+      }
+    }
   };
+
+  useEffect(() => {
+    if (typingMessage.conversationId) {
+      //Check existed item on typing conversation list
+      const foundItem = typingOnConvList.filter(
+        (item) => item.conversationId === typingMessage.conversationId
+      )[0];
+
+      //If not existed => create new item in typing conversation list
+      if (!foundItem) {
+        setTypingOnConvList([
+          ...typingOnConvList,
+          {
+            conversationId: typingMessage.conversationId,
+            usersTyping: [typingMessage.sender],
+          },
+        ]);
+      }
+      //If existed => save overlap
+      else {
+        const currTypingOnConvList = [...typingOnConvList];
+        const index = typingOnConvList.indexOf(foundItem);
+
+        if (typingMessage.content === "true") {
+          foundItem.usersTyping.push(typingMessage.sender);
+          currTypingOnConvList[index] = foundItem;
+        } else {
+          const filtered = foundItem.usersTyping.filter(
+            (user) => user.username !== typingMessage.sender.username
+          );
+          currTypingOnConvList[index] = filtered;
+        }
+
+        setTypingOnConvList(currTypingOnConvList);
+      }
+    }
+  }, [typingMessage]);
 
   const getIndexOfConversation = (id) => {
     if (conversationList.content) {
@@ -120,7 +174,7 @@ const ChatPage = () => {
             splitUserName(item.participants) ===
             splitUserName(newConversation.participants)
           ) {
-            startAudio()
+            startAudio();
             isExistedConv = true;
             currConversationList[index] = newConversation;
             setConversationList({
@@ -140,7 +194,7 @@ const ChatPage = () => {
         //If on new conversation now
         if (isOnConv) {
           setConversationID(newConversation.id);
-          setMessageList([...messageList, newConversation.latestMessage])
+          setMessageList([...messageList, newConversation.latestMessage]);
         }
         setNewConversation({});
       }
@@ -173,13 +227,6 @@ const ChatPage = () => {
               "WS-Authorization": getJwtToken(),
             }
           );
-          // stompClient.subscribe(
-          //   `/conversation/${room}/message`,
-          //   onMessageReceived,
-          //   {
-          //     "WS-Authorization": getJwtToken(),
-          //   }
-          // );
         });
       }
     });
@@ -284,12 +331,13 @@ const ChatPage = () => {
           setOpenChattingSearch(false);
           const currConvList = [
             {
-              id: -1,
+              id: newestVirtualConvId - 1,
               latestMessage: null,
               participants: [selectedList[0], getCurrentUser()],
             },
             ...conversationList.content,
           ];
+          setNewestVirtualConvId(newestVirtualConvId - 1);
           setConversationList({
             ...conversationList,
             content: currConvList,
@@ -314,7 +362,7 @@ const ChatPage = () => {
         isTyping: true,
       })
     );
-  }
+  };
 
   const handleUntyping = () => {
     stompClient.send(
@@ -325,7 +373,7 @@ const ChatPage = () => {
         isTyping: false,
       })
     );
-  }
+  };
 
   useEffect(() => {
     connect();
@@ -399,6 +447,11 @@ const ChatPage = () => {
       active: conv.id === conversationID,
     });
     const isOnline = getStatusOfConversation(conv.participants);
+    const usersTypingList = typingOnConvList
+      .filter((item) => item.conversationId === conv.id)[0]
+      ?.usersTyping.filter(
+        (user) => user.username !== getCurrentUser().username
+      );
     return (
       <Typography
         component="div"
@@ -430,10 +483,22 @@ const ChatPage = () => {
           <Typography className="username">
             {splitUserName(conv.participants)}
           </Typography>
-          <Typography className="active">
-            {conv.latestMessage &&
+          <Typography className="latest-action">
+            {usersTypingList && usersTypingList.length > 0 ? (
+              usersTypingList.length === 1 ? (
+                <>
+                  {usersTypingList[0].fullName}: <ThreeDotsAnimation />
+                </>
+              ) : (
+                <>
+                  {usersTypingList?.length} people: <ThreeDotsAnimation />
+                </>
+              )
+            ) : (
+              conv.latestMessage &&
               `${resolveName(conv.latestMessage?.sender.fullName, "fullName")}:
-            ${conv.latestMessage?.content}`}
+            ${conv.latestMessage?.content}`
+            )}
           </Typography>
         </Typography>
       </Typography>
@@ -441,6 +506,44 @@ const ChatPage = () => {
   };
 
   const renderMessageList = (messageList) => {
+    const usersTypingList = typingOnConvList
+      .filter((item) => item.conversationId === conversationID)[0]
+      ?.usersTyping.filter(
+        (user) => user.username !== getCurrentUser().username
+      );
+
+    const renderTypingContainer = () => {
+      const restLength = usersTypingList.length - 3;
+      return (
+        <>
+          <Typography
+            component="div"
+            align="left"
+            className="user-list-typing-avatar"
+          >
+            {_.slice(usersTypingList, 0, 3).map((userTyping) => {
+              return (
+                <img src={userTyping.avatar} className="user-typing-avatar" />
+              );
+            })}
+            {restLength > 0 && <ThreeDotsAnimation animation={false} />}
+          </Typography>
+          <Typography component="div" align="left" className="typing-container">
+            <ThreeDotsAnimation className="typing-dots" />
+            <Typography className="typing-text">
+              {_.slice(usersTypingList, 0, 3)
+                .map((user) => user.fullName)
+                .join(", ")}
+              {restLength > 0
+                ? ` and ${restLength} other people are typing...`
+                : restLength > -2
+                ? " are typing"
+                : " is typing..."}
+            </Typography>
+          </Typography>
+        </>
+      );
+    };
     return (
       <InfiniteScroll
         dataLength={100}
@@ -454,6 +557,13 @@ const ChatPage = () => {
         scrollThreshold={"555px"}
         initialScrollY={0}
       >
+        {usersTypingList && usersTypingList.length > 0 && (
+          <Typography>
+            <Typography component="div" align="left" className="latest-action">
+              {renderTypingContainer()}
+            </Typography>
+          </Typography>
+        )}
         {messageList.map((message, index) => {
           const condition =
             message.sender.username === getCurrentUser().username;
@@ -513,7 +623,6 @@ const ChatPage = () => {
             conversationList.content?.map((room) => {
               return renderUserItem(room);
             })}
-            <ThreeDotsAnimation />
         </Typography>
         {conversationID ? (
           <Typography component="div" className="chat-with-user-container">
