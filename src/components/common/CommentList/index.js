@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { Typography, Button } from "@mui/material";
 import "./style.scss";
 import {
@@ -15,6 +15,7 @@ import { useTranslation } from "react-i18next";
 import { getCurrentUser } from "utils/jwtToken";
 import CustomModal from "../CustomModal";
 import useLoading from "hooks/useLoading";
+import { AuthUser } from "../../../App";
 
 const CommentList = ({
   currentPost,
@@ -149,6 +150,8 @@ const CommentItem = ({
   const [submittedComment, setSubmittedComment] = useState({});
   const [showCommentOption, setShowCommentOption] = useState(false);
   const [showOptionModal, setShowOptionModal] = useState(false);
+
+  const Auth = useContext(AuthUser);
 
   useEffect(() => {
     setCreatedTime(calculateFromNow(convertUTCtoLocalDate(comment.createdAt)));
@@ -295,17 +298,20 @@ const CommentItem = ({
               {createdTime}
             </Typography>
 
-            <Typography
-              className="reply"
-              component="div"
-              onClick={() =>
-                handleOpenReplyCmt(
-                  substringUsername(comment.createdBy?.username)
-                )
-              }
-            >
-              {trans("newFeed.reply")}
-            </Typography>
+            {!Auth.auth.isAdmin && (
+              <Typography
+                className="reply"
+                component="div"
+                onClick={() =>
+                  handleOpenReplyCmt(
+                    substringUsername(comment.createdBy?.username)
+                  )
+                }
+              >
+                {trans("newFeed.reply")}
+              </Typography>
+            )}
+
             {showCommentOption &&
               getCurrentUser().accountId === comment.createdBy?.id && (
                 <Typography className="option" component="div">
@@ -370,6 +376,9 @@ const CommentItem = ({
 const CommentChildItem = ({ childCmt, handleOpenReplyCmt }) => {
   const [showCommentOption, setShowCommentOption] = useState(false);
   const { t: trans } = useTranslation();
+
+  const Auth = useContext(AuthUser);
+
   return (
     <Typography
       className="comment-content child"
@@ -396,17 +405,20 @@ const CommentChildItem = ({ childCmt, handleOpenReplyCmt }) => {
           <Typography className="date-time" component="div">
             {childCmt.fromNow}
           </Typography>
-          <Typography
-            className="reply"
-            component="div"
-            onClick={() =>
-              handleOpenReplyCmt(
-                substringUsername(childCmt.createdBy?.username)
-              )
-            }
-          >
-            {trans("newFeed.reply")}
-          </Typography>
+          {!Auth.auth.isAdmin && (
+            <Typography
+              className="reply"
+              component="div"
+              onClick={() =>
+                handleOpenReplyCmt(
+                  substringUsername(childCmt.createdBy?.username)
+                )
+              }
+            >
+              {trans("newFeed.reply")}
+            </Typography>
+          )}
+
           {showCommentOption &&
             getCurrentUser().accountId === childCmt.createdBy?.id && (
               <Typography className="option" component="div">

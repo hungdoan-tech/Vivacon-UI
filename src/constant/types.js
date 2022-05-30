@@ -27,3 +27,38 @@ export const privacyPostType = [
 ];
 
 export const limitPerPage = [5, 10, 20, 30, 50];
+
+export const reportContent = [
+  {
+    sentitiveType: "NUDITY",
+    content: "Ảnh khỏa thân hoặc hoạt động tình dục",
+  },
+  {
+    sentitiveType: "VIOLENCE",
+    content: "Bạo lực hoặc tổ chức nguy hiểm",
+  },
+  {
+    sentitiveType: "SUICIDE",
+    content: "Tự tử hoặc tự gây thương tích",
+  },
+  {
+    sentitiveType: "TERRORISM",
+    content: "Biểu tượng hoặc ngôn từ gây thù ghét",
+  },
+  {
+    sentitiveType: "SPAM",
+    content: "Đây là spam",
+  },
+  {
+    sentitiveType: "OTHER",
+    content: "Chỉ là tôi không thích nội dung này",
+  },
+];
+
+// "Bán hàng hóa phi pháp hoặc thuộc diện kiểm soát",
+// "Bắt nạt hoặc quấy rối",
+// "Vi phạm quyền sở hữu trí tuệ",
+// "Rối loạn ăn uống",
+// "Lừa đảo hoặc gian lận",
+// "Thông tin sai sự thật",
+// "",

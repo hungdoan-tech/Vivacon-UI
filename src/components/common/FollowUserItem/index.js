@@ -1,12 +1,13 @@
 import { Typography, Button } from "@mui/material";
 import { getProfile } from "api/userService";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useContext } from "react";
 import { useHistory } from "react-router-dom";
 import { getCurrentUser } from "utils/jwtToken";
 import { substringUsername } from "utils/resolveData";
 import CustomPopUp from "../CustomPopUp";
 import FollowButton from "../FollowButton";
 import CameraAltOutlinedIcon from "@mui/icons-material/CameraAltOutlined";
+import { AuthUser } from "../../../App";
 import "./style.scss";
 import { useTranslation } from "react-i18next";
 
@@ -20,6 +21,8 @@ const FollowUserItem = (props) => {
   const [localLoading, setLocalLoading] = useState(true);
   const [isUpdated, setIsUpdated] = useState(false);
   const positionRef = useRef();
+
+  const Auth = useContext(AuthUser);
 
   const history = useHistory();
   const navigateToUser = (username) => {
@@ -101,7 +104,7 @@ const FollowUserItem = (props) => {
           </Typography>
           <Typography className="fullName">{user.fullName}</Typography>
         </Typography>
-        {getCurrentUser().accountId !== user.id && (
+        {getCurrentUser().accountId !== user.id && !Auth.auth.isAdmin && (
           <FollowButton
             userProfile={user}
             isFollowing={isFollowing}
@@ -123,6 +126,8 @@ export const PopUpContent = ({
   const { t: trans } = useTranslation();
   const [followerCount, setFollowerCount] = useState(userInfo.followerCount);
   const [initialFollowerState, setInitialFollowerState] = useState(isFollowing);
+
+  const Auth = useContext(AuthUser);
 
   useEffect(() => {
     setFollowerCount(userInfo.followerCount);
@@ -205,9 +210,8 @@ export const PopUpContent = ({
         </Typography>
 
         <Typography component="div" className="popup-line4">
-          {getCurrentUser().accountId !== userInfo.id && (
+          {getCurrentUser().accountId !== userInfo.id && !Auth.auth.isAdmin && (
             <>
-              {" "}
               <Button className="message-btn">
                 {trans("profile.message")}
               </Button>

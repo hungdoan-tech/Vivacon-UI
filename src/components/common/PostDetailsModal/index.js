@@ -1,5 +1,5 @@
-import { Button, Typography } from "@mui/material";
-import { useEffect, useState } from "react";
+import { Box, Button, IconButton, Tooltip, Typography } from "@mui/material";
+import { useEffect, useState, useContext } from "react";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import "./style.scss";
@@ -15,8 +15,34 @@ import { substringUsername } from "utils/resolveData";
 import { useHistory } from "react-router-dom";
 import CustomPopUp from "../CustomPopUp";
 import { PopUpContent } from "components/pages/ProfilePage";
+import CustomModal from "../CustomModal";
+import { reportContent } from "constant/types";
+import InfoIcon from "@mui/icons-material/Info";
+import { createPostReport } from "../../../api/reportService";
+import useSnackbar from "../../../hooks/useSnackbar";
+import { AuthUser } from "App";
 
-const PostDetailsModal = ({ index, dataList }) => {
+function TabPanel(props) {
+  const { children, value, index, ...other } = props;
+
+  return (
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`simple-tabpanel-${index}`}
+      aria-labelledby={`simple-tab-${index}`}
+      {...other}
+    >
+      {value === index && (
+        <Box sx={{ p: 3 }}>
+          <Typography>{children}</Typography>
+        </Box>
+      )}
+    </div>
+  );
+}
+
+const PostDetailsModal = ({ index, dataList, title }) => {
   const [currentIndex, setCurrentIndex] = useState(index);
   const [currentPost, setCurrentPost] = useState({});
   const [showPopUp, setShowPopUp] = useState({
@@ -24,6 +50,20 @@ const PostDetailsModal = ({ index, dataList }) => {
     id: -1,
     showInImage: false,
   });
+
+  const [unfollowModal, setUnfollowModal] = useState({
+    open: false,
+    data: {},
+  });
+
+  const [toolTipContent, setToolTipContent] = useState(title);
+
+  const Auth = useContext(AuthUser);
+
+  const [stepValue, setStepValue] = useState(0);
+  const [isShow, setIsShow] = useState(false);
+  const { setSnackbarState } = useSnackbar();
+
   const [submittedComment, setSubmittedComment] = useState({});
   const history = useHistory();
   const handleGetPostDetail = () => {
@@ -65,6 +105,10 @@ const PostDetailsModal = ({ index, dataList }) => {
     handleGetPostDetail();
   }, [currentIndex]);
 
+  useEffect(() => {
+    setToolTipContent(title);
+  }, [title]);
+
   const handleIncreaseIndex = () => {
     setCurrentIndex(currentIndex + 1);
   };
@@ -73,8 +117,107 @@ const PostDetailsModal = ({ index, dataList }) => {
     setCurrentIndex(currentIndex - 1);
   };
 
+  const handleOpenUnfollowModal = (userInfo) => {
+    setIsShow(true);
+    setUnfollowModal({
+      open: true,
+      data: userInfo,
+    });
+  };
+
+  const handleCloseUnfollowModal = () => {
+    setIsShow(false);
+    setUnfollowModal({ ...unfollowModal, open: false });
+    setStepValue(0);
+  };
+
+  const handleCreateReport = (id, item) => {
+    console.log({ id, item });
+    const reportData = {
+      content: item.content,
+      sentitiveType: item.sentitiveType,
+      postId: id,
+    };
+    handleNextStep();
+    // createPostReport(reportData)
+    //   .then((res) => {
+    //     if (res.status === 200) {
+    //       setSnackbarState({
+    //         open: true,
+    //         content: "You have reported successfully",
+    //         type: "SUCCESS",
+    //       });
+    //       handleNextStep();
+    //     }
+    //   })
+    //   .catch((err) => {
+    //     throw err;
+    //   })
+    //   .finally(() => {
+    //     // setLocalLoading(false);
+    //   });
+  };
+
+  const handleNextStep = () => {
+    setStepValue(stepValue + 1);
+  };
+  const handlePrevStep = () => {
+    setStepValue(stepValue - 1);
+  };
+
+  const StepOne = () => {
+    return (
+      <CustomModal
+        isRadius
+        width={400}
+        height={300}
+        title="Why do you report this port?"
+        open={unfollowModal.open}
+        handleCloseModal={handleCloseUnfollowModal}
+      >
+        {/* {renderUnfollowModal()} */}
+        {reportContent.map((item, index) => (
+          <p onClick={() => handleCreateReport(currentPost?.id, item)}>
+            {item.content}
+          </p>
+        ))}
+      </CustomModal>
+    );
+  };
+
+  const StepTwo = (post) => {
+    console.log({ post });
+    return (
+      <CustomModal
+        isRadius
+        width={400}
+        height={300}
+        title="Cảm ơn bạn đã cho chúng tôi biết"
+        open={unfollowModal.open}
+        handleCloseModal={handleCloseUnfollowModal}
+      >
+        {/* {renderUnfollowModal()} */}
+        <>
+          <IconButton>
+            <InfoIcon />
+          </IconButton>
+          <div>Block</div>
+          {post && post?.createdBy?.isFollowing ? <div>Unfollow</div> : null}
+
+          <div>View More</div>
+          <div onClick={handleCloseUnfollowModal}>Close</div>
+        </>
+      </CustomModal>
+    );
+  };
+
   return (
     <>
+      <Tooltip title={toolTipContent}>
+        <IconButton>
+          <InfoIcon />
+        </IconButton>
+      </Tooltip>
       {currentPost.id ? (
         <Typography component="div" className="post-details-container">
           {currentIndex > 0 && (
@@ -116,6 +259,10 @@ const PostDetailsModal = ({ index, dataList }) => {
                   >
                     {substringUsername(currentPost.createdBy?.username)}
                   </Typography>
+                  {!Auth.auth.isAdmin && (
+                    <button onClick={handleOpenUnfollowModal}>Report</button>
+                  )}
+
                   {/* {showPopUp.open &&
                     showPopUp.id === currentPost.createdBy?.id &&
                     !showPopUp.showInImage && (
@@ -160,6 +307,7 @@ const PostDetailsModal = ({ index, dataList }) => {
                   {calculateFromNow(currentPost.lastModifiedAt)}
                 </Typography>
               </Typography>
+
               <Typography component="div" className="interaction-line4">
                 <CommentInput
                   postId={currentPost.id}
@@ -176,6 +324,17 @@ const PostDetailsModal = ({ index, dataList }) => {
               </Button>
             </div>
           )}
+
+          {isShow && isShow ? (
+            <>
+              <TabPanel value={stepValue} index={0}>
+                {StepOne()}
+              </TabPanel>
+              <TabPanel value={stepValue} index={1}>
+                {StepTwo(currentPost)}
+              </TabPanel>
+            </>
+          ) : null}
         </Typography>
       ) : (
         <></>

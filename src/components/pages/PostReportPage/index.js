@@ -16,8 +16,9 @@ import CustomModal from "../../common/CustomModal";
 import PostDetailsModal from "components/common/PostDetailsModal";
 import Pagination from "@mui/material/Pagination";
 import { limitPerPage } from "../../../constant/types";
-import useLoading from "hooks/useLoading";
 import useSnackbar from "hooks/useSnackbar";
+
+import ConfirmDialog from "components/common/ConfirmDialog";
 
 export default function PostReportPage() {
   const [showPostReportModal, setShowPostReportModal] = useState({
@@ -25,16 +26,19 @@ export default function PostReportPage() {
     index: -1,
     item: {},
     dataList: [],
+    reportMessage: "",
   });
 
   const [postReportList, setPostReportList] = useState([]);
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(5);
 
-  const { setLoading } = useLoading();
-  const { setSnackbarState } = useSnackbar();
+  const [openConfirmRejectedDialog, setOpenConfirmRejectedDialog] =
+    useState(false);
+  const [openConfirmApprovedDialog, setOpenConfirmApprovedDialog] =
+    useState(false);
 
-  console.log({ page, limit });
+  const { setSnackbarState } = useSnackbar();
 
   useEffect(() => {
     fetchListPostReport(page, limit);
@@ -50,7 +54,6 @@ export default function PostReportPage() {
   }, [limit]);
 
   const fetchListPostReport = (page, limit) => {
-    setLoading(true);
     getListPostReport({
       _sort: null,
       limit,
@@ -58,26 +61,51 @@ export default function PostReportPage() {
       page: page - 1,
     })
       .then((res) => setPostReportList(res?.data))
-      .finally(() => {
-        setLoading(false);
-      });
+      .finally(() => {});
   };
 
-  const handleOpenPostReportModal = (index, item, dataList) => {
+  const handleCloseConfirmRejectedDialog = () => {
+    setOpenConfirmRejectedDialog(false);
+  };
+
+  const handleConfirmRejectedDialog = (id) => {
+    setOpenConfirmRejectedDialog(false);
+    handleRejectedPostReport(id);
+  };
+
+  const handleCloseConfirmApprovedDialog = () => {
+    setOpenConfirmApprovedDialog(false);
+  };
+
+  const handleConfirmApprovedDialog = (id) => {
+    setOpenConfirmApprovedDialog(false);
+    handleApprovedPostReport(id);
+  };
+
+  const handleOpenPostReportModal = (index, item, dataList, reportMessage) => {
     setShowPostReportModal({
       open: true,
       index,
       item,
       dataList,
+      reportMessage,
     });
   };
 
-  const handleCloseOpenReportModal = (id) => {
+  const handleCloseOpenReportModal = () => {
     setShowPostReportModal({
       open: false,
       index: -1,
       dataLength: 0,
     });
+  };
+
+  const handleOpenRejectedDialog = () => {
+    setOpenConfirmRejectedDialog(true);
+  };
+
+  const handleOpenApprovedDialog = () => {
+    setOpenConfirmApprovedDialog(true);
   };
 
   const handleRejectedPostReport = (id) => {
@@ -122,25 +150,6 @@ export default function PostReportPage() {
     setPage(value);
   };
 
-  const makeStyle = (status) => {
-    if (status) {
-      return {
-        background: "rgb(145 254 159 / 47%)",
-        color: "green",
-      };
-    } else if (status === "Pending") {
-      return {
-        background: "#ffadad8f",
-        color: "red",
-      };
-    } else {
-      return {
-        background: "#59bfff",
-        color: "white",
-      };
-    }
-  };
-
   return (
     <div className="Table">
       <h3>Post Report Data</h3>
@@ -160,7 +169,7 @@ export default function PostReportPage() {
               <TableCell align="left">Content</TableCell>
               <TableCell align="left">Sensitive Type</TableCell>
               <TableCell align="left">Date</TableCell>
-              <TableCell align="left">Status</TableCell>
+
               <TableCell align="left">User Name</TableCell>
               <TableCell align="left">Post Content</TableCell>
               <TableCell align="left"></TableCell>
@@ -169,75 +178,83 @@ export default function PostReportPage() {
           <TableBody style={{ color: "white" }}>
             {postReportList?.content
               ? postReportList?.content.map((row, index) => (
-                  <TableRow
-                    key={row.id}
-                    sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                  >
-                    <TableCell component="th" scope="row">
-                      {row.id}
-                    </TableCell>
-                    <TableCell align="left">{row.content}</TableCell>
-                    <TableCell align="left">{row.sentitiveType}</TableCell>
+                  <>
+                    <ConfirmDialog
+                      handleClose={handleCloseConfirmRejectedDialog}
+                      handleConfirm={() => handleConfirmRejectedDialog(row.id)}
+                      open={openConfirmRejectedDialog}
+                      title="Are you sure want to rejected this report?"
+                      description="Report Content"
+                    />
+                    <ConfirmDialog
+                      handleClose={handleCloseConfirmApprovedDialog}
+                      handleConfirm={() => handleConfirmApprovedDialog(row.id)}
+                      open={openConfirmApprovedDialog}
+                      title="Are you sure want to approved this report?"
+                      description="Report Content"
+                    />
 
-                    <TableCell align="left">
-                      {moment(row.createdAt).format("DD/MM/YYYY")}
-                    </TableCell>
-                    <TableCell align="left">
-                      <span className="status" style={makeStyle(row.active)}>
-                        {row.active}
-                      </span>
-                    </TableCell>
-                    <TableCell align="left">{row.createdBy.username}</TableCell>
-                    <TableCell align="left">{row.post.caption}</TableCell>
-                    <TableCell align="left" className="Details">
-                      <button
-                        onClick={() =>
-                          handleOpenPostReportModal(
-                            index,
-                            row,
-                            postReportList?.content
-                          )
-                        }
-                      >
-                        Detail
-                      </button>
-                      <CustomModal
-                        open={showPostReportModal.open}
-                        title="Is this report correct. Do you want to remove it from list?"
-                        handleCloseModal={handleCloseOpenReportModal}
-                        width={1200}
-                        height={800}
-                      >
-                        <>
-                          <div>
-                            <button
-                              onClick={() => handleRejectedPostReport(row.id)}
-                            >
-                              Rejected
-                            </button>
-                            <button
-                              onClick={() => handleApprovedPostReport(row.id)}
-                            >
-                              Approved
-                            </button>
-                            <button onClick={handleCloseOpenReportModal}>
-                              Cancel
-                            </button>
-                          </div>
-                          <PostDetailsModal
-                            index={showPostReportModal.index}
-                            dataList={showPostReportModal.dataList}
-                            setUpdatedItem={() => null}
-                          />
-                        </>
-                      </CustomModal>
-                    </TableCell>
-                  </TableRow>
+                    <TableRow
+                      key={row.id}
+                      sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                    >
+                      <TableCell component="th" scope="row">
+                        {row.id}
+                      </TableCell>
+                      <TableCell align="left">{row.content}</TableCell>
+                      <TableCell align="left">{row.sentitiveType}</TableCell>
+
+                      <TableCell align="left">
+                        {moment(row.createdAt).format("DD/MM/YYYY")}
+                      </TableCell>
+
+                      <TableCell align="left">
+                        {row.createdBy.username}
+                      </TableCell>
+                      <TableCell align="left">{row.post.caption}</TableCell>
+                      <TableCell align="left" className="Details">
+                        <button
+                          onClick={() =>
+                            handleOpenPostReportModal(
+                              index,
+                              row,
+                              postReportList?.content,
+                              row.content + " " + row.sentitiveType
+                            )
+                          }
+                        >
+                          Detail
+                        </button>
+                      </TableCell>
+                    </TableRow>
+                  </>
                 ))
               : null}
           </TableBody>
         </Table>
       </TableContainer>
+
+      <CustomModal
+        open={showPostReportModal.open}
+        title="Is this report correct?"
+        handleCloseModal={handleCloseOpenReportModal}
+        width={1200}
+        height={800}
+      >
+        <>
+          <div>
+            <button onClick={handleOpenRejectedDialog}>Rejected</button>
+            <button onClick={handleOpenApprovedDialog}>Approved</button>
+            <button onClick={handleCloseOpenReportModal}>Cancel</button>
+          </div>
+          <PostDetailsModal
+            title={showPostReportModal.reportMessage}
+            index={showPostReportModal.index}
+            dataList={showPostReportModal.dataList}
+            setUpdatedItem={() => null}
+          />
+        </>
+      </CustomModal>
       <Pagination
         count={postReportList?.totalPages}
         color="primary"
