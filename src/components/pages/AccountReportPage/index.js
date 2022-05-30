@@ -1,5 +1,5 @@
 import React from "react";
 
 export default function AccountReportPage() {
-  return <div>index</div>;
+  return <div>AccountReportPage</div>;
 }
