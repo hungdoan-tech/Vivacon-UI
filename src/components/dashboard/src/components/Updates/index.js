@@ -1,20 +1,18 @@
 import React from "react";
 import "./style.scss";
-import { UpdatesData } from "../../Data/Data";
 
-const Updates = () => {
+const Updates = ({ userAccountMostFollowerData }) => {
   return (
     <div className="Updates">
-      {UpdatesData.map((update) => {
+      {userAccountMostFollowerData.map((update) => {
         return (
           <div className="update">
-            <img src={update.img} alt="profile" />
+            <img src={update.url} alt="profile" />
             <div className="noti">
-              <div  style={{marginBottom: '0.5rem'}}>
-                <span>{update.name}</span>
-                <span> {update.noti}</span>
+              <div style={{ marginBottom: "0.5rem" }}>
+                <span> {update.userName}</span>
               </div>
-                <span>{update.time}</span>
+              <span>Total: {update.accountQuantity} followers</span>
             </div>
           </div>
         );

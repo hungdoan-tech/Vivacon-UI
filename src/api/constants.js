@@ -21,4 +21,5 @@ export const API_ENDPOINT_KEYS = {
   ACCOUNT_REPORT: "/accountReport",
   POST_REPORT: "/postReport",
   COMMENT_REPORT: "/commentReport",
+  STATISTIC: "/statistic",
 };

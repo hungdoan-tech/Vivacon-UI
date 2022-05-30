@@ -62,3 +62,9 @@ export const reportContent = [
 // "Lừa đảo hoặc gian lận",
 // "Thông tin sai sự thật",
 // "",
+
+export const PERIOD = {
+  MONTHS: "months",
+  QUARTERS: "quarters",
+  YEARS: "years",
+};
