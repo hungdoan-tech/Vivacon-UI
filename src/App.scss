@@ -29,3 +29,11 @@
     background-color: var(--onlineColor) !important;
   }
 }
+
+.limit-text {
+  display: inline-block !important;
+  width: 100%;
+  white-space: nowrap;
+  overflow: hidden !important;
+  text-overflow: ellipsis;
+}

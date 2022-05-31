@@ -4,8 +4,16 @@ import { getPostsByUserName } from "api/postService";
 import axiosConfig from "api/axiosConfig";
 import { API_ENDPOINT_KEYS } from "api/constants";
 import _ from "lodash";
+import { getDifferenceItemBetweenTwoArrays } from "utils/resolveData";
 
-const useInfiniteList = (handleGetData, data, pageNumber, parentDataList) => {
+const useInfiniteReverseList = (
+  handleGetData,
+  data,
+  pageNumber,
+  newConversation,
+  submitMessage,
+  parentDataList
+) => {
   const [isLoading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [dataList, setDataList] = useState([]);
@@ -22,6 +30,8 @@ const useInfiniteList = (handleGetData, data, pageNumber, parentDataList) => {
     }
   }, [parentDataList]);
 
+  useEffect(() => {}, [newConversation]);
+
   useEffect(() => {
     if (pageNumber > 0) {
       setLoading(true);
@@ -29,8 +39,16 @@ const useInfiniteList = (handleGetData, data, pageNumber, parentDataList) => {
       // let cancel;
       handleGetData({ ...data, page: pageNumber })
         .then((res) => {
+          const differenceContent = getDifferenceItemBetweenTwoArrays(res.data.content, dataList);
+          console.log(
+            { differenceContent },
+            "differenceContent",
+            res.data.content,
+            dataList
+          );
+          const reverseList = [...differenceContent].reverse();
           setDataList((prevDataList) => {
-            return [...new Set([...prevDataList, ...res.data.content])];
+            return [...new Set([...reverseList, ...prevDataList])];
           });
           setHasMore(!res.data.last);
           setLoading(false);
@@ -53,8 +71,16 @@ const useInfiniteList = (handleGetData, data, pageNumber, parentDataList) => {
     // let cancel;
     handleGetData({ ...data, page: 0 })
       .then((res) => {
+        const differenceContent = getDifferenceItemBetweenTwoArrays(res.data.content, dataList);
+        console.log(
+          { differenceContent },
+          "differenceContent",
+          res.data.content,
+          dataList
+        );
+        const reverseList = [...differenceContent].reverse();
         setDataList((prevDataList) => {
-          return [...new Set([...res.data.content])];
+          return [...new Set([...reverseList])];
         });
         setHasMore(!res.data.last);
         setLoading(false);
@@ -67,9 +93,9 @@ const useInfiniteList = (handleGetData, data, pageNumber, parentDataList) => {
         setError(true);
       });
     // return () => cancel();
-  }, [data.username]);
+  }, [data.id]);
 
   return { isLoading, error, dataList, hasMore, isNoData };
 };
 
-export default useInfiniteList;
+export default useInfiniteReverseList;

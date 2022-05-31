@@ -36,7 +36,9 @@ import { useTranslation } from "react-i18next";
 import CustomModal from "components/common/CustomModal";
 import ChattingSearch from "components/common/ChattingSearch";
 import ThreeDotsAnimation from "components/common/ThreeDotsAnimation";
+import InfiniteReverseList from "components/common/InfiniteReverseList";
 import _ from "lodash";
+import InfiniteList from "components/common/InfiniteList";
 
 let stompClient = null;
 
@@ -50,10 +52,10 @@ const ChatPage = () => {
   const [userChatting, setUserChatting] = useState({
     name: "",
     isOnline: false,
+    avatars: [],
   });
   const [conversationID, setConversationID] = useState(null);
   const [conversationList, setConversationList] = useState({ content: [] });
-  const [currentTargetAvatar, setCurrentTargetAvatar] = useState([]);
   const [openChattingSearch, setOpenChattingSearch] = useState(false);
   const [newConversation, setNewConversation] = useState({});
   const [newestVirtualConvId, setNewestVirtualConvId] = useState(0);
@@ -68,7 +70,6 @@ const ChatPage = () => {
 
   const onMessageReceived = (payload) => {
     const message = JSON.parse(payload.body);
-    console.log({ message });
     switch (message.messageType) {
       case chattingType.USUAL_TEXT: {
         startAudio();
@@ -135,15 +136,6 @@ const ChatPage = () => {
     }
   };
 
-  const getMessageList = (id) => {
-    getMessagesByConversationId({
-      id,
-    }).then((response) => {
-      setConversationID(id);
-      setMessageList(response.data.content);
-    });
-  };
-
   const onNewConversation = (payload) => {
     const newConv = JSON.parse(payload.body);
     setNewConversation(newConv);
@@ -159,32 +151,56 @@ const ChatPage = () => {
   useEffect(() => {
     if (newConversation.id) {
       //If new conversation is chat 1vs1
-      if (newConversation.participants.length === 2) {
+      if (newConversation.participants.length >= 2) {
         const currConversationList = [...conversationList.content];
         let isExistedConv = false;
         let isOnConv = false;
 
-        //Check per item on current conversation list
-        currConversationList.map((item, index) => {
-          if (item.id === conversationID) {
-            isOnConv = true;
-          }
-          //If found a conversation like new conversation
-          if (
-            splitUserName(item.participants) ===
-            splitUserName(newConversation.participants)
-          ) {
-            startAudio();
-            isExistedConv = true;
-            currConversationList[index] = newConversation;
-            setConversationList({
-              ...conversationList,
-              content: currConversationList,
-            });
-          }
-        });
+        //Check per item on current conversation list (1vs1)
+        if (newConversation.participants.length === 2) {
+          currConversationList.map((item, index) => {
+            if (item.id === conversationID) {
+              isOnConv = true;
+            }
+            //If found a conversation like new conversation
+            if (
+              splitUserName(item.participants) ===
+              splitUserName(newConversation.participants)
+            ) {
+              startAudio();
+              isExistedConv = true;
+              currConversationList[index] = newConversation;
+              setConversationList({
+                ...conversationList,
+                content: currConversationList,
+              });
+            }
+          });
+        }
+        //Group chat
+        else {
+          currConversationList.map((item, index) => {
+            if (item.id === conversationID) {
+              isOnConv = true;
+            }
+            //If found a conversation like new conversation
+            if (
+              splitUserName(item.participants) ===
+                splitUserName(newConversation.participants) &&
+              item.id < 0
+            ) {
+              startAudio();
+              isExistedConv = true;
+              currConversationList[index] = newConversation;
+              setConversationList({
+                ...conversationList,
+                content: currConversationList,
+              });
+            }
+          });
+        }
 
-        //If existed conversation
+        //If not existed conversation
         if (!isExistedConv) {
           setConversationList({
             ...conversationList,
@@ -231,7 +247,7 @@ const ChatPage = () => {
       }
     });
     getConversations({
-      limit: 10,
+      limit: 2,
       page: 0,
       _sort: "lastModifiedAt",
       _order: "desc",
@@ -258,9 +274,10 @@ const ChatPage = () => {
     setInputMessage(e.target.value);
   };
 
-  const onClickUserChatting = (conversationId, name, isOnline) => {
-    setUserChatting({ name, isOnline });
-    getMessageList(conversationId);
+  const onClickUserChatting = (conversationId, name, isOnline, avatars) => {
+    setUserChatting({ name, isOnline, avatars });
+    // getMessageList(conversationId);
+    setConversationID(conversationId);
     setInputMessage("");
   };
 
@@ -319,21 +336,44 @@ const ChatPage = () => {
       checkConversationIsExistOrNot(selectedList[0].id)
         .then((res) => {
           if (res.status === 200) {
-            const { fullName, isOnline } = selectedList[0];
+            const { fullName, isOnline, avatar } = selectedList[0];
             const { id: conversationId } = res.data;
+            console.log({ conversationId });
             setOpenChattingSearch(false);
-            onClickUserChatting(conversationId, fullName, isOnline);
+            if (
+              !conversationList.content.find(
+                (conv) => conv.id === conversationId
+              )
+            ) {
+              console.log("conversationId not found");
+              const currConvList = [
+                {
+                  ...res.data,
+                },
+                ...conversationList.content,
+              ];
+              setConversationList({
+                ...conversationList,
+                content: currConvList,
+              });
+            }
+            onClickUserChatting(conversationId, fullName, isOnline, [avatar]);
           }
         })
         // Create virtual conversation
         .catch(() => {
+          console.log("conversationId catch");
           const { fullName, isOnline } = selectedList[0];
+          const fullConvParticipants = [
+            selectedList[0],
+            { ...getCurrentUser(), id: getCurrentUser().accountId },
+          ].sort((a, b) => (a.id > b.id ? 1 : -1));
           setOpenChattingSearch(false);
           const currConvList = [
             {
               id: newestVirtualConvId - 1,
               latestMessage: null,
-              participants: [selectedList[0], getCurrentUser()],
+              participants: fullConvParticipants,
             },
             ...conversationList.content,
           ];
@@ -342,15 +382,51 @@ const ChatPage = () => {
             ...conversationList,
             content: currConvList,
           });
-          setUserChatting({ name: fullName, isOnline });
+          setUserChatting({
+            name: fullName,
+            isOnline,
+            avatars: filterParticipants(fullConvParticipants).map((user) => {
+              return user.avatar;
+            }),
+          });
           setMessageList([]);
-          setConversationID(-1);
+          setConversationID(newestVirtualConvId - 1);
         });
     }
     // If length of selected user list > 1 => Create virtual conversation
     else {
-      console.log({ selectedList });
+      const fullConvParticipants = [
+        ...selectedList,
+        { ...getCurrentUser(), id: getCurrentUser().accountId },
+      ].sort((a, b) => (a.id > b.id ? 1 : -1));
+      setOpenChattingSearch(false);
+      const currConvList = [
+        {
+          id: newestVirtualConvId - 1,
+          latestMessage: null,
+          participants: fullConvParticipants,
+        },
+        ...conversationList.content,
+      ];
+      setNewestVirtualConvId(newestVirtualConvId - 1);
+      setConversationList({
+        ...conversationList,
+        content: currConvList,
+      });
+      setUserChatting({
+        name: splitUserName(fullConvParticipants),
+        isOnline: getStatusOfConversation(fullConvParticipants),
+        avatars: filterParticipants(fullConvParticipants).map((user) => {
+          return user.avatar;
+        }),
+      });
+      setMessageList([]);
+      setConversationID(newestVirtualConvId - 1);
     }
+  };
+
+  const handleUpdateParentConversationList = (list) => {
+    setConversationList({ ...conversationList, content: list });
   };
 
   const handleTyping = () => {
@@ -383,7 +459,7 @@ const ChatPage = () => {
     if (submitMessage.id) {
       let index;
       if (conversationID === submitMessage.conversationId) {
-        setMessageList([submitMessage, ...messageList]);
+        setMessageList([...messageList, submitMessage]);
         index = getIndexOfConversation(conversationID);
       } else {
         index = getIndexOfConversation(submitMessage.conversationId);
@@ -407,23 +483,18 @@ const ChatPage = () => {
   }, [submitMessage]);
 
   useEffect(() => {
-    if (conversationID && conversationList.content) {
-      const index = getIndexOfConversation(conversationID);
-      const filtered = filterParticipants(
-        conversationList.content[index]?.participants
-      );
-      setCurrentTargetAvatar(filtered);
-    }
-
     conversationList.content?.map((conv) => {
       if (conv.id === conversationID) {
         setUserChatting({
           name: splitUserName(conv.participants),
           isOnline: getStatusOfConversation(conv.participants),
+          avatars: filterParticipants(conv.participants).map((user) => {
+            return user.avatar;
+          }),
         });
       }
     });
-  }, [conversationID, conversationList]);
+  }, [conversationID]);
 
   useEffect(() => {
     if (activeUsers.length > 0) {
@@ -460,7 +531,10 @@ const ChatPage = () => {
           onClickUserChatting(
             conv.id,
             splitUserName(conv.participants),
-            isOnline
+            isOnline,
+            participants.map((user) => {
+              return user.avatar;
+            })
           )
         }
       >
@@ -480,19 +554,20 @@ const ChatPage = () => {
           })}
         </Typography>
         <Typography component="div" className="user-name-container">
-          <Typography className="username">
+          <Typography className="username limit-text">
             {splitUserName(conv.participants)}
           </Typography>
-          <Typography className="latest-action">
+          <Typography className="latest-action limit-text">
             {usersTypingList && usersTypingList.length > 0 ? (
               usersTypingList.length === 1 ? (
-                <>
-                  {usersTypingList[0].fullName}: <ThreeDotsAnimation />
-                </>
+                <Typography className="typing-action">
+                  <p>{usersTypingList[0].fullName}: </p> <ThreeDotsAnimation />
+                </Typography>
               ) : (
-                <>
-                  {usersTypingList?.length} people: <ThreeDotsAnimation />
-                </>
+                <Typography className="typing-action">
+                  <p>{usersTypingList?.length} people: </p>
+                  <ThreeDotsAnimation />
+                </Typography>
               )
             ) : (
               conv.latestMessage &&
@@ -505,7 +580,7 @@ const ChatPage = () => {
     );
   };
 
-  const renderMessageList = (messageList) => {
+  const renderMessageList = () => {
     const usersTypingList = typingOnConvList
       .filter((item) => item.conversationId === conversationID)[0]
       ?.usersTyping.filter(
@@ -545,18 +620,7 @@ const ChatPage = () => {
       );
     };
     return (
-      <InfiniteScroll
-        dataLength={100}
-        hasMore={true}
-        isLoading={true}
-        loadMore={() => null}
-        loadArea={30}
-        style={{ display: "flex", flexDirection: "column-reverse" }} //To put endMessage and loader to the top.
-        inverse={true}
-        scrollableTarget="scrollableDiv"
-        scrollThreshold={"555px"}
-        initialScrollY={0}
-      >
+      <>
         {usersTypingList && usersTypingList.length > 0 && (
           <Typography>
             <Typography component="div" align="left" className="latest-action">
@@ -564,42 +628,24 @@ const ChatPage = () => {
             </Typography>
           </Typography>
         )}
-        {messageList.map((message, index) => {
-          const condition =
-            message.sender.username === getCurrentUser().username;
-          const messageClassName = classNames("message-item", {
-            owner: condition,
-            target: !condition,
-          });
-
-          const messageContainerClassName = classNames(
-            "message-item-container",
-            {
-              owner: condition,
-              target: !condition,
-            }
-          );
-          const showAvatar =
-            message.sender.username !== messageList[index - 1]?.sender.username;
-
-          return (
-            <Typography component="div" className={messageContainerClassName}>
-              {!condition && (
-                <Typography className="sender-avatar">
-                  {showAvatar && <img src={message.sender.avatar} />}
-                </Typography>
-              )}
-              <Typography
-                className={messageClassName}
-                align={condition ? "right" : "left"}
-                component="div"
-              >
-                {message.content}
-              </Typography>
-            </Typography>
-          );
-        })}
-      </InfiniteScroll>
+        <InfiniteReverseList
+          container={MessageListContainer}
+          handleGetData={getMessagesByConversationId}
+          data={{
+            id: conversationID,
+            limit: 10,
+            _sort: "timestamp",
+            _order: "desc",
+          }}
+          component={MessageItem}
+          noDataComponent={() => <></>}
+          handleClickItem={() => <></>}
+          setParentDataList={setMessageList}
+          parentDataList={messageList}
+          submitMessage={submitMessage}
+          newConversation={newConversation}
+        />
+      </>
     );
   };
 
@@ -619,22 +665,33 @@ const ChatPage = () => {
               <DriveFileRenameOutlineIcon className="icon" />
             </Typography>
           </Typography>
-          {conversationList.content?.length > 0 &&
-            conversationList.content?.map((room) => {
-              return renderUserItem(room);
-            })}
+          <InfiniteList
+            container={UserListContainer}
+            handleGetData={getConversations}
+            data={{
+              limit: 10,
+              _sort: "lastModifiedAt",
+              _order: "desc",
+            }}
+            component={UserItem}
+            handleClickItem={onClickUserChatting}
+            noDataComponent={() => <></>}
+            childProps={{ typingOnConvList }}
+            parentDataList={conversationList.content}
+            setParentDataList={handleUpdateParentConversationList}
+          />
         </Typography>
         {conversationID ? (
           <Typography component="div" className="chat-with-user-container">
             <Typography component="div" className="header">
               <Typography component="div" className="user-item">
                 <Typography component="div" className="target-avatar">
-                  {currentTargetAvatar.map((user, index) => {
+                  {userChatting.avatars?.map((avatar, index) => {
                     return (
                       <img
-                        src={user.avatar}
+                        src={avatar}
                         style={targetAvatarLayout(
-                          currentTargetAvatar.length,
+                          userChatting.avatars?.length,
                           index,
                           40
                         )}
@@ -646,7 +703,7 @@ const ChatPage = () => {
                   )}
                 </Typography>
                 <Typography component="div" className="user-name-container">
-                  <Typography className="username">
+                  <Typography className="username limit-text">
                     {userChatting.name}
                   </Typography>
                   {userChatting.isOnline && (
@@ -662,7 +719,7 @@ const ChatPage = () => {
             </Typography>
 
             <Typography component="div" className="chat-content">
-              {renderMessageList(messageList)}
+              {renderMessageList()}
             </Typography>
 
             <Typography component="div" className="chat-input-container">
@@ -719,6 +776,141 @@ const ChatPage = () => {
       </CustomModal>
     </>
   );
+};
+
+const MessageItem = ({
+  item: message,
+  key,
+  handleClick,
+  index,
+  dataList: messageList,
+}) => {
+  if (message) {
+    const condition = message?.sender?.username === getCurrentUser().username;
+    const messageClassName = classNames("message-item", {
+      owner: condition,
+      target: !condition,
+    });
+
+    const messageContainerClassName = classNames("message-item-container", {
+      owner: condition,
+      target: !condition,
+    });
+    const showAvatar =
+      message?.sender?.username !== messageList[index + 1]?.sender.username;
+
+    return (
+      <Typography component="div" className={messageContainerClassName}>
+        {!condition && (
+          <Typography className="sender-avatar">
+            {showAvatar && <img src={message.sender.avatar} />}
+          </Typography>
+        )}
+        <Typography
+          className={messageClassName}
+          align={condition ? "right" : "left"}
+          component="div"
+        >
+          {message.content}
+        </Typography>
+      </Typography>
+    );
+  } else {
+    return <></>;
+  }
+};
+
+const MessageListContainer = ({ _renderItem }) => {
+  return <div className="message-list-container">{_renderItem}</div>;
+};
+
+const UserListContainer = ({ _renderItem }) => {
+  return (
+    <Typography component="div" className="user-item-list">
+      {_renderItem}
+    </Typography>
+  );
+};
+
+const UserItem = ({
+  item: conv,
+  activeCondition,
+  handleClick: onClickUserChatting,
+  key,
+  index,
+  dataList,
+  childProps,
+}) => {
+  if (conv) {
+    const { typingOnConvList } = childProps;
+    const participants = filterParticipants(conv?.participants);
+    const userItemClassName = classNames("user-item", {
+      active: activeCondition,
+    });
+    const isOnline = getStatusOfConversation(conv.participants);
+    const usersTypingList = typingOnConvList
+      .filter((item) => item.conversationId === conv.id)[0]
+      ?.usersTyping.filter(
+        (user) => user.username !== getCurrentUser().username
+      );
+    return (
+      <Typography
+        component="div"
+        className={userItemClassName}
+        onClick={() =>
+          onClickUserChatting(
+            conv.id,
+            splitUserName(conv.participants),
+            isOnline,
+            participants.map((user) => {
+              return user.avatar;
+            })
+          )
+        }
+      >
+        <Typography component="div" className="target-avatar">
+          {participants.map((user, index) => {
+            return (
+              <>
+                <img
+                  src={user.avatar}
+                  style={targetAvatarLayout(participants.length, index, 40)}
+                />
+                {isOnline && (
+                  <Typography className="status-badge online-status"></Typography>
+                )}
+              </>
+            );
+          })}
+        </Typography>
+        <Typography component="div" className="user-name-container">
+          <Typography className="username limit-text">
+            {splitUserName(conv.participants)}
+          </Typography>
+          <Typography className="latest-action limit-text">
+            {usersTypingList && usersTypingList.length > 0 ? (
+              usersTypingList.length === 1 ? (
+                <Typography className="typing-action">
+                  <p>{usersTypingList[0].fullName}: </p> <ThreeDotsAnimation />
+                </Typography>
+              ) : (
+                <Typography className="typing-action">
+                  <p>{usersTypingList?.length} people: </p>
+                  <ThreeDotsAnimation />
+                </Typography>
+              )
+            ) : (
+              conv.latestMessage &&
+              `${resolveName(conv.latestMessage?.sender.fullName, "fullName")}:
+          ${conv.latestMessage?.content}`
+            )}
+          </Typography>
+        </Typography>
+      </Typography>
+    );
+  } else {
+    return <></>;
+  }
 };
 
 export default ChatPage;

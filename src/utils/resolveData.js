@@ -6,15 +6,16 @@ export const substringUsername = (username) => {
 };
 
 export const splitUserName = (participants) => {
-  participants.map((user, index) => {
+  const sortList = [...participants].sort((a, b) => a.id > b.id ? 1:-1);
+  sortList.map((user, index) => {
     if (user.username === getCurrentUser().username) {
-      participants[index].fullName = "Me";
+      sortList[index].fullName = "Me";
     }
   });
-  if (participants.length > 2) {
-    return participants.map((user) => user.fullName).join(", ");
+  if (sortList.length > 2) {
+    return sortList.map((user) => user.fullName).join(", ");
   } else {
-    return participants.filter((user) => user.fullName !== "Me")[0].fullName;
+    return sortList.filter((user) => user.fullName !== "Me")[0].fullName;
   }
 };
 
@@ -61,14 +62,14 @@ export const targetAvatarLayout = (length, index, containerDemenssion) => {
         borderTopRightRadius: containerDemenssion,
       };
     }
-    if (index === 3) {
+    if (index === 2) {
       returnStyle = {
         bottom: 0,
         left: 0,
         borderBottomLeftRadius: containerDemenssion,
       };
     }
-    if (index === 4) {
+    if (index === 3) {
       returnStyle = {
         bottom: 0,
         right: 0,
@@ -159,3 +160,13 @@ export const getAllCurrentInteractionUser = (currConvList) => {
   });
   return result;
 };
+
+
+export const getDifferenceItemBetweenTwoArrays = (array1, array2) => {
+  const result = _.filter(array1, (itemOfArray1) => {
+    return !_.some(array2, function (itemOfArray2) {
+        return itemOfArray1.id === itemOfArray2.id;
+    });
+  });
+  return result;
+}
