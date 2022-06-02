@@ -39,27 +39,38 @@ import ThreeDotsAnimation from "components/common/ThreeDotsAnimation";
 import InfiniteReverseList from "components/common/InfiniteReverseList";
 import _ from "lodash";
 import InfiniteList from "components/common/InfiniteList";
-
-let stompClient = null;
+import useSocket from "hooks/useSocket";
 
 const ChatPage = () => {
-  let rooms = [];
   const [inputMessage, setInputMessage] = useState("");
   const [messageList, setMessageList] = useState([]);
   const [submitMessage, setSubmitMessage] = useState({});
   const [typingMessage, setTypingMessage] = useState({});
-  const [activeUsers, setActiveUsers] = useState([]);
   const [userChatting, setUserChatting] = useState({
     name: "",
     isOnline: false,
     avatars: [],
   });
   const [conversationID, setConversationID] = useState(null);
-  const [conversationList, setConversationList] = useState({ content: [] });
   const [openChattingSearch, setOpenChattingSearch] = useState(false);
-  const [newConversation, setNewConversation] = useState({});
   const [newestVirtualConvId, setNewestVirtualConvId] = useState(0);
   const [typingOnConvList, setTypingOnConvList] = useState([]);
+
+  const { handlers, states, setStates } = useSocket();
+  const { receivedMessage, newConversation, activeUsers, conversationList } =
+    states;
+  const {
+    setReceivedMessage,
+    setNewConversation,
+    setActiveUsers,
+    setConversationList,
+  } = setStates;
+  const {
+    chatInExistedConversation,
+    chatInVirtualConversation,
+    typing,
+    untyping,
+  } = handlers;
 
   const { t: trans } = useTranslation();
 
@@ -68,23 +79,26 @@ const ChatPage = () => {
     notificationAudio.play();
   };
 
-  const onMessageReceived = (payload) => {
-    const message = JSON.parse(payload.body);
-    switch (message.messageType) {
-      case chattingType.USUAL_TEXT: {
-        startAudio();
-        setSubmitMessage(message);
-        break;
-      }
-      case chattingType.TYPING: {
-        setTypingMessage(message);
-        break;
-      }
-      default: {
-        break;
+  useEffect(() => {
+    if (receivedMessage) {
+      const message = receivedMessage;
+      console.log("RECEIVED SOME", message);
+      switch (message?.messageType) {
+        case chattingType.USUAL_TEXT: {
+          startAudio();
+          setSubmitMessage(message);
+          break;
+        }
+        case chattingType.TYPING: {
+          setTypingMessage(message);
+          break;
+        }
+        default: {
+          break;
+        }
       }
     }
-  };
+  }, [receivedMessage]);
 
   useEffect(() => {
     if (typingMessage.conversationId) {
@@ -134,18 +148,6 @@ const ChatPage = () => {
       });
       return index;
     }
-  };
-
-  const onNewConversation = (payload) => {
-    const newConv = JSON.parse(payload.body);
-    setNewConversation(newConv);
-    stompClient.subscribe(
-      `/conversation/${newConv.id}/message`,
-      onMessageReceived,
-      {
-        "WS-Authorization": getJwtToken(),
-      }
-    );
   };
 
   useEffect(() => {
@@ -217,59 +219,6 @@ const ChatPage = () => {
     }
   }, [newConversation]);
 
-  const onActiveUser = (payload) => {
-    setActiveUsers(JSON.parse(payload.body));
-  };
-
-  const onConnected = () => {
-    stompClient.subscribe(`/topic/account/online`, onActiveUser, {
-      "WS-Authorization": getJwtToken(),
-    });
-    stompClient.subscribe(
-      `/user/${getCurrentUser().username}/conversation/new`,
-      onNewConversation,
-      {
-        "WS-Authorization": getJwtToken(),
-      }
-    );
-    getListOfConversationId().then((res) => {
-      if (res.status === 200) {
-        rooms = res.data;
-        rooms.forEach((room) => {
-          stompClient.subscribe(
-            `/conversation/${room}/message`,
-            onMessageReceived,
-            {
-              "WS-Authorization": getJwtToken(),
-            }
-          );
-        });
-      }
-    });
-    getConversations({
-      limit: 2,
-      page: 0,
-      _sort: "lastModifiedAt",
-      _order: "desc",
-    }).then((res) => {
-      setConversationList(res.data);
-    });
-  };
-
-  const onError = (err) => {
-    console.log({ err });
-  };
-
-  const connect = () => {
-    const sock = new SockJS(SOCKET_URL);
-    stompClient = Stomp.over(sock);
-    stompClient.connect(
-      { "WS-Authorization": getJwtToken() },
-      onConnected,
-      onError
-    );
-  };
-
   const changeMessage = (e) => {
     setInputMessage(e.target.value);
   };
@@ -287,31 +236,18 @@ const ChatPage = () => {
       if (conversationID === null || inputMessage === "") return;
       // Chat in existed conversation
       if (conversationID >= 0) {
-        stompClient.send(
-          "/app/chat",
-          { "WS-Authorization": getJwtToken() },
-          JSON.stringify({
-            conversationId: conversationID,
-            content: inputMessage,
-          })
-        );
+        chatInExistedConversation(conversationID, inputMessage);
       }
       //Chat in virtual conversation
       else {
         const participantsOfVirtualConv = conversationList.content.filter(
           (conv) => conv.id === conversationID
         )[0].participants;
-        stompClient.send(
-          "/app/conversation",
-          {
-            "WS-Authorization": getJwtToken(),
-          },
-          JSON.stringify({
-            usernames: participantsOfVirtualConv.map((user) => {
-              return user.username;
-            }),
-            firstMessageContent: inputMessage,
-          })
+        chatInVirtualConversation(
+          participantsOfVirtualConv.map((user) => {
+            return user.username;
+          }),
+          inputMessage
         );
       }
       setInputMessage("");
@@ -430,55 +366,62 @@ const ChatPage = () => {
   };
 
   const handleTyping = () => {
-    stompClient.send(
-      "/app/conversation/typing",
-      { "WS-Authorization": getJwtToken() },
-      JSON.stringify({
-        conversationId: conversationID,
-        isTyping: true,
-      })
-    );
+    typing(conversationID);
   };
 
   const handleUntyping = () => {
-    stompClient.send(
-      "/app/conversation/typing",
-      { "WS-Authorization": getJwtToken() },
-      JSON.stringify({
-        conversationId: conversationID,
-        isTyping: false,
-      })
-    );
+    untyping(conversationID);
   };
 
   useEffect(() => {
-    connect();
+    // connect();
   }, []);
 
   useEffect(() => {
     if (submitMessage.id) {
-      let index;
-      if (conversationID === submitMessage.conversationId) {
-        setMessageList([...messageList, submitMessage]);
-        index = getIndexOfConversation(conversationID);
+      if (
+        conversationList.content.find(
+          (conv) => conv.id === submitMessage.conversationId
+        )
+      ) {
+        let index;
+        if (conversationID === submitMessage.conversationId) {
+          setMessageList([...messageList, submitMessage]);
+          index = getIndexOfConversation(conversationID);
+        } else {
+          index = getIndexOfConversation(submitMessage.conversationId);
+        }
+        setSubmitMessage({});
+        //Save current conversation list and current index
+        const currConvList = [...conversationList?.content];
+
+        //Declare target
+        const target = currConvList[index];
+        target.latestMessage = { ...submitMessage };
+
+        //Update list
+        const filtered = currConvList.filter(
+          (item) => item.id !== submitMessage.conversationId
+        );
+        const result = [target, ...filtered];
+
+        setConversationList({ ...conversationList, content: result });
       } else {
-        index = getIndexOfConversation(submitMessage.conversationId);
+        setConversationList({
+          ...conversationList,
+          content: [
+            ...{
+              id: submitMessage.conversationId,
+              latestMessage: submitMessage.content,
+              participants: [
+                {...submitMessage.sender},
+                { ...getCurrentUser(), id: getCurrentUser().accountId },
+              ],
+            },
+            ...conversationList.content,
+          ],
+        });
       }
-      setSubmitMessage({});
-      //Save current conversation list and current index
-      const currConvList = [...conversationList?.content];
-
-      //Declare target
-      const target = currConvList[index];
-      target.latestMessage = { ...submitMessage };
-
-      //Update list
-      const filtered = currConvList.filter(
-        (item) => item.id !== submitMessage.conversationId
-      );
-      const result = [target, ...filtered];
-
-      setConversationList({ ...conversationList, content: result });
     }
   }, [submitMessage]);
 
@@ -511,74 +454,6 @@ const ChatPage = () => {
       setConversationList({ ...conversationList, content: currConvList });
     }
   }, [activeUsers]);
-
-  const renderUserItem = (conv) => {
-    const participants = filterParticipants(conv.participants);
-    const userItemClassName = classNames("user-item", {
-      active: conv.id === conversationID,
-    });
-    const isOnline = getStatusOfConversation(conv.participants);
-    const usersTypingList = typingOnConvList
-      .filter((item) => item.conversationId === conv.id)[0]
-      ?.usersTyping.filter(
-        (user) => user.username !== getCurrentUser().username
-      );
-    return (
-      <Typography
-        component="div"
-        className={userItemClassName}
-        onClick={() =>
-          onClickUserChatting(
-            conv.id,
-            splitUserName(conv.participants),
-            isOnline,
-            participants.map((user) => {
-              return user.avatar;
-            })
-          )
-        }
-      >
-        <Typography component="div" className="target-avatar">
-          {participants.map((user, index) => {
-            return (
-              <>
-                <img
-                  src={user.avatar}
-                  style={targetAvatarLayout(participants.length, index, 40)}
-                />
-                {isOnline && (
-                  <Typography className="status-badge online-status"></Typography>
-                )}
-              </>
-            );
-          })}
-        </Typography>
-        <Typography component="div" className="user-name-container">
-          <Typography className="username limit-text">
-            {splitUserName(conv.participants)}
-          </Typography>
-          <Typography className="latest-action limit-text">
-            {usersTypingList && usersTypingList.length > 0 ? (
-              usersTypingList.length === 1 ? (
-                <Typography className="typing-action">
-                  <p>{usersTypingList[0].fullName}: </p> <ThreeDotsAnimation />
-                </Typography>
-              ) : (
-                <Typography className="typing-action">
-                  <p>{usersTypingList?.length} people: </p>
-                  <ThreeDotsAnimation />
-                </Typography>
-              )
-            ) : (
-              conv.latestMessage &&
-              `${resolveName(conv.latestMessage?.sender.fullName, "fullName")}:
-            ${conv.latestMessage?.content}`
-            )}
-          </Typography>
-        </Typography>
-      </Typography>
-    );
-  };
 
   const renderMessageList = () => {
     const usersTypingList = typingOnConvList
@@ -669,14 +544,14 @@ const ChatPage = () => {
             container={UserListContainer}
             handleGetData={getConversations}
             data={{
-              limit: 10,
+              limit: 2,
               _sort: "lastModifiedAt",
               _order: "desc",
             }}
             component={UserItem}
             handleClickItem={onClickUserChatting}
             noDataComponent={() => <></>}
-            childProps={{ typingOnConvList }}
+            childProps={{ typingOnConvList, currentConvId: conversationID }}
             parentDataList={conversationList.content}
             setParentDataList={handleUpdateParentConversationList}
           />
@@ -778,13 +653,7 @@ const ChatPage = () => {
   );
 };
 
-const MessageItem = ({
-  item: message,
-  key,
-  handleClick,
-  index,
-  dataList: messageList,
-}) => {
+const MessageItem = ({ item: message, index, dataList: messageList }) => {
   if (message) {
     const condition = message?.sender?.username === getCurrentUser().username;
     const messageClassName = classNames("message-item", {
@@ -834,18 +703,14 @@ const UserListContainer = ({ _renderItem }) => {
 
 const UserItem = ({
   item: conv,
-  activeCondition,
   handleClick: onClickUserChatting,
-  key,
-  index,
-  dataList,
   childProps,
 }) => {
   if (conv) {
-    const { typingOnConvList } = childProps;
+    const { typingOnConvList, currentConvId } = childProps;
     const participants = filterParticipants(conv?.participants);
     const userItemClassName = classNames("user-item", {
-      active: activeCondition,
+      active: conv.id === currentConvId,
     });
     const isOnline = getStatusOfConversation(conv.participants);
     const usersTypingList = typingOnConvList

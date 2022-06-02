@@ -17,7 +17,7 @@ const useInfiniteList = (handleGetData, data, pageNumber, parentDataList) => {
   }, []);
 
   useEffect(() => {
-    if (parentDataList.length > 0 || !_.isEqual(parentDataList, dataList)) {
+    if (parentDataList?.length > 0 || !_.isEqual(parentDataList, dataList)) {
       setDataList(parentDataList);
     }
   }, [parentDataList]);

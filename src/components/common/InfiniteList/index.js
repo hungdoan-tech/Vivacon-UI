@@ -36,7 +36,7 @@ const InfiniteList = (props) => {
   }, [data.username]);
 
   useEffect(() => {
-    if (!_.isEqual(dataList, parentDataList)) {
+    if (!_.isEqual(dataList, parentDataList) && setParentDataList) {
       setParentDataList(dataList);
     }
   }, [dataList]);
@@ -64,7 +64,7 @@ const InfiniteList = (props) => {
         <Container
           _renderItem={
             <>
-              {dataList.map((item, index) => {
+              {dataList && dataList.map((item, index) => {
                 if (dataList.length === index + 1) {
                   return (
                     <div ref={lastItemRef} key={index}>

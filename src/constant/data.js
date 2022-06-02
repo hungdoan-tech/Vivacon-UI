@@ -1,7 +1,7 @@
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import SettingsIcon from "@mui/icons-material/Settings";
 import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
-import DashboardIcon from '@mui/icons-material/Dashboard';
+import DashboardIcon from "@mui/icons-material/Dashboard";
 import { removeJwtToken, removeRefreshToken } from "utils/cookie";
 import { useNavigate } from "react-router-dom";
 const notiType = {
@@ -188,5 +188,26 @@ export const userOption = [
       removeRefreshToken();
     },
     navigateUrl: "/login",
+  },
+];
+
+export const settingOption = [
+  {
+    label: "Edit Profile",
+  },
+  {
+    label: "Change Password",
+  },
+  {
+    label: "Email Notifications",
+  },
+  {
+    label: "Push Notifications",
+  },
+  {
+    label: "Privacy and Security",
+  },
+  {
+    label: "Login Activity",
   },
 ];

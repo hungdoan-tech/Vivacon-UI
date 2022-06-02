@@ -13,6 +13,7 @@ import FindAccountPage from "components/pages/FindAccountPage";
 import ForgotPasswordPage from "components/pages/ForgotPasswordPage";
 import Dashboard from "components/dashboard/src";
 import ChatPage from "components/pages/ChatPage";
+import SettingPage from 'components/pages/SettingPage';
 
 const RouterList = () => {
   const Auth = useContext(AuthUser);
@@ -33,6 +34,7 @@ const RouterList = () => {
             component={ProfilePage}
           />
           <PrivateRoute exact path="/chat" component={ChatPage} />
+          <PrivateRoute exact path="/setting" component={SettingPage} />
         </>
       )}
       {Auth.auth.isAdmin && (

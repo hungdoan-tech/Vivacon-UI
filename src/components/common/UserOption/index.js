@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { CardContent, Typography, Card } from "@mui/material";
 import { AuthUser } from "App";
-import { userOption } from "fakeData/fakeData";
+import { userOption } from "constant/data";
 import { useContext } from "react";
 import { useHistory } from "react-router-dom";
 import { getCurrentUser } from "utils/jwtToken";

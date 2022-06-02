@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect } from "react";
 import { UpdateProfile } from "App";
 import { SOCKET_URL } from "api/constants";
 import SockJS from "sockjs-client";
@@ -12,7 +12,7 @@ let stompClient = null;
 const useSocket = () => {
   let rooms = [];
   const [receivedMessage, setReceivedMessage] = useState(null);
-  const [newCOnversation, setNewConversation] = useState({});
+  const [newConversation, setNewConversation] = useState({});
   const [activeUsers, setActiveUsers] = useState([]);
   const [conversationList, setConversationList] = useState({ content: [] });
 
@@ -29,7 +29,7 @@ const useSocket = () => {
   };
 
   const onMessageReceived = (payload) => {
-    setReceivedMessage(payload);
+    setReceivedMessage(JSON.parse(payload.body));
   };
 
   const onActiveUser = (payload) => {
@@ -61,14 +61,14 @@ const useSocket = () => {
         });
       }
     });
-    getConversations({
-      limit: 2,
-      page: 0,
-      _sort: "lastModifiedAt",
-      _order: "desc",
-    }).then((res) => {
-      setConversationList(res.data);
-    });
+    // getConversations({
+    //   limit: 2,
+    //   page: 0,
+    //   _sort: "lastModifiedAt",
+    //   _order: "desc",
+    // }).then((res) => {
+    //   setConversationList(res.data);
+    // });
   };
 
   const onError = (err) => {
@@ -84,22 +84,76 @@ const useSocket = () => {
       onError
     );
   };
-  return {
-      states: {
-        receivedMessage,
-        newCOnversation,
-        activeUsers,
-        conversationList,
-      },
-      setStates: {
-        setReceivedMessage,
-        setNewConversation,
-        setActiveUsers,
-        setConversationList
-      },
-      handlers: {
 
-      }
+  const chatInExistedConversation = (conversationId, content) => {
+    stompClient.send(
+      "/app/chat",
+      { "WS-Authorization": getJwtToken() },
+      JSON.stringify({
+        conversationId,
+        content,
+      })
+    );
+  };
+
+  const chatInVirtualConversation = (usernames, firstMessageContent) => {
+    stompClient.send(
+      "/app/conversation",
+      {
+        "WS-Authorization": getJwtToken(),
+      },
+      JSON.stringify({
+        usernames,
+        firstMessageContent,
+      })
+    );
+  };
+
+  const typing = (conversationId) => {
+    stompClient.send(
+      "/app/conversation/typing",
+      { "WS-Authorization": getJwtToken() },
+      JSON.stringify({
+        conversationId,
+        isTyping: true,
+      })
+    );
+  };
+
+  const untyping = (conversationId) => {
+    stompClient.send(
+      "/app/conversation/typing",
+      { "WS-Authorization": getJwtToken() },
+      JSON.stringify({
+        conversationId,
+        isTyping: false,
+      })
+    );
+  };
+
+  useEffect(() => {
+    connect();
+  }, []);
+
+  return {
+    states: {
+      receivedMessage,
+      newConversation,
+      activeUsers,
+      conversationList,
+    },
+    setStates: {
+      setReceivedMessage,
+      setNewConversation,
+      setActiveUsers,
+      setConversationList,
+    },
+    handlers: {
+      chatInExistedConversation,
+      chatInVirtualConversation,
+      typing,
+      untyping,
+    },
   };
 };
 

@@ -15,12 +15,29 @@ import { useHistory } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { AuthUser } from "App";
 import AppSearchInput from "../AppSearchInput";
+import useSocket from "hooks/useSocket";
 
 const Navbar = () => {
   const [openUserOption, setUserOption] = useState(false);
   const [openCreatePostModal, setOpenCreatePostModal] = useState(false);
   const history = useHistory();
   const Auth = useContext(AuthUser);
+
+  const { handlers, states, setStates } = useSocket();
+  const { receivedMessage, newConversation, activeUsers, conversationList } =
+    states;
+  const {
+    setReceivedMessage,
+    setNewConversation,
+    setActiveUsers,
+    setConversationList,
+  } = setStates;
+  const {
+    chatInExistedConversation,
+    chatInVirtualConversation,
+    typing,
+    untyping,
+  } = handlers;
 
   const { t: trans } = useTranslation();
 
