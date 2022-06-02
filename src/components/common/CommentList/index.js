@@ -173,18 +173,6 @@ const CommentItem = ({
           } else {
             result = _.reverse(res.data.content);
           }
-          // setCommentChildList({
-          //   open: true,
-          //   data: result.map((item) => {
-          //     return {
-          //       ...item,
-          //       fromNow: calculateFromNow(
-          //         convertUTCtoLocalDate(item.createdAt)
-          //       ),
-          //     };
-          //   }),
-          // });
-          console.log({ result });
           handleUpdateTotalChild(
             {
               open: true,
