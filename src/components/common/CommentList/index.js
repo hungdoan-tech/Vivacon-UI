@@ -24,6 +24,8 @@ const CommentList = ({
   const [commentList, setCommentList] = useState([]);
   const [fetchInfo, setFetchInfo] = useState({});
   const [pageNumber, setPageNumber] = useState(0);
+  const [totalCommentChildList, setTotalCommentChildList] = useState([]);
+  const [totalReply, setTotalReply] = useState([]);
 
   const { t: trans } = useTranslation();
 
@@ -59,6 +61,11 @@ const CommentList = ({
   useEffect(() => {
     if (submittedComment.id) {
       setCommentList([submittedComment, ...commentList]);
+      setTotalCommentChildList([
+        { open: false, data: [] },
+        ...totalCommentChildList,
+      ]);
+      setTotalReply([{ open: false, hastag: "" }, ...totalReply]);
       setSubmittedComment({});
     }
   }, [submittedComment]);
@@ -80,6 +87,18 @@ const CommentList = ({
     setCommentList(commentList.filter((cmt) => cmt.id !== commentId));
   };
 
+  const handleUpdateTotalChild = (item, index) => {
+    const items = [...totalCommentChildList];
+    items[index] = { ...item };
+    setTotalCommentChildList(items);
+  };
+
+  const handleUpdateReply = (item, index) => {
+    const items = [...totalReply];
+    items[index] = { ...item };
+    setTotalReply(items);
+  };
+
   return (
     <>
       {commentList.length > 0 ? (
@@ -89,6 +108,13 @@ const CommentList = ({
               comment={comment}
               postId={currentPost.id}
               handleFilterComment={handleFilterComment}
+              handleUpdateTotalChild={handleUpdateTotalChild}
+              handleUpdateReply={handleUpdateReply}
+              index={i}
+              commentChildList={
+                totalCommentChildList[i] || { open: false, data: [] }
+              }
+              isReply={totalReply[i] || { open: false, hastag: "" }}
             />
           ))}
           {!fetchInfo.last && (
@@ -104,16 +130,21 @@ const CommentList = ({
   );
 };
 
-const CommentItem = ({ comment, postId, handleFilterComment }) => {
+const CommentItem = ({
+  comment,
+  postId,
+  handleFilterComment,
+  commentChildList,
+  handleUpdateTotalChild,
+  index,
+  isReply,
+  handleUpdateReply,
+}) => {
   const [createdTime, setCreatedTime] = useState(
     calculateFromNow(convertUTCtoLocalDate(comment.createdAt))
   );
-  const [commentChildList, setCommentChildList] = useState({
-    open: false,
-    data: [],
-  });
   const [total, setTotal] = useState(comment.totalChildComments);
-  const [isReply, setReply] = useState({ open: false, hastag: "" });
+
   const [submittedComment, setSubmittedComment] = useState({});
   const [showCommentOption, setShowCommentOption] = useState(false);
   const [showOptionModal, setShowOptionModal] = useState(false);
@@ -142,17 +173,32 @@ const CommentItem = ({ comment, postId, handleFilterComment }) => {
           } else {
             result = _.reverse(res.data.content);
           }
-          setCommentChildList({
-            open: true,
-            data: result.map((item) => {
-              return {
-                ...item,
-                fromNow: calculateFromNow(
-                  convertUTCtoLocalDate(item.createdAt)
-                ),
-              };
-            }),
-          });
+          // setCommentChildList({
+          //   open: true,
+          //   data: result.map((item) => {
+          //     return {
+          //       ...item,
+          //       fromNow: calculateFromNow(
+          //         convertUTCtoLocalDate(item.createdAt)
+          //       ),
+          //     };
+          //   }),
+          // });
+          console.log({ result });
+          handleUpdateTotalChild(
+            {
+              open: true,
+              data: result.map((item) => {
+                return {
+                  ...item,
+                  fromNow: calculateFromNow(
+                    convertUTCtoLocalDate(item.createdAt)
+                  ),
+                };
+              }),
+            },
+            index
+          );
         }
       })
       .catch((err) => {
@@ -163,21 +209,24 @@ const CommentItem = ({ comment, postId, handleFilterComment }) => {
   const handleToggleCommentChild = () => {
     //Hide child list
     if (total === 0 && commentChildList.open) {
-      setCommentChildList({
-        ...commentChildList,
-        open: false,
-      });
-      setTotal(commentChildList.data.length);
+      handleUpdateTotalChild(
+        {
+          ...commentChildList,
+          open: false,
+        },
+        index
+      );
+      setTotal(commentChildList?.data.length);
     } else {
       // Show all if the child list is shown before
-      if (total === commentChildList.data.length && !commentChildList.open) {
-        setCommentChildList({ ...commentChildList, open: true });
+      if (total === commentChildList?.data.length && !commentChildList.open) {
+        handleUpdateTotalChild({ ...commentChildList, open: true }, index);
         setTotal(0);
       }
       // Show list child by using the page number += 1
       else {
-        const tempLimit = 3 - (commentChildList.data.length % 3);
-        const newPageNumber = Math.floor(commentChildList.data.length / 3);
+        const tempLimit = 3 - (commentChildList?.data.length % 3);
+        const newPageNumber = Math.floor(commentChildList?.data.length / 3);
         handleGetChildCommentList(newPageNumber, tempLimit);
         // const newTotal = (childPageNumber + 1) % 3 - length
 
@@ -187,23 +236,26 @@ const CommentItem = ({ comment, postId, handleFilterComment }) => {
   };
 
   const handleOpenReplyCmt = (username) => {
-    setReply({ open: true, hastag: `@${username}` });
+    handleUpdateReply({ open: true, hastag: `@${username}` }, index);
   };
 
   useEffect(() => {
     if (submittedComment.id) {
-      setCommentChildList({
-        open: true,
-        data: [
-          ...commentChildList.data,
-          {
-            ...submittedComment,
-            fromNow: calculateFromNow(
-              convertUTCtoLocalDate(submittedComment.createdAt)
-            ),
-          },
-        ],
-      });
+      handleUpdateTotalChild(
+        {
+          open: true,
+          data: [
+            ...commentChildList?.data,
+            {
+              ...submittedComment,
+              fromNow: calculateFromNow(
+                convertUTCtoLocalDate(submittedComment.createdAt)
+              ),
+            },
+          ],
+        },
+        index
+      );
     }
   }, [submittedComment]);
 
@@ -270,7 +322,8 @@ const CommentItem = ({ comment, postId, handleFilterComment }) => {
           </Typography>
         </Typography>
       </Typography>
-      {(comment.totalChildComments > 0 || commentChildList.data.length > 0) && (
+      {(comment.totalChildComments > 0 ||
+        commentChildList?.data.length > 0) && (
         <Typography
           className="view-child"
           align="left"
@@ -281,8 +334,8 @@ const CommentItem = ({ comment, postId, handleFilterComment }) => {
             : `_____${trans("newFeed.viewReply")} (${total})`}
         </Typography>
       )}
-      {commentChildList.open &&
-        commentChildList.data.map((childCmt) => {
+      {commentChildList?.open &&
+        commentChildList?.data.map((childCmt) => {
           return (
             <CommentChildItem
               childCmt={childCmt}

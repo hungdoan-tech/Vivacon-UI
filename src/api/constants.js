@@ -5,6 +5,7 @@ export const API_ENDPOINT_KEYS = {
   LOGIN: "/login",
   REGISTER: "/registration",
   VERIFY: "/account/verify",
+  POST: '/post',
   ACTIVE_ACCOUNT: "/account/active",
   UPLOAD_IMAGE: "/attachments",
   RENEW_TOKEN: "/refresh-token",
