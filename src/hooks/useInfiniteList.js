@@ -3,8 +3,9 @@ import axios from "axios";
 import { getPostsByUserName } from "api/postService";
 import axiosConfig from "api/axiosConfig";
 import { API_ENDPOINT_KEYS } from "api/constants";
+import _ from "lodash";
 
-const useInfiniteList = (handleGetData, data, pageNumber) => {
+const useInfiniteList = (handleGetData, data, pageNumber, parentDataList) => {
   const [isLoading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [dataList, setDataList] = useState([]);
@@ -14,6 +15,12 @@ const useInfiniteList = (handleGetData, data, pageNumber) => {
   useEffect(() => {
     setDataList([]);
   }, []);
+
+  useEffect(() => {
+    if (parentDataList?.length > 0 || !_.isEqual(parentDataList, dataList)) {
+      setDataList(parentDataList);
+    }
+  }, [parentDataList]);
 
   useEffect(() => {
     if (pageNumber > 0) {
@@ -42,7 +49,7 @@ const useInfiniteList = (handleGetData, data, pageNumber) => {
   useEffect(() => {
     setLoading(true);
     setError(false);
-    setNoData(false)
+    setNoData(false);
     // let cancel;
     handleGetData({ ...data, page: 0 })
       .then((res) => {

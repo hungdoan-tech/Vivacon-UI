@@ -1,6 +1,13 @@
 {
     "navbar": {
-        "search": "Tìm kiếm"
+        "search": "Tìm kiếm",
+        "recent": "Hiện tại",
+        "clearAll": "Xóa tất cả",
+        "viewMore": "Xem thêm",
+        "noData": "Không tìm thấy",
+        "questionHeader": "Xóa lịch sử tìm kiếm?",
+        "questionWarning": "Nếu bạn xóa lịch sử tìm kiếm, bạn sẽ không thể quay trở về thao tác.",
+        "notNow": "Không phải bây giờ"
     },
     "signIn": {
         "login": "Đăng nhập",
@@ -108,5 +115,11 @@
         "pleaseChangePassword": "Hãy thay đổi Mật khẩu của bạn",
         "cancel": "Hủy",
         "changeSuccessfully": "Bạn đã đổi mật khẩu thành công"
+    },
+    "chatting" :{
+        "active": "Đang hoạt động",
+        "yourMessages": "Tin nhắn của bạn",
+        "letSend": "Hãy chia sẻ hình ảnh và tin nhắn đến những người bạn của bạn.",
+        "sendMessage": "Gửi tin nhắn"
     }
 }

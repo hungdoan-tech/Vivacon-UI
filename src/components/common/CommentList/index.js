@@ -30,7 +30,6 @@ const CommentList = ({
   const { t: trans } = useTranslation();
 
   const handleGetFirstLevelCommentList = (page, postId) => {
-    console.log("new fetch");
     getFirstLevelCommentListByPostId({
       id: postId,
       _sort: "createdAt",
@@ -157,7 +156,6 @@ const CommentItem = ({
   const { t: trans } = useTranslation();
 
   const handleGetChildCommentList = (page, limit) => {
-    console.log("data in fetch: ", { page, limit });
     getChildCommentListByPostId({
       postId,
       parentCommentId: comment.id,
@@ -172,11 +170,9 @@ const CommentItem = ({
           let result;
           if (page > 0) {
             result = [..._.reverse(res.data.content), ...commentChildList.data];
-            console.log({ result });
           } else {
             result = _.reverse(res.data.content);
           }
-          console.log({ result });
           handleUpdateTotalChild(
             {
               open: true,
@@ -232,7 +228,6 @@ const CommentItem = ({
   };
 
   useEffect(() => {
-    console.log("call submit");
     if (submittedComment.id) {
       handleUpdateTotalChild(
         {

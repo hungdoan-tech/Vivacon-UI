@@ -1,6 +1,13 @@
 {
     "navbar": {
-        "search": "Search"
+        "search": "Search",
+        "recent": "Recent",
+        "clearAll": "Clear all",
+        "viewMore": "View more",
+        "noData": "No data",
+        "questionHeader": "Clear search history?",
+        "questionWarning": "If you clear your search history, you won't be able to undo this.",
+        "notNow": "Not now"
     },
     "signIn": {
         "login": "Log in",
@@ -108,5 +115,11 @@
         "pleaseChangePassword": "Please change your Password",
         "cancel": "Cancel",
         "changeSuccessfully": "You have changed password successfully"
+    },
+    "chatting" :{
+        "active": "Active",
+        "yourMessages": "Your Messages",
+        "letSend": "Send private photos and messages to a friend or group.",
+        "sendMessage": "Send Message"
     }
 }

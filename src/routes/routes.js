@@ -12,6 +12,8 @@ import VerifyPage from "components/pages/VerifyPage";
 import FindAccountPage from "components/pages/FindAccountPage";
 import ForgotPasswordPage from "components/pages/ForgotPasswordPage";
 import Dashboard from "components/dashboard/src";
+import ChatPage from "components/pages/ChatPage";
+import SettingPage from 'components/pages/SettingPage';
 
 const RouterList = () => {
   const Auth = useContext(AuthUser);
@@ -24,18 +26,15 @@ const RouterList = () => {
           <PrivateRoute exact path="/login" component={LoginPage} />
           <Route exact path="/register" component={RegisterPage} />
           <Route exact path="/verify" component={VerifyPage} />
-          <Route
-            exact
-            path="/find-account"
-            component={FindAccountPage}
-          />
+          <Route exact path="/find-account" component={FindAccountPage} />
           <Route exact path="/forgot-password" component={ForgotPasswordPage} />
           <PrivateRoute
             exact
             path="/profile/:username"
             component={ProfilePage}
           />
-           <PrivateRoute exact path="/dashboard" component={Dashboard} />
+          <PrivateRoute exact path="/chat" component={ChatPage} />
+          <PrivateRoute exact path="/setting" component={SettingPage} />
         </>
       )}
       {Auth.auth.isAdmin && (
