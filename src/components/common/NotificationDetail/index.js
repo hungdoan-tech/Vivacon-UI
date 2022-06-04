@@ -2,33 +2,34 @@ import { Typography } from "@mui/material";
 import classNames from "classnames";
 import * as React from "react";
 import { notificationType } from "constant/types";
+import {calculateFromNow} from 'utils/calcDateTime';
 import "./style.scss";
 
 const NotificationDetail = ({ item, type }) => {
   const renderNotificationContent = (item) => {
-    let activityText;
-    if (item.type === "POST") {
-      activityText = ` posted ${item.numberOfImages} ${
-        item.numberOfImages > 1 ? " new images" : " new image"
-      }`;
-    }
+    // let activityText;
+    // if (item.type === "POST") {
+    //   activityText = ` posted ${item.numberOfImages} ${
+    //     item.numberOfImages > 1 ? " new images" : " new image"
+    //   }`;
+    // }
 
-    if (item.type === "LIKED") {
-      activityText = " liked your post";
-    }
-    if (item.type === "COMMENTED") {
-      activityText = " commented your post";
-    }
-    if (item.type === "FOLLOWED") {
-      activityText = " followed you";
-    }
+    // if (item.type === "LIKED") {
+    //   activityText = " liked your post";
+    // }
+    // if (item.type === "COMMENTED") {
+    //   activityText = " commented your post";
+    // }
+    // if (item.type === "FOLLOWED") {
+    //   activityText = " followed you";
+    // }
     return (
       <Typography component="div">
         <Typography component="div" className="notification-activity">
-          <p><strong>{item.ownerName}</strong> {activityText}</p>
+          <p><strong>{item.ownerName}</strong> {item.content}</p>
         </Typography>
         <Typography className={fromNowClassName}>
-          {item.fromNow}
+          {calculateFromNow(new Date(item.timestamp))}
         </Typography>
       </Typography>
     );
@@ -37,7 +38,7 @@ const NotificationDetail = ({ item, type }) => {
   const renderMessageContent = (item) => {
     return (
       <Typography component="div">
-        <strong>{item.ownerName}</strong>
+        {/* <strong>{item.ownerName}</strong>
         <Typography component="div" className="message-activity">
           <Typography className="message-content">
             {item.isYourNewestMessage ? "You: " : `${item.ownerName}: `}{" "}
@@ -48,7 +49,7 @@ const NotificationDetail = ({ item, type }) => {
           >
             {item.fromNow}
           </Typography>
-        </Typography>
+        </Typography> */}
       </Typography>
     );
   };
@@ -59,7 +60,7 @@ const NotificationDetail = ({ item, type }) => {
   return (
     <Typography component="div" className="notification-container">
       <Typography component="div" className="present-image">
-        <img src={require(`../../../${item.avatar}`)} width="50" height="50" />
+        <img src={item.image} width="50" height="50" />
       </Typography>
       <Typography component="div" className="notification-content" align="left">
         <Typography component="div" className="owner-activity">

@@ -28,6 +28,10 @@ const useSocket = () => {
     );
   };
 
+  const onNewNotification = (payload) => {
+    console.log(JSON.parse(payload.body));
+  };
+
   const onMessageReceived = (payload) => {
     setReceivedMessage(JSON.parse(payload.body));
   };
@@ -43,6 +47,13 @@ const useSocket = () => {
     stompClient.subscribe(
       `/user/${getCurrentUser().username}/conversation/new`,
       onNewConversation,
+      {
+        "WS-Authorization": getJwtToken(),
+      }
+    );
+    stompClient.subscribe(
+      `/user/${getCurrentUser().username}/notification`,
+      onNewNotification,
       {
         "WS-Authorization": getJwtToken(),
       }
