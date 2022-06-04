@@ -23,5 +23,6 @@ export const API_ENDPOINT_KEYS = {
   COMMENT: "/comment",
   NEWFEED: "/newsfeed",
   CONVERSATION: '/conversation',
-  ACCOUNT: '/account'
+  ACCOUNT: '/account',
+  NOTIFICATION: '/notification'
 };
