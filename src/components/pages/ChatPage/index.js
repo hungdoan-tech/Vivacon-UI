@@ -1,4 +1,10 @@
-import { InputBase, Typography, Badge, Button } from "@mui/material";
+import {
+  InputBase,
+  Typography,
+  Badge,
+  Button,
+  ClickAwayListener,
+} from "@mui/material";
 import { useState, useEffect } from "react";
 import SockJS from "sockjs-client";
 import Stomp from "stompjs";
@@ -40,6 +46,8 @@ import InfiniteReverseList from "components/common/InfiniteReverseList";
 import _ from "lodash";
 import InfiniteList from "components/common/InfiniteList";
 import useSocket from "hooks/useSocket";
+import Picker from "emoji-picker-react";
+import { parseTextToEmojis } from "utils/emoji";
 
 const ChatPage = () => {
   const [inputMessage, setInputMessage] = useState("");
@@ -55,6 +63,7 @@ const ChatPage = () => {
   const [openChattingSearch, setOpenChattingSearch] = useState(false);
   const [newestVirtualConvId, setNewestVirtualConvId] = useState(0);
   const [typingOnConvList, setTypingOnConvList] = useState([]);
+  const [openEmojiPicker, setEmojiPicker] = useState(false);
 
   const { handlers, states, setStates } = useSocket();
   const { receivedMessage, newConversation, activeUsers, conversationList } =
@@ -78,6 +87,13 @@ const ChatPage = () => {
     const notificationAudio = new Audio(require("audio/chat.mp3"));
     notificationAudio.play();
   };
+  const onEmojiClick = (event, emojiObject) => {
+    setInputMessage(`${inputMessage}${emojiObject.emoji}`);
+    setEmojiPicker(true);
+  };
+  const handleOpenEmojiPicker = () => {
+    setEmojiPicker(!openEmojiPicker);
+  };
 
   useEffect(() => {
     if (receivedMessage) {
@@ -85,7 +101,10 @@ const ChatPage = () => {
       console.log("RECEIVED SOME", message);
       switch (message?.messageType) {
         case chattingType.USUAL_TEXT: {
-          startAudio();
+          // startAudio();
+          if(message?.sender?.id !== getCurrentUser().accountId){
+            startAudio()
+          }
           setSubmitMessage(message);
           break;
         }
@@ -169,7 +188,6 @@ const ChatPage = () => {
               splitUserName(item.participants) ===
               splitUserName(newConversation.participants)
             ) {
-              startAudio();
               isExistedConv = true;
               currConversationList[index] = newConversation;
               setConversationList({
@@ -191,7 +209,6 @@ const ChatPage = () => {
                 splitUserName(newConversation.participants) &&
               item.id < 0
             ) {
-              startAudio();
               isExistedConv = true;
               currConversationList[index] = newConversation;
               setConversationList({
@@ -220,7 +237,7 @@ const ChatPage = () => {
   }, [newConversation]);
 
   const changeMessage = (e) => {
-    setInputMessage(e.target.value);
+    setInputMessage(parseTextToEmojis(e.target.value));
   };
 
   const onClickUserChatting = (conversationId, name, isOnline, avatars) => {
@@ -230,7 +247,7 @@ const ChatPage = () => {
     setInputMessage("");
   };
 
-  const sendMessage = (event) => {
+  const sendMessage = (event, inputMessage) => {
     if (event.key === "Enter") {
       event.preventDefault();
       if (conversationID === null || inputMessage === "") return;
@@ -414,7 +431,7 @@ const ChatPage = () => {
               id: submitMessage.conversationId,
               latestMessage: submitMessage.content,
               participants: [
-                {...submitMessage.sender},
+                { ...submitMessage.sender },
                 { ...getCurrentUser(), id: getCurrentUser().accountId },
               ],
             },
@@ -598,9 +615,15 @@ const ChatPage = () => {
             </Typography>
 
             <Typography component="div" className="chat-input-container">
-              <Typography component="div" className="emoji">
-                <SentimentSatisfiedAltOutlinedIcon className="icon" />
-              </Typography>
+              <ClickAwayListener onClickAway={() => setEmojiPicker(false)}>
+                <Typography component="div" className="emoji">
+                  <SentimentSatisfiedAltOutlinedIcon
+                    className="icon"
+                    onClick={handleOpenEmojiPicker}
+                  />
+                  {openEmojiPicker && <Picker onEmojiClick={onEmojiClick} />}{" "}
+                </Typography>
+              </ClickAwayListener>
               <Typography component="div" className="chat-input">
                 <InputBase
                   placeholder={"Message..."}
@@ -609,7 +632,7 @@ const ChatPage = () => {
                   multiline={true}
                   onChange={changeMessage}
                   value={inputMessage}
-                  onKeyDown={sendMessage}
+                  onKeyDown={(event) => sendMessage(event, inputMessage)}
                   onFocus={handleTyping}
                   onBlur={handleUntyping}
                 />{" "}
@@ -618,7 +641,14 @@ const ChatPage = () => {
                 <ImageOutlinedIcon className="icon" />
               </Typography>
               <Typography component="div" className="like-icon">
-                <FavoriteBorderOutlinedIcon className="icon" />
+                <FavoriteBorderOutlinedIcon
+                  className="icon"
+                  onClick={() => {
+                    const tempEvent = { key: "Enter" };
+                    tempEvent.preventDefault = () => null;
+                    sendMessage(tempEvent, parseTextToEmojis("<3"));
+                  }}
+                />
               </Typography>
             </Typography>
           </Typography>

@@ -11,7 +11,6 @@ import ImagesCarousel from "components/common/CreatePostModal/ImagesCarousel";
 import InsertEmoticonOutlinedIcon from "@mui/icons-material/InsertEmoticonOutlined";
 import "./style.scss";
 import { privacyPostType } from "constant/types";
-import Emoji from "react-emoji-render";
 import { getCurrentUser } from "utils/jwtToken";
 import { useTranslation } from "react-i18next";
 
@@ -84,7 +83,6 @@ const WriteCaptionTab = (props) => {
           </Typography>
         </Typography>
       </Typography>
-      {/* <Emoji text="This <3 :( sentence includes :+1: (y) a variety of emoji types :)" /> */}
       <ImagesCarousel
         pictures={pictures}
         handleRemoveImage={handleRemoveImageAtIndex}

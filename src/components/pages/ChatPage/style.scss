@@ -264,6 +264,12 @@
       border: 0.25px solid var(--lightColor);
       border-radius: 50px;
       margin: 10px;
+      position: relative;
+      .emoji-picker-react {
+        z-index: 1;
+        position: absolute;
+        bottom: 40px;
+      }
       .emoji,
       .chat-input,
       .send-images,
@@ -275,6 +281,9 @@
         .icon {
           margin: auto;
           font-size: 28px;
+          &:hover {
+            cursor: pointer;
+          }
         }
         width: 30px;
       }
