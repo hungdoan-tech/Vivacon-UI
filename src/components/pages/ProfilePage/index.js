@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
-import { Button, Typography } from "@mui/material";
+import { useState, useEffect, useContext } from "react";
+import { Box, Button, IconButton, Typography } from "@mui/material";
 import SettingsIcon from "@mui/icons-material/Settings";
 import { withRouter } from "react-router-dom";
 import "./style.scss";
@@ -29,8 +29,32 @@ import CameraAltOutlinedIcon from "@mui/icons-material/CameraAltOutlined";
 import FollowButton from "components/common/FollowButton";
 import { substringUsername } from "utils/resolveData";
 import FollowUserItem from "components/common/FollowUserItem";
+import { AuthUser } from "App";
+import InfoIcon from "@mui/icons-material/Info";
 
 import { useTranslation } from "react-i18next";
+import { reportContent } from "constant/types";
+import { createAccountReport } from "api/reportService";
+
+function TabPanel(props) {
+  const { children, value, index, ...other } = props;
+
+  return (
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`simple-tabpanel-${index}`}
+      aria-labelledby={`simple-tab-${index}`}
+      {...other}
+    >
+      {value === index && (
+        <Box sx={{ p: 3 }}>
+          <Typography>{children}</Typography>
+        </Box>
+      )}
+    </div>
+  );
+}
 
 const ProfilePage = (props) => {
   const { t: trans } = useTranslation();
@@ -39,6 +63,14 @@ const ProfilePage = (props) => {
     FOLLOWER: trans("profile.followerCount"),
     FOLLOWING: trans("profile.followingCount"),
   };
+
+  const Auth = useContext(AuthUser);
+  const [stepValue, setStepValue] = useState(0);
+  const [isShow, setIsShow] = useState(false);
+  const [reportModal, setReportModal] = useState({
+    open: false,
+  });
+  const [globalState, setGlobalState] = useState({});
 
   const [username, setUsername] = useState(props.match.params.username);
   const [userProfile, setUserProfile] = useState({});
@@ -296,6 +328,109 @@ const ProfilePage = (props) => {
     );
   };
 
+  const handleCreateReport = (item) => {
+    setGlobalState(item);
+    handleNextStep();
+  };
+
+  const handleSubmitReport = () => {
+    const reportData = {
+      content: globalState.content,
+      sentitiveType: globalState.sentitiveType,
+      accountId: userProfile.id,
+    };
+
+    createAccountReport(reportData)
+      .then((res) => {
+        if (res.status === 200) {
+          setSnackbarState({
+            open: true,
+            content: "You have reported successfully",
+            type: "SUCCESS",
+          });
+          handleNextStep();
+        }
+      })
+      .catch((err) => {
+        throw err;
+      })
+      .finally(() => {
+        // setLocalLoading(false);
+      });
+  };
+
+  const handleNextStep = () => {
+    setStepValue(stepValue + 1);
+  };
+  const handlePrevStep = () => {
+    setStepValue(stepValue - 1);
+  };
+
+  const StepOne = () => {
+    return (
+      <CustomModal
+        isRadius
+        width={400}
+        height={300}
+        title="Why do you report this account?"
+        open={reportModal.open}
+        handleCloseModal={handleCloseReportModal}
+      >
+        {reportContent.map((item, index) => (
+          <p onClick={() => handleCreateReport(item)}>{item.content}</p>
+        ))}
+      </CustomModal>
+    );
+  };
+
+  const StepTwo = () => {
+    return (
+      <CustomModal
+        isRadius
+        width={400}
+        height={800}
+        title="Báo cáo"
+        open={reportModal.open}
+        handleCloseModal={handleCloseReportModal}
+      >
+        <button onClick={handlePrevStep}>Back</button>
+        <h2>Tại sao bạn báo cáo bài viết này?</h2>
+        {globalState.detailContent
+          ? globalState?.detailContent.map((item, index) => (
+              <>
+                <p key={item.id}>{item}</p>
+              </>
+            ))
+          : null}
+        <button onClick={handleSubmitReport}>Gửi báo cáo</button>
+      </CustomModal>
+    );
+  };
+
+  const StepThree = (post) => {
+    return (
+      <CustomModal
+        isRadius
+        width={400}
+        height={300}
+        title="Cảm ơn bạn đã cho chúng tôi biết"
+        open={reportModal.open}
+        handleCloseModal={handleCloseReportModal}
+      >
+        <>
+          <IconButton>
+            <InfoIcon />
+          </IconButton>
+          <div>Block</div>
+          {post && post?.createdBy?.isFollowing ? <div>Unfollow</div> : null}
+
+          <div>View More</div>
+          <div onClick={handleCloseReportModal}>Close</div>
+        </>
+      </CustomModal>
+    );
+  };
+
   const changeFormatByCondition = (condition) => {
     const followedButtonColor = classNames("followed-btn", {
       unfollowed: !condition,
@@ -333,6 +468,20 @@ const ProfilePage = (props) => {
       .finally(() => {
         setChangeAvatarLoading(false);
       });
+  };
+
+  const handleOpenReportModal = () => {
+    setIsShow(true);
+    setReportModal({
+      ...reportModal,
+      open: true,
+    });
+  };
+
+  const handleCloseReportModal = () => {
+    setIsShow(false);
+    setReportModal({ ...reportModal, open: false });
+    setStepValue(0);
   };
 
   return (
@@ -476,6 +625,10 @@ const ProfilePage = (props) => {
             </Typography>
           </Typography>
 
+          {!Auth.auth.isAdmin && (
+            <button onClick={handleOpenReportModal}>Report</button>
+          )}
+
           <Typography
             component="div"
             align="left"
@@ -525,6 +678,20 @@ const ProfilePage = (props) => {
       >
         {renderUnfollowModal()}
       </CustomModal>
+
+      {isShow && isShow ? (
+        <>
+          <TabPanel value={stepValue} index={0}>
+            {StepOne()}
+          </TabPanel>
+          <TabPanel value={stepValue} index={1}>
+            {StepTwo()}
+          </TabPanel>
+          <TabPanel value={stepValue} index={2}>
+            {StepThree(userProfile)}
+          </TabPanel>
+        </>
+      ) : null}
     </Typography>
   );
 };

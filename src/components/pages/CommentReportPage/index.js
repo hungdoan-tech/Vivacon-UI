@@ -13,13 +13,13 @@ import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import moment from "moment";
 import CustomModal from "../../common/CustomModal";
-import PostDetailsModal from "components/common/PostDetailsModal";
 import Pagination from "@mui/material/Pagination";
 import { limitPerPage } from "../../../constant/types";
 
 import useSnackbar from "hooks/useSnackbar";
 
 import ConfirmDialog from "components/common/ConfirmDialog";
+import PostReportModal from "components/dashboard/src/components/PostReportModal";
 
 export default function CommentReportPage() {
   const [showCommentReportModal, setShowCommentReportModal] = useState({
@@ -28,6 +28,7 @@ export default function CommentReportPage() {
     item: {},
     dataList: [],
     reportMessage: "",
+    reportId: -1,
   });
 
   const [commentReportList, setCommentReportList] = useState([]);
@@ -82,13 +83,20 @@ export default function CommentReportPage() {
     handleApprovedCommentReport(id);
   };
 
-  const handleOpenReportModal = (index, item, dataList, reportMessage) => {
+  const handleOpenReportModal = (
+    index,
+    item,
+    dataList,
+    reportMessage,
+    reportId
+  ) => {
     setShowCommentReportModal({
       open: true,
       index,
       item,
       dataList,
       reportMessage,
+      reportId,
     });
   };
 
@@ -218,7 +226,8 @@ export default function CommentReportPage() {
                               index,
                               row,
                               commentReportList?.content,
-                              row.content + " " + row.sentitiveType
+                              row.content + " " + row.sentitiveType,
+                              row.id
                             )
                           }
                         >
@@ -246,10 +255,11 @@ export default function CommentReportPage() {
             <button onClick={handleOpenApprovedDialog}>Approved</button>
             <button onClick={handleCloseOpenReportModal}>Cancel</button>
           </div>
-          <PostDetailsModal
+          <PostReportModal
             title={showCommentReportModal.reportMessage}
             index={showCommentReportModal.index}
             dataList={showCommentReportModal.dataList}
+            reportId={showCommentReportModal.reportId}
             setUpdatedItem={() => null}
           />
         </>

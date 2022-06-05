@@ -74,7 +74,6 @@ const Dashboard = () => {
         {selected == 1 && <PostReportPage />}
         {selected == 2 && <CommentReportPage />}
         {selected == 3 && <AccountReportPage />}
-        <Sidebar />
 
         <RightSide userAccountMostFollowerData={userAccountMostFollowerData} />
       </div>

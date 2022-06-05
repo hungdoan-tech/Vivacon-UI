@@ -5,6 +5,10 @@ export const createPostReport = async (data) => {
   return await axiosConfig.post(API_ENDPOINT_KEYS.POST_REPORT, data);
 };
 
+export const getDetailPostReport = async (id) => {
+  return await axiosConfig.get(`${API_ENDPOINT_KEYS.POST_REPORT}/${id}`);
+};
+
 export const getListPostReport = async (data) => {
   const { _sort, limit, _order, page } = data;
   return await axiosConfig.get(`${API_ENDPOINT_KEYS.POST_REPORT}`, {
@@ -57,6 +61,10 @@ export const rejectedCommentReport = async (id) => {
   );
 };
 
+export const getDetailCommentReport = async (id) => {
+  return await axiosConfig.get(`${API_ENDPOINT_KEYS.COMMENT_REPORT}/${id}`);
+};
+
 export const createAccountReport = async (data) => {
   return await axiosConfig.post(API_ENDPOINT_KEYS.ACCOUNT_REPORT, data);
 };
@@ -71,4 +79,16 @@ export const getListAccountReport = async (data) => {
       page,
     },
   });
+};
+
+export const approvedAccountReport = async (id) => {
+  return await axiosConfig.delete(
+    `${API_ENDPOINT_KEYS.ACCOUNT_REPORT}/approved/${id}`
+  );
+};
+
+export const rejectedAccountReport = async (id) => {
+  return await axiosConfig.delete(
+    `${API_ENDPOINT_KEYS.ACCOUNT_REPORT}/rejected/${id}`
+  );
 };

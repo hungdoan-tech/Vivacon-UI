@@ -55,7 +55,7 @@ function a11yProps(index) {
 
 const UserImagesTabs = (props) => {
   const [value, setValue] = useState(0);
-  const [username, setUsername] = useState(props.match.params.username);
+  const [username, setUsername] = useState(props.username);
   const { handleUpdateProfile } = props;
 
   const { t: trans } = useTranslation();
@@ -93,8 +93,8 @@ const UserImagesTabs = (props) => {
   };
 
   useEffect(() => {
-    setUsername(props.match.params.username);
-  }, [props.match.params.username]);
+    setUsername(props.username);
+  }, [props.username]);
 
   const renderTabLabel = ({ icon: IconComponent, label }) => {
     return (

@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from "react";
-import { Typography, Button } from "@mui/material";
+import { Typography, Button, Box, IconButton } from "@mui/material";
 import "./style.scss";
 import {
   deleteComment,
@@ -16,11 +16,16 @@ import { getCurrentUser } from "utils/jwtToken";
 import CustomModal from "../CustomModal";
 import useLoading from "hooks/useLoading";
 import { AuthUser } from "../../../App";
+import { reportContent } from "constant/types";
+import InfoIcon from "@mui/icons-material/Info";
+import { createCommentReport } from "api/reportService";
+import useSnackbar from "hooks/useSnackbar";
 
 const CommentList = ({
   currentPost,
   submittedComment,
   setSubmittedComment,
+  commentReport,
 }) => {
   const [commentList, setCommentList] = useState([]);
   const [fetchInfo, setFetchInfo] = useState({});
@@ -29,6 +34,8 @@ const CommentList = ({
   const [totalReply, setTotalReply] = useState([]);
 
   const { t: trans } = useTranslation();
+
+  const Auth = useContext(AuthUser);
 
   const handleGetFirstLevelCommentList = (page, postId) => {
     console.log("new fetch");
@@ -101,36 +108,225 @@ const CommentList = ({
     setTotalReply(items);
   };
 
+  console.log(commentReport);
+
   return (
     <>
       {commentList.length > 0 ? (
-        <Typography className="sended-comments-container">
-          {commentList.map((comment, i) => (
-            <CommentItem
-              comment={comment}
-              postId={currentPost.id}
-              handleFilterComment={handleFilterComment}
-              handleUpdateTotalChild={handleUpdateTotalChild}
-              handleUpdateReply={handleUpdateReply}
-              index={i}
-              commentChildList={
-                totalCommentChildList[i] || { open: false, data: [] }
-              }
-              isReply={totalReply[i] || { open: false, hastag: "" }}
-            />
-          ))}
-          {!fetchInfo.last && (
-            <Typography className="view-more" onClick={handleViewMore}>
-              {trans("newFeed.viewMoreComment")}
+        !_.isEmpty(commentReport) && !_.isEmpty(commentReport) ? (
+          <Typography className="comment-container">
+            <Typography>
+              {commentReport.comment.parentComment ? (
+                <Typography className="comment-content">
+                  <h3>Parent Comment</h3>
+                  <img
+                    src={
+                      commentReport.comment.parentComment.createdBy?.avatar
+                        ? commentReport.comment.parentComment.createdBy?.avatar
+                        : require("images/no-avatar.png")
+                    }
+                    width="35"
+                    height="35"
+                    alt=""
+                  />
+
+                  <Typography className="content" component="div">
+                    <Typography className="content-line1" component="div">
+                      <strong>
+                        {substringUsername(
+                          commentReport.comment.parentComment.createdBy
+                            ?.username
+                        )}
+                      </strong>
+                      {"    "}
+                      {commentReport?.comment.parentComment.content}
+                    </Typography>
+                    <Typography className="content-line2" component="div">
+                      <Typography className="date-time" component="div">
+                        {calculateFromNow(
+                          convertUTCtoLocalDate(
+                            commentReport.comment.parentComment.createdAt
+                          )
+                        )}
+                      </Typography>
+
+                      {!Auth.auth.isAdmin && (
+                        <Typography className="reply" component="div">
+                          {trans("newFeed.reply")}
+                        </Typography>
+                      )}
+                    </Typography>
+                  </Typography>
+                </Typography>
+              ) : null}
             </Typography>
-          )}
+
+            <Typography className="comment-content">
+              <img
+                src={
+                  commentReport.createdBy?.avatar
+                    ? commentReport.createdBy?.avatar
+                    : require("images/no-avatar.png")
+                }
+                width="35"
+                height="35"
+                alt=""
+              />
+
+              <Typography className="content" component="div">
+                <Typography className="content-line1" component="div">
+                  <strong>
+                    {substringUsername(commentReport.createdBy?.username)}
+                  </strong>
+                  {"    "}
+                  {commentReport?.comment?.content}
+                </Typography>
+                <Typography className="content-line2" component="div">
+                  <Typography className="date-time" component="div">
+                    {calculateFromNow(
+                      convertUTCtoLocalDate(commentReport.createdAt)
+                    )}
+                  </Typography>
+
+                  {!Auth.auth.isAdmin && (
+                    <Typography className="reply" component="div">
+                      {trans("newFeed.reply")}
+                    </Typography>
+                  )}
+                </Typography>
+              </Typography>
+            </Typography>
+          </Typography>
+        ) : (
+          <Typography className="sended-comments-container">
+            {commentList.map((comment, i) => (
+              <CommentItem
+                comment={comment}
+                postId={currentPost.id}
+                handleFilterComment={handleFilterComment}
+                handleUpdateTotalChild={handleUpdateTotalChild}
+                handleUpdateReply={handleUpdateReply}
+                index={i}
+                commentChildList={
+                  totalCommentChildList[i] || { open: false, data: [] }
+                }
+                isReply={totalReply[i] || { open: false, hastag: "" }}
+              />
+            ))}
+            {!fetchInfo.last && (
+              <Typography className="view-more" onClick={handleViewMore}>
+                {trans("newFeed.viewMoreComment")}
+              </Typography>
+            )}
+          </Typography>
+        )
+      ) : !_.isEmpty(commentReport) && !_.isEmpty(commentReport) ? (
+        <Typography className="comment-container">
+          <Typography>
+            {commentReport.comment.parentComment ? (
+              <Typography className="comment-content">
+                <h3>Parent Comment</h3>
+                <img
+                  src={
+                    commentReport.comment.parentComment.createdBy?.avatar
+                      ? commentReport.comment.parentComment.createdBy?.avatar
+                      : require("images/no-avatar.png")
+                  }
+                  width="35"
+                  height="35"
+                  alt=""
+                />
+
+                <Typography className="content" component="div">
+                  <Typography className="content-line1" component="div">
+                    <strong>
+                      {substringUsername(
+                        commentReport.comment.parentComment.createdBy?.username
+                      )}
+                    </strong>
+                    {"    "}
+                    {commentReport?.comment.parentComment.content}
+                  </Typography>
+                  <Typography className="content-line2" component="div">
+                    <Typography className="date-time" component="div">
+                      {calculateFromNow(
+                        convertUTCtoLocalDate(
+                          commentReport.comment.parentComment.createdAt
+                        )
+                      )}
+                    </Typography>
+
+                    {!Auth.auth.isAdmin && (
+                      <Typography className="reply" component="div">
+                        {trans("newFeed.reply")}
+                      </Typography>
+                    )}
+                  </Typography>
+                </Typography>
+              </Typography>
+            ) : null}
+          </Typography>
+
+          <Typography className="comment-content">
+            <img
+              src={
+                commentReport.createdBy?.avatar
+                  ? commentReport.createdBy?.avatar
+                  : require("images/no-avatar.png")
+              }
+              width="35"
+              height="35"
+              alt=""
+            />
+
+            <Typography className="content" component="div">
+              <Typography className="content-line1" component="div">
+                <strong>
+                  {substringUsername(commentReport.createdBy?.username)}
+                </strong>
+                {"    "}
+                {commentReport?.comment?.content}
+              </Typography>
+              <Typography className="content-line2" component="div">
+                <Typography className="date-time" component="div">
+                  {calculateFromNow(
+                    convertUTCtoLocalDate(commentReport.createdAt)
+                  )}
+                </Typography>
+
+                {!Auth.auth.isAdmin && (
+                  <Typography className="reply" component="div">
+                    {trans("newFeed.reply")}
+                  </Typography>
+                )}
+              </Typography>
+            </Typography>
+          </Typography>
         </Typography>
-      ) : (
-        <></>
-      )}
+      ) : null}
     </>
   );
 };
+
+function TabPanel(props) {
+  const { children, value, index, ...other } = props;
+
+  return (
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`simple-tabpanel-${index}`}
+      aria-labelledby={`simple-tab-${index}`}
+      {...other}
+    >
+      {value === index && (
+        <Box sx={{ p: 3 }}>
+          <Typography>{children}</Typography>
+        </Box>
+      )}
+    </div>
+  );
+}
 
 const CommentItem = ({
   comment,
@@ -152,6 +348,13 @@ const CommentItem = ({
   const [showOptionModal, setShowOptionModal] = useState(false);
 
   const Auth = useContext(AuthUser);
+  const [stepValue, setStepValue] = useState(0);
+  const [isShow, setIsShow] = useState(false);
+  const [reportModal, setReportModal] = useState({
+    open: false,
+  });
+  const [globalState, setGlobalState] = useState({});
+  const { setSnackbarState } = useSnackbar();
 
   useEffect(() => {
     setCreatedTime(calculateFromNow(convertUTCtoLocalDate(comment.createdAt)));
@@ -269,6 +472,125 @@ const CommentItem = ({
   //   });
   // }
   // }, 60000);
+
+  const handleCreateReport = (item) => {
+    setGlobalState(item);
+    handleNextStep();
+  };
+
+  const handleNextStep = () => {
+    setStepValue(stepValue + 1);
+  };
+
+  const handlePrevStep = () => {
+    setStepValue(stepValue - 1);
+  };
+
+  const handleSubmitReport = () => {
+    const reportData = {
+      content: globalState.content,
+      sentitiveType: globalState.sentitiveType,
+      commentId: comment.id,
+    };
+
+    createCommentReport(reportData)
+      .then((res) => {
+        if (res.status === 200) {
+          setSnackbarState({
+            open: true,
+            content: "You have reported successfully",
+            type: "SUCCESS",
+          });
+          handleNextStep();
+        }
+      })
+      .catch((err) => {
+        throw err;
+      })
+      .finally(() => {
+        // setLocalLoading(false);
+      });
+  };
+
+  const StepOne = () => {
+    return (
+      <CustomModal
+        isRadius
+        width={400}
+        height={300}
+        title="Why do you report this comment?"
+        open={reportModal.open}
+        handleCloseModal={handleCloseReportModal}
+      >
+        {reportContent.map((item, index) => (
+          <p onClick={() => handleCreateReport(item)}>{item.content}</p>
+        ))}
+      </CustomModal>
+    );
+  };
+
+  const StepTwo = () => {
+    return (
+      <CustomModal
+        isRadius
+        width={400}
+        height={800}
+        title="Báo cáo"
+        open={reportModal.open}
+        handleCloseModal={handleCloseReportModal}
+      >
+        <button onClick={handlePrevStep}>Back</button>
+        <h2>Tại sao bạn báo cáo bài viết này?</h2>
+        {globalState.detailContent
+          ? globalState?.detailContent.map((item, index) => (
+              <>
+                <p key={item.id}>{item}</p>
+              </>
+            ))
+          : null}
+        <button onClick={handleSubmitReport}>Gửi báo cáo</button>
+      </CustomModal>
+    );
+  };
+
+  const StepThree = (post) => {
+    return (
+      <CustomModal
+        isRadius
+        width={400}
+        height={300}
+        title="Cảm ơn bạn đã cho chúng tôi biết"
+        open={reportModal.open}
+        handleCloseModal={handleCloseReportModal}
+      >
+        <>
+          <IconButton>
+            <InfoIcon />
+          </IconButton>
+          <div>Block</div>
+          {post && post?.createdBy?.isFollowing ? <div>Unfollow</div> : null}
+
+          <div>View More</div>
+          <div onClick={handleCloseReportModal}>Close</div>
+        </>
+      </CustomModal>
+    );
+  };
+
+  const handleOpenReportModal = () => {
+    setIsShow(true);
+    setReportModal({
+      ...reportModal,
+      open: true,
+    });
+  };
+
+  const handleCloseReportModal = () => {
+    setIsShow(false);
+    setReportModal({ ...reportModal, open: false });
+    setStepValue(0);
+  };
+
   return (
     <Typography className="comment-container">
       <Typography
@@ -310,6 +632,10 @@ const CommentItem = ({
               >
                 {trans("newFeed.reply")}
               </Typography>
+            )}
+
+            {!Auth.auth.isAdmin && (
+              <button onClick={handleOpenReportModal}>Report</button>
             )}
 
             {showCommentOption &&
@@ -369,6 +695,20 @@ const CommentItem = ({
           handleCloseModal={() => setShowOptionModal(false)}
         />
       </CustomModal>
+
+      {isShow && isShow ? (
+        <>
+          <TabPanel value={stepValue} index={0}>
+            {StepOne()}
+          </TabPanel>
+          <TabPanel value={stepValue} index={1}>
+            {StepTwo()}
+          </TabPanel>
+          <TabPanel value={stepValue} index={2}>
+            {StepThree(comment)}
+          </TabPanel>
+        </>
+      ) : null}
     </Typography>
   );
 };
@@ -378,6 +718,131 @@ const CommentChildItem = ({ childCmt, handleOpenReplyCmt }) => {
   const { t: trans } = useTranslation();
 
   const Auth = useContext(AuthUser);
+  const [stepValue, setStepValue] = useState(0);
+  const [isShow, setIsShow] = useState(false);
+  const [reportModal, setReportModal] = useState({
+    open: false,
+  });
+  const [globalState, setGlobalState] = useState({});
+  const { setSnackbarState } = useSnackbar();
+
+  const handleCreateReport = (item) => {
+    setGlobalState(item);
+    handleNextStep();
+  };
+
+  const handleNextStep = () => {
+    setStepValue(stepValue + 1);
+  };
+
+  const handlePrevStep = () => {
+    setStepValue(stepValue - 1);
+  };
+
+  const handleSubmitReport = () => {
+    const reportData = {
+      content: globalState.content,
+      sentitiveType: globalState.sentitiveType,
+      commentId: childCmt.id,
+    };
+
+    createCommentReport(reportData)
+      .then((res) => {
+        if (res.status === 200) {
+          setSnackbarState({
+            open: true,
+            content: "You have reported successfully",
+            type: "SUCCESS",
+          });
+          handleNextStep();
+        }
+      })
+      .catch((err) => {
+        throw err;
+      })
+      .finally(() => {
+        // setLocalLoading(false);
+      });
+  };
+
+  const StepOne = () => {
+    return (
+      <CustomModal
+        isRadius
+        width={400}
+        height={300}
+        title="Why do you report this comment?"
+        open={reportModal.open}
+        handleCloseModal={handleCloseReportModal}
+      >
+        {reportContent.map((item, index) => (
+          <p onClick={() => handleCreateReport(item)}>{item.content}</p>
+        ))}
+      </CustomModal>
+    );
+  };
+
+  const StepTwo = () => {
+    return (
+      <CustomModal
+        isRadius
+        width={400}
+        height={800}
+        title="Báo cáo"
+        open={reportModal.open}
+        handleCloseModal={handleCloseReportModal}
+      >
+        <button onClick={handlePrevStep}>Back</button>
+        <h2>Tại sao bạn báo cáo bài viết này?</h2>
+        {globalState.detailContent
+          ? globalState?.detailContent.map((item, index) => (
+              <>
+                <p key={item.id}>{item}</p>
+              </>
+            ))
+          : null}
+        <button onClick={handleSubmitReport}>Gửi báo cáo</button>
+      </CustomModal>
+    );
+  };
+
+  const StepThree = (post) => {
+    return (
+      <CustomModal
+        isRadius
+        width={400}
+        height={300}
+        title="Cảm ơn bạn đã cho chúng tôi biết"
+        open={reportModal.open}
+        handleCloseModal={handleCloseReportModal}
+      >
+        <>
+          <IconButton>
+            <InfoIcon />
+          </IconButton>
+          <div>Block</div>
+          {post && post?.createdBy?.isFollowing ? <div>Unfollow</div> : null}
+
+          <div>View More</div>
+          <div onClick={handleCloseReportModal}>Close</div>
+        </>
+      </CustomModal>
+    );
+  };
+
+  const handleOpenReportModal = () => {
+    setIsShow(true);
+    setReportModal({
+      ...reportModal,
+      open: true,
+    });
+  };
+
+  const handleCloseReportModal = () => {
+    setIsShow(false);
+    setReportModal({ ...reportModal, open: false });
+    setStepValue(0);
+  };
 
   return (
     <Typography
@@ -419,6 +884,10 @@ const CommentChildItem = ({ childCmt, handleOpenReplyCmt }) => {
             </Typography>
           )}
 
+          {!Auth.auth.isAdmin && (
+            <button onClick={handleOpenReportModal}>Report</button>
+          )}
+
           {showCommentOption &&
             getCurrentUser().accountId === childCmt.createdBy?.id && (
               <Typography className="option" component="div">
@@ -427,6 +896,20 @@ const CommentChildItem = ({ childCmt, handleOpenReplyCmt }) => {
             )}
         </Typography>
       </Typography>
+
+      {isShow && isShow ? (
+        <>
+          <TabPanel value={stepValue} index={0}>
+            {StepOne()}
+          </TabPanel>
+          <TabPanel value={stepValue} index={1}>
+            {StepTwo()}
+          </TabPanel>
+          <TabPanel value={stepValue} index={2}>
+            {StepThree(childCmt)}
+          </TabPanel>
+        </>
+      ) : null}
     </Typography>
   );
 };
@@ -437,6 +920,9 @@ const CommentOptionModal = ({
   handleFilterComment,
 }) => {
   const { setLoading } = useLoading();
+
+  const Auth = useContext(AuthUser);
+
   const handleDeleteComment = () => {
     deleteComment(commentId)
       .then((res) => {
@@ -454,12 +940,16 @@ const CommentOptionModal = ({
   return (
     <Typography component="div" className="comment-option-container">
       <Typography component="div" className="action-btns">
-        <Button className="report-btn" onClick={() => null}>
-          Report
-        </Button>
-        <Button className="delete-btn" onClick={handleDeleteComment}>
-          Delete
-        </Button>
+        {!Auth.auth.isAdmin && (
+          <Button className="report-btn" onClick={() => null}>
+            Report
+          </Button>
+        )}
+        {!Auth.auth.isAdmin && (
+          <Button className="delete-btn" onClick={handleDeleteComment}>
+            Delete
+          </Button>
+        )}
         <Button className="cancel-btn" onClick={handleCloseModal}>
           Cancel
         </Button>

@@ -27,6 +27,7 @@ export default function PostReportPage() {
     item: {},
     dataList: [],
     reportMessage: "",
+    reportId: -1,
   });
 
   const [postReportList, setPostReportList] = useState([]);
@@ -45,7 +46,6 @@ export default function PostReportPage() {
   }, [page]);
 
   useEffect(() => {
-    console.log("changed limit: ");
     if (page === 1) {
       fetchListPostReport(1, limit);
     } else {
@@ -82,13 +82,21 @@ export default function PostReportPage() {
     handleApprovedPostReport(id);
   };
 
-  const handleOpenPostReportModal = (index, item, dataList, reportMessage) => {
+  const handleOpenPostReportModal = (
+    index,
+    item,
+    dataList,
+    reportMessage,
+    reportId
+  ) => {
+    console.log(reportId);
     setShowPostReportModal({
       open: true,
       index,
       item,
       dataList,
       reportMessage,
+      reportId,
     });
   };
 
@@ -169,7 +177,6 @@ export default function PostReportPage() {
               <TableCell align="left">Content</TableCell>
               <TableCell align="left">Sensitive Type</TableCell>
               <TableCell align="left">Date</TableCell>
-
               <TableCell align="left">User Name</TableCell>
               <TableCell align="left">Post Content</TableCell>
               <TableCell align="left"></TableCell>
@@ -219,7 +226,8 @@ export default function PostReportPage() {
                               index,
                               row,
                               postReportList?.content,
-                              row.content + " " + row.sentitiveType
+                              row.content + " " + row.sentitiveType,
+                              row.id
                             )
                           }
                         >
@@ -251,6 +259,7 @@ export default function PostReportPage() {
             title={showPostReportModal.reportMessage}
             index={showPostReportModal.index}
             dataList={showPostReportModal.dataList}
+            reportId={showPostReportModal.reportId}
             setUpdatedItem={() => null}
           />
         </>
