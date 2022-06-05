@@ -25,6 +25,7 @@ const PostDetailsModal = ({ index, dataList }) => {
     showInImage: false,
   });
   const [submittedComment, setSubmittedComment] = useState({});
+
   const history = useHistory();
   const handleGetPostDetail = () => {
     getPostDetail({

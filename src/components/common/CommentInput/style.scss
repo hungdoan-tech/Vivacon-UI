@@ -5,8 +5,20 @@
   flex-direction: row;
   justify-content: space-between;
   height: 100%;
-  .emotion-icon {
+  position: relative;
+  .emoji-picker-react {
+    z-index: 1;
+    position: absolute;
+    bottom: 40px;
+  }
+  .emoji-picker-container {
     margin: auto;
+    .emotion-icon {
+      margin: auto;
+      &:hover {
+        cursor: pointer;
+      }
+    }
   }
   .comment-input {
     width: 100%;
