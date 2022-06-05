@@ -47,7 +47,7 @@ import _ from "lodash";
 import InfiniteList from "components/common/InfiniteList";
 import useSocket from "hooks/useSocket";
 import Picker from "emoji-picker-react";
-import { parseTextToEmojis } from "utils/emoji";
+import { parseTextToEmojis, isOnlyEmojis } from "utils/emoji";
 
 const ChatPage = () => {
   const [inputMessage, setInputMessage] = useState("");
@@ -88,6 +88,7 @@ const ChatPage = () => {
     notificationAudio.play();
   };
   const onEmojiClick = (event, emojiObject) => {
+    console.log({emojiObject});
     setInputMessage(`${inputMessage}${emojiObject.emoji}`);
     setEmojiPicker(true);
   };
@@ -686,9 +687,11 @@ const ChatPage = () => {
 const MessageItem = ({ item: message, index, dataList: messageList }) => {
   if (message) {
     const condition = message?.sender?.username === getCurrentUser().username;
+    const onlyEmojisCondition = isOnlyEmojis(message.content);
     const messageClassName = classNames("message-item", {
-      owner: condition,
-      target: !condition,
+      owner: condition && !onlyEmojisCondition,
+      target: !condition && !onlyEmojisCondition,
+      emojis: onlyEmojisCondition,
     });
 
     const messageContainerClassName = classNames("message-item-container", {
