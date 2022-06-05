@@ -195,6 +195,11 @@
               word-break: break-all;
               text-align: left;
             }
+            &.emojis {
+              background-color: transparent;
+              font-size: 24px;
+              padding: 0;
+            }
           }
         }
       }
