@@ -16,7 +16,7 @@ const CustomModal = ({
   width,
   height,
   isRadius = false,
-  children
+  children,
 }) => {
   const [modalWidth, setModalWidth] = useState(0);
 

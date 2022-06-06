@@ -12,6 +12,7 @@ import VerifyPage from "components/pages/VerifyPage";
 import FindAccountPage from "components/pages/FindAccountPage";
 import ForgotPasswordPage from "components/pages/ForgotPasswordPage";
 import Dashboard from "components/dashboard/src";
+import PostReportPage from "components/pages/PostReportPage";
 import ChatPage from "components/pages/ChatPage";
 import SettingPage from 'components/pages/SettingPage';
 import PostDetailPage from "components/pages/PostDetailPage";
@@ -34,6 +35,8 @@ const RouterList = () => {
             path="/profile/:username"
             component={ProfilePage}
           />
+          <PrivateRoute exact path="/dashboard" component={Dashboard} />
+          <PrivateRoute exact path="/report" component={PostReportPage} />
           <PrivateRoute exact path="/chat" component={ChatPage} />
           <PrivateRoute exact path="/setting" component={SettingPage} />
           <PrivateRoute exact path="/post/:id" component={PostDetailPage} />

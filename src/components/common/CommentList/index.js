@@ -1,7 +1,8 @@
-import { useState, useEffect } from "react";
-import { Typography, Button } from "@mui/material";
+import { useState, useEffect, useContext } from "react";
+import { Typography, Button, Box, IconButton } from "@mui/material";
 import "./style.scss";
 import {
+  comment,
   deleteComment,
   getChildCommentListByPostId,
   getFirstLevelCommentListByPostId,
@@ -15,11 +16,18 @@ import { useTranslation } from "react-i18next";
 import { getCurrentUser } from "utils/jwtToken";
 import CustomModal from "../CustomModal";
 import useLoading from "hooks/useLoading";
+import { AuthUser } from "../../../App";
+import { reportContent } from "constant/types";
+import InfoIcon from "@mui/icons-material/Info";
+import { createCommentReport } from "api/reportService";
+import useSnackbar from "hooks/useSnackbar";
+import CommentItem from "../CommentItem";
 
 const CommentList = ({
   currentPost,
   submittedComment,
   setSubmittedComment,
+  commentReport,
 }) => {
   const [commentList, setCommentList] = useState([]);
   const [fetchInfo, setFetchInfo] = useState({});
@@ -28,6 +36,8 @@ const CommentList = ({
   const [totalReply, setTotalReply] = useState([]);
 
   const { t: trans } = useTranslation();
+
+  const Auth = useContext(AuthUser);
 
   const handleGetFirstLevelCommentList = (page, postId) => {
     getFirstLevelCommentListByPostId({
@@ -99,355 +109,215 @@ const CommentList = ({
     setTotalReply(items);
   };
 
+  useEffect(() => {
+    console.log({ totalCommentChildList });
+  }, [totalCommentChildList]);
+
+  const handleFilterCommentChild = (commentId, index) => {
+    const listChild = [...totalCommentChildList[index].data];
+    const filtered = listChild.filter((child) => child.id !== commentId);
+    handleUpdateTotalChild({ open: true, data: filtered }, index);
+  };
+
+  console.log(commentReport);
+
   return (
     <>
       {commentList.length > 0 ? (
-        <Typography className="sended-comments-container">
-          {commentList.map((comment, i) => (
-            <CommentItem
-              comment={comment}
-              postId={currentPost.id}
-              handleFilterComment={handleFilterComment}
-              handleUpdateTotalChild={handleUpdateTotalChild}
-              handleUpdateReply={handleUpdateReply}
-              index={i}
-              commentChildList={
-                totalCommentChildList[i] || { open: false, data: [] }
-              }
-              isReply={totalReply[i] || { open: false, hastag: "" }}
-            />
-          ))}
-          {!fetchInfo.last && (
-            <Typography className="view-more" onClick={handleViewMore}>
-              {trans("newFeed.viewMoreComment")}
-            </Typography>
-          )}
-        </Typography>
-      ) : (
-        <></>
-      )}
-    </>
-  );
-};
+        !_.isEmpty(commentReport) && !_.isEmpty(commentReport) ? (
+          <Typography className="comment-container">
+            <Typography>
+              {commentReport.comment.parentComment ? (
+                <Typography className="comment-content">
+                  <h3>Parent Comment</h3>
+                  <img
+                    src={
+                      commentReport.comment.parentComment.createdBy?.avatar
+                        ? commentReport.comment.parentComment.createdBy?.avatar
+                        : require("images/no-avatar.png")
+                    }
+                    width="35"
+                    height="35"
+                    alt=""
+                  />
 
-const CommentItem = ({
-  comment,
-  postId,
-  handleFilterComment,
-  commentChildList,
-  handleUpdateTotalChild,
-  index,
-  isReply,
-  handleUpdateReply,
-}) => {
-  const [createdTime, setCreatedTime] = useState(
-    calculateFromNow(convertUTCtoLocalDate(comment.createdAt))
-  );
-  const [total, setTotal] = useState(comment.totalChildComments);
+                  <Typography className="content" component="div">
+                    <Typography className="content-line1" component="div">
+                      <strong>
+                        {substringUsername(
+                          commentReport.comment.parentComment.createdBy
+                            ?.username
+                        )}
+                      </strong>
+                      {"    "}
+                      {commentReport?.comment.parentComment.content}
+                    </Typography>
+                    <Typography className="content-line2" component="div">
+                      <Typography className="date-time" component="div">
+                        {calculateFromNow(
+                          convertUTCtoLocalDate(
+                            commentReport.comment.parentComment.createdAt
+                          )
+                        )}
+                      </Typography>
 
-  const [submittedComment, setSubmittedComment] = useState({});
-  const [showCommentOption, setShowCommentOption] = useState(false);
-  const [showOptionModal, setShowOptionModal] = useState(false);
-
-  useEffect(() => {
-    setCreatedTime(calculateFromNow(convertUTCtoLocalDate(comment.createdAt)));
-  }, [comment.createdAt]);
-
-  const { t: trans } = useTranslation();
-
-  const handleGetChildCommentList = (page, limit) => {
-    getChildCommentListByPostId({
-      postId,
-      parentCommentId: comment.id,
-      _sort: "createdAt",
-      _order: "desc",
-      limit,
-      page,
-    })
-      .then((res) => {
-        if (res.status === 200) {
-          // if(childPageNumber !== 0 ){
-          let result;
-          if (page > 0) {
-            result = [..._.reverse(res.data.content), ...commentChildList.data];
-          } else {
-            result = _.reverse(res.data.content);
-          }
-          handleUpdateTotalChild(
-            {
-              open: true,
-              data: result.map((item) => {
-                return {
-                  ...item,
-                  fromNow: calculateFromNow(
-                    convertUTCtoLocalDate(item.createdAt)
-                  ),
-                };
-              }),
-            },
-            index
-          );
-        }
-      })
-      .catch((err) => {
-        throw err;
-      });
-  };
-
-  const handleToggleCommentChild = () => {
-    //Hide child list
-    if (total === 0 && commentChildList.open) {
-      handleUpdateTotalChild(
-        {
-          ...commentChildList,
-          open: false,
-        },
-        index
-      );
-      setTotal(commentChildList?.data.length);
-    } else {
-      // Show all if the child list is shown before
-      if (total === commentChildList?.data.length && !commentChildList.open) {
-        handleUpdateTotalChild({ ...commentChildList, open: true }, index);
-        setTotal(0);
-      }
-      // Show list child by using the page number += 1
-      else {
-        const tempLimit = 3 - (commentChildList?.data.length % 3);
-        const newPageNumber = Math.floor(commentChildList?.data.length / 3);
-        handleGetChildCommentList(newPageNumber, tempLimit);
-        // const newTotal = (childPageNumber + 1) % 3 - length
-
-        setTotal(total - 3 < 0 ? 0 : total - 3);
-      }
-    }
-  };
-
-  const handleOpenReplyCmt = (username) => {
-    handleUpdateReply({ open: true, hastag: `@${username}` }, index);
-  };
-
-  useEffect(() => {
-    if (submittedComment.id) {
-      handleUpdateTotalChild(
-        {
-          open: true,
-          data: [
-            ...commentChildList?.data,
-            {
-              ...submittedComment,
-              fromNow: calculateFromNow(
-                convertUTCtoLocalDate(submittedComment.createdAt)
-              ),
-            },
-          ],
-        },
-        index
-      );
-    }
-  }, [submittedComment]);
-
-  // setInterval(() => {
-  //   setCreatedTime(calculateFromNow(convertUTCtoLocalDate(comment.createdAt)));
-  // if (commentChildList.data.length > 0 && commentChildList.open) {
-  //   setCommentChildList({
-  //     ...commentChildList,
-  //     data: commentChildList.data.map((item) => {
-  //       return {
-  //         ...item,
-  //         fromNow: calculateFromNow(convertUTCtoLocalDate(item.createdAt)),
-  //       };
-  //     }),
-  //   });
-  // }
-  // }, 60000);
-  return (
-    <Typography className="comment-container">
-      <Typography
-        className="comment-content"
-        onMouseEnter={() => setShowCommentOption(true)}
-        onMouseLeave={() => setShowCommentOption(false)}
-      >
-        <img
-          src={
-            comment.createdBy?.avatar
-              ? comment.createdBy?.avatar
-              : require("images/no-avatar.png")
-          }
-          width="35"
-          height="35"
-          alt=""
-        />
-
-        <Typography className="content" component="div">
-          <Typography className="content-line1" component="div">
-            <strong>{substringUsername(comment.createdBy?.username)}</strong>
-            {"    "}
-            {comment.content}
-          </Typography>
-          <Typography className="content-line2" component="div">
-            <Typography className="date-time" component="div">
-              {createdTime}
-            </Typography>
-
-            <Typography
-              className="reply"
-              component="div"
-              onClick={() =>
-                handleOpenReplyCmt(
-                  substringUsername(comment.createdBy?.username)
-                )
-              }
-            >
-              {trans("newFeed.reply")}
-            </Typography>
-            {showCommentOption &&
-              getCurrentUser().accountId === comment.createdBy?.id && (
-                <Typography className="option" component="div">
-                  <MoreHorizIcon onClick={() => setShowOptionModal(true)} />
+                      {!Auth.auth.isAdmin && (
+                        <Typography className="reply" component="div">
+                          {trans("newFeed.reply")}
+                        </Typography>
+                      )}
+                    </Typography>
+                  </Typography>
                 </Typography>
-              )}
-          </Typography>
-        </Typography>
-      </Typography>
-      {(comment.totalChildComments > 0 ||
-        commentChildList?.data.length > 0) && (
-        <Typography
-          className="view-child"
-          align="left"
-          onClick={handleToggleCommentChild}
-        >
-          {total === 0
-            ? "_____" + trans("newFeed.hideReply")
-            : `_____${trans("newFeed.viewReply")} (${total})`}
-        </Typography>
-      )}
-      {commentChildList?.open &&
-        commentChildList?.data.map((childCmt) => {
-          return (
-            <CommentChildItem
-              childCmt={childCmt}
-              handleOpenReplyCmt={handleOpenReplyCmt}
-            />
-          );
-        })}
-      {isReply.open && (
-        <Typography
-          className="comment-input-reply"
-          component="div"
-          align="left"
-        >
-          <CommentInput
-            postId={postId}
-            setSubmittedComment={setSubmittedComment}
-            hastag={isReply.hastag}
-            parentCommentId={comment.id}
-          />
-        </Typography>
-      )}
-      <CustomModal
-        isRadius
-        width={400}
-        height={150}
-        open={showOptionModal}
-        handleCloseModal={() => setShowOptionModal(false)}
-      >
-        <CommentOptionModal
-          commentId={comment.id}
-          handleFilterComment={handleFilterComment}
-          handleCloseModal={() => setShowOptionModal(false)}
-        />
-      </CustomModal>
-    </Typography>
-  );
-};
+              ) : null}
+            </Typography>
 
-const CommentChildItem = ({ childCmt, handleOpenReplyCmt }) => {
-  const [showCommentOption, setShowCommentOption] = useState(false);
-  const { t: trans } = useTranslation();
-  return (
-    <Typography
-      className="comment-content child"
-      onMouseEnter={() => setShowCommentOption(true)}
-      onMouseLeave={() => setShowCommentOption(false)}
-    >
-      <img
-        src={
-          childCmt.createdBy?.avatar
-            ? childCmt.createdBy?.avatar
-            : require("images/no-avatar.png")
-        }
-        width="35"
-        height="35"
-        alt=""
-      />
-      <Typography className="content" component="div">
-        <Typography className="content-line1" component="div">
-          <strong>{substringUsername(childCmt.createdBy?.username)}</strong>
-          {"    "}
-          {childCmt.content}
-        </Typography>
-        <Typography className="content-line2" component="div">
-          <Typography className="date-time" component="div">
-            {childCmt.fromNow}
+            <Typography className="comment-content">
+              <img
+                src={
+                  commentReport.createdBy?.avatar
+                    ? commentReport.createdBy?.avatar
+                    : require("images/no-avatar.png")
+                }
+                width="35"
+                height="35"
+                alt=""
+              />
+
+              <Typography className="content" component="div">
+                <Typography className="content-line1" component="div">
+                  <strong>
+                    {substringUsername(commentReport.createdBy?.username)}
+                  </strong>
+                  {"    "}
+                  {commentReport?.comment?.content}
+                </Typography>
+                <Typography className="content-line2" component="div">
+                  <Typography className="date-time" component="div">
+                    {calculateFromNow(
+                      convertUTCtoLocalDate(commentReport.createdAt)
+                    )}
+                  </Typography>
+
+                  {!Auth.auth.isAdmin && (
+                    <Typography className="reply" component="div">
+                      {trans("newFeed.reply")}
+                    </Typography>
+                  )}
+                </Typography>
+              </Typography>
+            </Typography>
           </Typography>
-          <Typography
-            className="reply"
-            component="div"
-            onClick={() =>
-              handleOpenReplyCmt(
-                substringUsername(childCmt.createdBy?.username)
-              )
-            }
-          >
-            {trans("newFeed.reply")}
-          </Typography>
-          {showCommentOption &&
-            getCurrentUser().accountId === childCmt.createdBy?.id && (
-              <Typography className="option" component="div">
-                <MoreHorizIcon />
+        ) : (
+          <Typography className="sended-comments-container">
+            {commentList.map((comment, i) => (
+              <CommentItem
+                currentPost={currentPost}
+                comment={comment}
+                postId={currentPost.id}
+                handleFilterComment={handleFilterComment}
+                handleUpdateTotalChild={handleUpdateTotalChild}
+                handleFilterCommentChild={handleFilterCommentChild}
+                handleUpdateReply={handleUpdateReply}
+                index={i}
+                commentChildList={
+                  totalCommentChildList[i] || { open: false, data: [] }
+                }
+                isReply={totalReply[i] || { open: false, hastag: "" }}
+              />
+            ))}
+            {!fetchInfo.last && (
+              <Typography className="view-more" onClick={handleViewMore}>
+                {trans("newFeed.viewMoreComment")}
               </Typography>
             )}
+          </Typography>
+        )
+      ) : !_.isEmpty(commentReport) && !_.isEmpty(commentReport) ? (
+        <Typography className="comment-container">
+          <Typography>
+            {commentReport.comment.parentComment ? (
+              <Typography className="comment-content">
+                <h3>Parent Comment</h3>
+                <img
+                  src={
+                    commentReport.comment.parentComment.createdBy?.avatar
+                      ? commentReport.comment.parentComment.createdBy?.avatar
+                      : require("images/no-avatar.png")
+                  }
+                  width="35"
+                  height="35"
+                  alt=""
+                />
+
+                <Typography className="content" component="div">
+                  <Typography className="content-line1" component="div">
+                    <strong>
+                      {substringUsername(
+                        commentReport.comment.parentComment.createdBy?.username
+                      )}
+                    </strong>
+                    {"    "}
+                    {commentReport?.comment.parentComment.content}
+                  </Typography>
+                  <Typography className="content-line2" component="div">
+                    <Typography className="date-time" component="div">
+                      {calculateFromNow(
+                        convertUTCtoLocalDate(
+                          commentReport.comment.parentComment.createdAt
+                        )
+                      )}
+                    </Typography>
+
+                    {!Auth.auth.isAdmin && (
+                      <Typography className="reply" component="div">
+                        {trans("newFeed.reply")}
+                      </Typography>
+                    )}
+                  </Typography>
+                </Typography>
+              </Typography>
+            ) : null}
+          </Typography>
+
+          <Typography className="comment-content">
+            <img
+              src={
+                commentReport.createdBy?.avatar
+                  ? commentReport.createdBy?.avatar
+                  : require("images/no-avatar.png")
+              }
+              width="35"
+              height="35"
+              alt=""
+            />
+
+            <Typography className="content" component="div">
+              <Typography className="content-line1" component="div">
+                <strong>
+                  {substringUsername(commentReport.createdBy?.username)}
+                </strong>
+                {"    "}
+                {commentReport?.comment?.content}
+              </Typography>
+              <Typography className="content-line2" component="div">
+                <Typography className="date-time" component="div">
+                  {calculateFromNow(
+                    convertUTCtoLocalDate(commentReport.createdAt)
+                  )}
+                </Typography>
+
+                {!Auth.auth.isAdmin && (
+                  <Typography className="reply" component="div">
+                    {trans("newFeed.reply")}
+                  </Typography>
+                )}
+              </Typography>
+            </Typography>
+          </Typography>
         </Typography>
-      </Typography>
-    </Typography>
-  );
-};
-
-const CommentOptionModal = ({
-  commentId,
-  handleCloseModal,
-  handleFilterComment,
-}) => {
-  const { setLoading } = useLoading();
-  const handleDeleteComment = () => {
-    deleteComment(commentId)
-      .then((res) => {
-        if (res.status === 200) {
-          handleCloseModal();
-          handleFilterComment(commentId);
-        }
-      })
-      .catch((err) => {
-        throw err;
-      })
-      .finally(() => {});
-  };
-
-  return (
-    <Typography component="div" className="comment-option-container">
-      <Typography component="div" className="action-btns">
-        <Button className="report-btn" onClick={() => null}>
-          Report
-        </Button>
-        <Button className="delete-btn" onClick={handleDeleteComment}>
-          Delete
-        </Button>
-        <Button className="cancel-btn" onClick={handleCloseModal}>
-          Cancel
-        </Button>
-      </Typography>
-    </Typography>
+      ) : null}
+    </>
   );
 };
 

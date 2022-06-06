@@ -1,19 +1,22 @@
 import React, { useState } from "react";
 import "./style.scss";
-import { CircularProgressbar } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
 import { motion, AnimateSharedLayout } from "framer-motion";
 import { UilTimes } from "@iconscout/react-unicons";
 import Chart from "react-apexcharts";
+import { PERIOD } from "../../../../../constant/types";
 
 // parent Card
-
 const Card = (props) => {
   const [expanded, setExpanded] = useState(false);
   return (
     <AnimateSharedLayout>
       {expanded ? (
-        <ExpandedCard param={props} setExpanded={() => setExpanded(false)} />
+        <ExpandedCard
+          param={props}
+          setExpanded={() => setExpanded(false)}
+          setSummaryPeriod={props.setSummaryPeriod}
+        />
       ) : (
         <CompactCard param={props} setExpanded={() => setExpanded(true)} />
       )}
@@ -23,7 +26,6 @@ const Card = (props) => {
 
 // Compact Card
 function CompactCard({ param, setExpanded }) {
-  const Png = param.png;
   return (
     <motion.div
       className="CompactCard"
@@ -35,72 +37,30 @@ function CompactCard({ param, setExpanded }) {
       onClick={setExpanded}
     >
       <div className="radialBar">
-        <CircularProgressbar
-          value={param.barValue}
-          text={`${param.barValue}%`}
-        />
         <span>{param.title}</span>
-      </div>
-      <div className="detail">
-        <Png />
-        <span>${param.value}</span>
-        <span>Last 24 hours</span>
+        <span>{param.value} posts</span>
       </div>
     </motion.div>
   );
 }
 
 // Expanded Card
-function ExpandedCard({ param, setExpanded }) {
+function ExpandedCard({ param, setExpanded, setSummaryPeriod }) {
   const data = {
     options: {
       chart: {
-        type: "area",
-        height: "auto",
-      },
-
-      dropShadow: {
-        enabled: false,
-        enabledOnSeries: undefined,
-        top: 0,
-        left: 0,
-        blur: 3,
-        color: "#000",
-        opacity: 0.35,
-      },
-
-      fill: {
-        colors: ["#fff"],
-        type: "gradient",
-      },
-      dataLabels: {
-        enabled: false,
-      },
-      stroke: {
-        curve: "smooth",
-        colors: ["white"],
-      },
-      tooltip: {
-        x: {
-          format: "dd/MM/yy HH:mm",
-        },
-      },
-      grid: {
-        show: true,
+        id: "basic-bar",
       },
       xaxis: {
-        type: "datetime",
-        categories: [
-          "2018-09-19T00:00:00.000Z",
-          "2018-09-19T01:30:00.000Z",
-          "2018-09-19T02:30:00.000Z",
-          "2018-09-19T03:30:00.000Z",
-          "2018-09-19T04:30:00.000Z",
-          "2018-09-19T05:30:00.000Z",
-          "2018-09-19T06:30:00.000Z",
-        ],
+        categories: param.time,
       },
     },
+    series: [
+      {
+        name: "series-1",
+        data: [30, 40, 45, 50, 49, 60, 70, 91],
+      },
+    ],
   };
 
   return (
@@ -115,11 +75,40 @@ function ExpandedCard({ param, setExpanded }) {
       <div style={{ alignSelf: "flex-end", cursor: "pointer", color: "white" }}>
         <UilTimes onClick={setExpanded} />
       </div>
-        <span>{param.title}</span>
-      <div className="chartContainer">
-        <Chart options={data.options} series={param.series} type="area" />
+      <span>{param.title}</span>
+
+      <div className="homepage__summary-filter-wrapper">
+        <div
+          onClick={() => {
+            setSummaryPeriod(PERIOD.MONTHS);
+          }}
+        >
+          <span>Month</span>
+        </div>
+        <div
+          onClick={() => {
+            setSummaryPeriod(PERIOD.QUARTERS);
+          }}
+        >
+          <span>Quarter</span>
+        </div>
+        <div
+          onClick={() => {
+            setSummaryPeriod(PERIOD.YEARS);
+          }}
+        >
+          <span>Year</span>
+        </div>
       </div>
-      <span>Last 24 hours</span>
+
+      <div className="chartContainer">
+        <Chart
+          options={data.options}
+          series={param.series}
+          type="bar"
+          width="500"
+        />
+      </div>
     </motion.div>
   );
 }

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { Typography } from "@mui/material";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import ShareOutlinedIcon from "@mui/icons-material/ShareOutlined";
@@ -9,6 +9,7 @@ import { getLikeListByPostId, likePost, unlikePost } from "api/postService";
 import _ from "lodash";
 import CustomModal from "../CustomModal";
 import FollowUserItem from "../FollowUserItem";
+import { AuthUser } from "App";
 
 import { useTranslation } from "react-i18next";
 
@@ -23,6 +24,8 @@ const Interaction = ({ currentPost }) => {
   const [fetchInfo, setFetchInfo] = useState({});
 
   const { t: trans } = useTranslation();
+
+  const Auth = useContext(AuthUser);
 
   useEffect(() => {
     setLike(isLiked);
@@ -92,31 +95,37 @@ const Interaction = ({ currentPost }) => {
 
   return (
     <>
+      {!Auth.auth.isAdmin && (
+        <Typography
+          component="div"
+          align="left"
+          className="interaction-container"
+        >
+          {like ? (
+            <FavoriteIcon className="like-icon" onClick={handleUnlikePost} />
+          ) : (
+            <FavoriteBorderIcon
+              className="unlike-icon"
+              onClick={handleLikePost}
+            />
+          )}
+          <ChatBubbleOutlineOutlinedIcon className="comment-icon" />
+          <ShareOutlinedIcon className="share-icon" />
+        </Typography>
+      )}
+
       <Typography
-        component="div"
+        className="number-of-likes"
         align="left"
-        className="interaction-container"
+        onClick={handleGetLikeList}
       >
-        {like ? (
-          <FavoriteIcon className="like-icon" onClick={handleUnlikePost} />
-        ) : (
-          <FavoriteBorderIcon
-            className="unlike-icon"
-            onClick={handleLikePost}
-          />
-        )}
-        <ChatBubbleOutlineOutlinedIcon className="comment-icon" />
-        <ShareOutlinedIcon className="share-icon" />
-      </Typography>
-      <Typography className="number-of-likes" align="left" onClick={handleGetLikeList}>
         {likeCount}{" "}
-        {likeCount > 1
-          ? " " + trans("newFeed.like")
-          : trans("newFeed.like")}
+        {likeCount > 1 ? " " + trans("newFeed.like") : trans("newFeed.like")}
       </Typography>
       <Typography className="post-caption" align="left">
         <strong>{currentPost.createdBy?.username}</strong> {currentPost.caption}
       </Typography>
+
       <CustomModal
         isRadius
         open={showLikeList}
@@ -125,27 +134,27 @@ const Interaction = ({ currentPost }) => {
         width={400}
         height={400}
       >
-         <Typography component="div" className="follow-container">
-            <Typography className="follow-list">
-              {likeList.length > 0 &&
-                likeList.map((user) => {
-                  return (
-                    <FollowUserItem
-                      user={user}
-                      handleCloseModal={handleCloseLikeListModal}
-                    />
-                  );
-                })}
-              {!fetchInfo.last && (
-                <Typography
-                  className="view-more"
-                  onClick={() => setPageNumber(pageNumber + 1)}
-                >
-                  View more
-                </Typography>
-              )}
-            </Typography>
+        <Typography component="div" className="follow-container">
+          <Typography className="follow-list">
+            {likeList.length > 0 &&
+              likeList.map((user) => {
+                return (
+                  <FollowUserItem
+                    user={user}
+                    handleCloseModal={handleCloseLikeListModal}
+                  />
+                );
+              })}
+            {!fetchInfo.last && (
+              <Typography
+                className="view-more"
+                onClick={() => setPageNumber(pageNumber + 1)}
+              >
+                View more
+              </Typography>
+            )}
           </Typography>
+        </Typography>
       </CustomModal>
     </>
   );

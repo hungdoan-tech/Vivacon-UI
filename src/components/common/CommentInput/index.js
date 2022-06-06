@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import {
   Typography,
   InputBase,
@@ -11,6 +11,7 @@ import SendIcon from "@mui/icons-material/Send";
 import "./style.scss";
 import { comment } from "api/postService";
 import { useTranslation } from "react-i18next";
+import { AuthUser } from "../../../App";
 import Picker from "emoji-picker-react";
 import { parseTextToEmojis } from "utils/emoji";
 
@@ -22,6 +23,8 @@ const CommentInput = ({
 }) => {
   const [commentContent, setCommentContent] = useState("");
   const [openEmojiPicker, setEmojiPicker] = useState(false);
+
+  const Auth = useContext(AuthUser);
 
   const { t: trans } = useTranslation();
 
@@ -76,11 +79,13 @@ const CommentInput = ({
           value={commentContent}
         />{" "}
       </Typography>
-      <Typography className="different-text-icon" component="div">
-        <Button className="post-button" onClick={submitComment}>
-          {trans("newFeed.post")}
-        </Button>
-      </Typography>
+      {!Auth.auth.isAdmin && (
+        <Typography className="different-text-icon" component="div">
+          <Button className="post-button" onClick={submitComment}>
+            {trans("newFeed.post")}
+          </Button>
+        </Typography>
+      )}
     </Typography>
   );
 };

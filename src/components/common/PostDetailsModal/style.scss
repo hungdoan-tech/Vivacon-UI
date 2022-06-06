@@ -89,6 +89,15 @@
         .owner-name {
           margin-left: 20px;
           position: relative;
+          display: flex;
+          flex-direction: row;
+          justify-content: space-between;
+          flex: 1;
+          .post-more-actions {
+            .post-more-icon {
+              cursor: pointer;
+            }
+          }
         }
         border-bottom: 0.5px solid var(--lightColor);
       }
