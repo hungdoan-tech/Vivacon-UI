@@ -180,6 +180,12 @@
             padding: 10px;
             margin: 5px;
             width: fit-content;
+            img {
+              width: 200px;
+              height: 200px;
+              border-radius: 5px;
+              cursor: pointer;
+            }
             &.owner {
               background-color: var(--mainColor);
               color: var(--backgroundColor);
@@ -291,6 +297,28 @@
           }
         }
         width: 30px;
+      }
+      .send-images {
+        .send-image {
+          display: none;
+        }
+        .fileContainer {
+          padding: 0;
+          margin: 0;
+          justify-content: center;
+          box-shadow: none;
+          margin: auto;
+          display: initial;
+          .uploadPicturesWrapper {
+            display: none;
+          }
+          .chooseFileButton {
+            background: transparent;
+            color: var(--charColor);
+            padding: 0;
+            margin: 0;
+          }
+        }
       }
       .emoji {
         margin-left: 10px;
