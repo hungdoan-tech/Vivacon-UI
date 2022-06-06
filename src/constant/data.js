@@ -1,7 +1,7 @@
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import SettingsIcon from "@mui/icons-material/Settings";
 import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
-import DashboardIcon from '@mui/icons-material/Dashboard';
+import DashboardIcon from "@mui/icons-material/Dashboard";
 import { removeJwtToken, removeRefreshToken } from "utils/cookie";
 import { useNavigate } from "react-router-dom";
 const notiType = {
@@ -188,5 +188,126 @@ export const userOption = [
       removeRefreshToken();
     },
     navigateUrl: "/login",
+  },
+];
+
+export const settingOption = [
+  {
+    label: "Edit Profile",
+  },
+  {
+    label: "Change Password",
+  },
+  {
+    label: "Email Notifications",
+  },
+  {
+    label: "Push Notifications",
+  },
+  {
+    label: "Privacy and Security",
+  },
+  {
+    label: "Login Activity",
+  },
+];
+
+export const editProfileTextFields = [
+  {
+    title: "Name",
+    field: "fullName",
+    belowText: `Help people discover your account by using the name you're known by: either your full name, nickname, or business name. \n
+    You can only change your name twice within 14 days.`,
+    type: "textField",
+    maxRow: 1,
+  },
+  {
+    title: "Username",
+    field: "username",
+    belowText: `In most cases, you'll be able to change your username back to mr_trucc for another 14 days. `,
+    type: "textField",
+    maxRow: 1,
+  },
+  {
+    title: "Bio",
+    field: "bio",
+    belowText: `Personal Information
+    Provide your personal information, even if the account is used for a business, a pet or something else. This won't be a part of your public profile.`,
+    type: "textField",
+    maxRow: 3,
+  },
+  {
+    title: "Email",
+    field: "email",
+    type: "textField",
+    maxRow: 1,
+  },
+  {
+    title: "Phone Number",
+    field: "phoneNumber",
+    type: "textField",
+    maxRow: 1,
+  },
+  {
+    title: "Gender",
+    field: "gender",
+    type: "textField",
+    maxRow: 1,
+  },
+  {
+    title: "Similar Account Suggestions",
+    field: "",
+    type: "checkBox",
+    checkBoxText:
+      "Include your account when recommending similar accounts people might want to follow.",
+  },
+];
+
+export const pushNotificationsFields = [
+  {
+    title: "Likes",
+    field: "likes",
+  },
+  {
+    title: "Comments",
+    field: "comments",
+  },
+  {
+    title: "Follows",
+    field: "follows",
+  },
+];
+
+export const emailNotificationFields = [
+  {
+    title: "Report emails",
+    field: "",
+    checkBoxText: "Give report result that you reported.",
+  },
+  {
+    title: "Reminder emails",
+    field: "",
+    checkBoxText: "Give notification you may have missed.",
+  },
+];
+
+export const changePasswordFields = [
+  {
+    title: "Old password",
+    field: "oldPassword",
+    type: "textField",
+    maxRow: 1,
+  },
+  {
+    title: "New password",
+    field: "newPassword",
+    type: "textField",
+    maxRow: 1,
+  },
+  {
+    title: "Confirm new password",
+    field: "confirmNewPassword",
+    type: "textField",
+    maxRow: 1,
   },
 ];

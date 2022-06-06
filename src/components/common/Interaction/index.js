@@ -63,7 +63,6 @@ const Interaction = ({ currentPost }) => {
     })
       .then((res) => {
         if (res.status === 200) {
-          console.log("like list: ", res.data);
           if (!showLikeList) {
             setShowLikeList(true);
           }

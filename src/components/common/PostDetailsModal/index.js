@@ -17,6 +17,7 @@ import CustomPopUp from "../CustomPopUp";
 import { PopUpContent } from "components/pages/ProfilePage";
 import { AuthUser } from "App";
 import useSnackbar from "hooks/useSnackbar";
+import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import {
   createPostReport,
   getDetailPostReport,
@@ -24,26 +25,8 @@ import {
 import CustomModal from "../CustomModal";
 import { reportContent } from "../../../constant/types";
 import InfoIcon from "@mui/icons-material/Info";
-
-function TabPanel(props) {
-  const { children, value, index, ...other } = props;
-
-  return (
-    <div
-      role="tabpanel"
-      hidden={value !== index}
-      id={`simple-tabpanel-${index}`}
-      aria-labelledby={`simple-tab-${index}`}
-      {...other}
-    >
-      {value === index && (
-        <Box sx={{ p: 3 }}>
-          <Typography>{children}</Typography>
-        </Box>
-      )}
-    </div>
-  );
-}
+import ReportDetailModal from "../ReportDetailModal";
+import PostOptionModal from "../PostOptionModal";
 
 const PostDetailsModal = ({ index, dataList, title, reportId }) => {
   const [currentIndex, setCurrentIndex] = useState(index);
@@ -54,26 +37,22 @@ const PostDetailsModal = ({ index, dataList, title, reportId }) => {
     showInImage: false,
   });
 
-  const [unfollowModal, setUnfollowModal] = useState({
+  const [reportModal, setReportModal] = useState({
     open: false,
     data: {},
   });
 
+  const [showOptionModal, setShowOptionModal] = useState(false);
+
   const [toolTipContent, setToolTipContent] = useState(title);
 
   const [currentReportID, setCurrentReportID] = useState(reportId);
-
-  const [stepValue, setStepValue] = useState(0);
-  const [isShow, setIsShow] = useState(false);
-  const { setSnackbarState } = useSnackbar();
 
   const [submittedComment, setSubmittedComment] = useState({});
 
   const [commentReport, setCommentReport] = useState({});
 
   const Auth = useContext(AuthUser);
-
-  const [globalState, setGlobalState] = useState({});
 
   const history = useHistory();
   const handleGetPostDetail = () => {
@@ -82,10 +61,6 @@ const PostDetailsModal = ({ index, dataList, title, reportId }) => {
       _sort: "createdAt",
       _order: "desc",
     }).then((res) => {
-      console.log(
-        convertUTCtoLocalDate(res.data.lastModifiedAt),
-        res.data.lastModifiedAt
-      );
       setCurrentPost({
         ...res.data,
         lastModifiedAt: convertUTCtoLocalDate(res.data.lastModifiedAt),
@@ -141,123 +116,20 @@ const PostDetailsModal = ({ index, dataList, title, reportId }) => {
     setToolTipContent(title);
   };
 
-  const handleOpenUnfollowModal = (userInfo) => {
-    setIsShow(true);
-    setUnfollowModal({
+  const handleOpenReportModal = (userInfo) => {
+    setShowOptionModal(false);
+    setReportModal({
       open: true,
       data: userInfo,
     });
   };
 
-  const handleCloseUnfollowModal = () => {
-    setIsShow(false);
-    setUnfollowModal({ ...unfollowModal, open: false });
-    setStepValue(0);
+  const handleCloseReportModal = () => {
+    setReportModal({ ...reportModal, open: false });
   };
 
-  const handleCreateReport = (item) => {
-    setGlobalState(item);
-    handleNextStep();
-  };
-
-  const handleNextStep = () => {
-    setStepValue(stepValue + 1);
-  };
-  const handlePrevStep = () => {
-    setStepValue(stepValue - 1);
-  };
-
-  const handleSubmitReport = () => {
-    const reportData = {
-      content: globalState.content,
-      sentitiveType: globalState.sentitiveType,
-      postId: currentPost.id,
-    };
-
-    createPostReport(reportData)
-      .then((res) => {
-        if (res.status === 200) {
-          setSnackbarState({
-            open: true,
-            content: "You have reported successfully",
-            type: "SUCCESS",
-          });
-          handleNextStep();
-        }
-      })
-      .catch((err) => {
-        throw err;
-      })
-      .finally(() => {
-        // setLocalLoading(false);
-      });
-  };
-
-  const StepOne = () => {
-    return (
-      <CustomModal
-        isRadius
-        width={400}
-        height={300}
-        title="Why do you report this post?"
-        open={unfollowModal.open}
-        handleCloseModal={handleCloseUnfollowModal}
-      >
-        {reportContent.map((item, index) => (
-          <>
-            <p onClick={() => handleCreateReport(item)}>{item.content}</p>
-          </>
-        ))}
-      </CustomModal>
-    );
-  };
-
-  const StepTwo = () => {
-    return (
-      <CustomModal
-        isRadius
-        width={400}
-        height={800}
-        title="Báo cáo"
-        open={unfollowModal.open}
-        handleCloseModal={handleCloseUnfollowModal}
-      >
-        <button onClick={handlePrevStep}>Back</button>
-        <h2>Tại sao bạn báo cáo bài viết này?</h2>
-        {globalState.detailContent
-          ? globalState?.detailContent.map((item, index) => (
-              <>
-                <p key={item.id}>{item}</p>
-              </>
-            ))
-          : null}
-        <button onClick={handleSubmitReport}>Gửi báo cáo</button>
-      </CustomModal>
-    );
-  };
-
-  const StepThree = (post) => {
-    return (
-      <CustomModal
-        isRadius
-        width={400}
-        height={300}
-        title="Cảm ơn bạn đã cho chúng tôi biết"
-        open={unfollowModal.open}
-        handleCloseModal={handleCloseUnfollowModal}
-      >
-        <>
-          <IconButton>
-            <InfoIcon />
-          </IconButton>
-          <div>Block</div>
-          {post && post?.createdBy?.isFollowing ? <div>Unfollow</div> : null}
-
-          <div>View More</div>
-          <div onClick={handleCloseUnfollowModal}>Close</div>
-        </>
-      </CustomModal>
-    );
+  const handleOpenOptionModal = () => {
+    setShowOptionModal(true);
   };
 
   return (
@@ -273,47 +145,53 @@ const PostDetailsModal = ({ index, dataList, title, reportId }) => {
       )}
 
       {currentPost.id ? (
-        <Typography component="div" className="post-details-container">
-          {currentIndex > 0 && (
-            <div className="minus-post-index">
-              <Button onClick={handleDecreaseIndex}>
-                <ChevronLeftIcon className="icon" />
-              </Button>
-            </div>
-          )}
-          <Typography component="div" className="post-details-carousel">
-            <Carousel autoPlay={false} className="details-carousel">
-              {currentPost.attachments?.map((item, i) => (
-                <img key={i} src={item.url} alt="" />
-              ))}
-            </Carousel>
-          </Typography>
+        <>
+          <Typography component="div" className="post-details-container">
+            {currentIndex > 0 && (
+              <div className="minus-post-index">
+                <Button onClick={handleDecreaseIndex}>
+                  <ChevronLeftIcon className="icon" />
+                </Button>
+              </div>
+            )}
+            <Typography component="div" className="post-details-carousel">
+              <Carousel autoPlay={false} className="details-carousel">
+                {currentPost.attachments?.map((item, i) => (
+                  <img key={i} src={item.url} alt="" />
+                ))}
+              </Carousel>
+            </Typography>
 
-          <Typography component="div" className="post-details-interation">
-            <Typography component="div" className="details-top-content">
-              <Typography component="div" className="interaction-line1">
-                <img
-                  src={currentPost.createdBy?.avatar}
-                  width={35}
-                  height={35}
-                />
-                <Typography
-                  className="owner-name"
-                  component="div"
-                  onMouseEnter={() =>
-                    handleOpenPopUp(currentPost.createdBy?.id, false)
-                  }
-                  onMouseLeave={handleClosePopUp}
-                >
+            <Typography component="div" className="post-details-interation">
+              <Typography component="div" className="details-top-content">
+                <Typography component="div" className="interaction-line1">
+                  <img
+                    src={currentPost.createdBy?.avatar}
+                    width={35}
+                    height={35}
+                  />
                   <Typography
-                    className="username"
-                    onClick={() =>
-                      navigateToUser(currentPost.createdBy?.username)
+                    className="owner-name"
+                    component="div"
+                    onMouseEnter={() =>
+                      handleOpenPopUp(currentPost.createdBy?.id, false)
                     }
+                    onMouseLeave={handleClosePopUp}
                   >
-                    {substringUsername(currentPost.createdBy?.username)}
-                  </Typography>
-                  {/* {showPopUp.open &&
+                    <Typography
+                      className="username"
+                      onClick={() =>
+                        navigateToUser(currentPost.createdBy?.username)
+                      }
+                    >
+                      {substringUsername(currentPost.createdBy?.username)}
+                    </Typography>
+                    <Typography className="post-more-actions">
+                      {" "}
+                      <MoreHorizIcon className="post-more-icon" onClick={handleOpenOptionModal} />
+                    </Typography>
+
+                    {/* {showPopUp.open &&
                     showPopUp.id === currentPost.createdBy?.id &&
                     !showPopUp.showInImage && (
                       <CustomPopUp
@@ -327,8 +205,8 @@ const PostDetailsModal = ({ index, dataList, title, reportId }) => {
                         )}
                       />
                     )} */}
-                </Typography>
-                {/* {getCurrentUser().username !==
+                  </Typography>
+                  {/* {getCurrentUser().username !==
                   currentPost.createdBy?.username && (
                   <Typography className="owner-follow">
                     <FollowButton
@@ -338,59 +216,64 @@ const PostDetailsModal = ({ index, dataList, title, reportId }) => {
                     />
                   </Typography>
                 )} */}
-              </Typography>
-              {!Auth.auth.isAdmin && (
-                <button onClick={handleOpenUnfollowModal}>Report</button>
-              )}
-              <Typography component="div" className="interaction-line2">
-                <CommentList
-                  currentPost={currentPost}
-                  submittedComment={submittedComment}
-                  setSubmittedComment={setSubmittedComment}
-                />
-              </Typography>
-            </Typography>
-            <Typography component="div" className="details-bottom-content">
-              <Typography component="div" className="interaction-line3">
-                <Interaction
-                  currentPost={currentPost}
-                  setCurrentPost={setCurrentPost}
-                />
-                <Typography className="post-time-fromnow" align="left">
-                  {calculateFromNow(currentPost.lastModifiedAt)}
+                </Typography>
+                <Typography component="div" className="interaction-line2">
+                  <CommentList
+                    currentPost={currentPost}
+                    submittedComment={submittedComment}
+                    setSubmittedComment={setSubmittedComment}
+                  />
                 </Typography>
               </Typography>
-              <Typography component="div" className="interaction-line4">
-                <CommentInput
-                  postId={currentPost.id}
-                  setSubmittedComment={setSubmittedComment}
-                />
+              <Typography component="div" className="details-bottom-content">
+                <Typography component="div" className="interaction-line3">
+                  <Interaction
+                    currentPost={currentPost}
+                    setCurrentPost={setCurrentPost}
+                  />
+                  <Typography className="post-time-fromnow" align="left">
+                    {calculateFromNow(currentPost.lastModifiedAt)}
+                  </Typography>
+                </Typography>
+                <Typography component="div" className="interaction-line4">
+                  <CommentInput
+                    postId={currentPost.id}
+                    setSubmittedComment={setSubmittedComment}
+                  />
+                </Typography>
               </Typography>
             </Typography>
+
+            {currentIndex < dataList.length - 1 && (
+              <div className="plus-post-index">
+                <Button onClick={handleIncreaseIndex}>
+                  <ChevronRightIcon className="icon" />
+                </Button>
+              </div>
+            )}
           </Typography>
-
-          {currentIndex < dataList.length - 1 && (
-            <div className="plus-post-index">
-              <Button onClick={handleIncreaseIndex}>
-                <ChevronRightIcon className="icon" />
-              </Button>
-            </div>
-          )}
-
-          {isShow && isShow ? (
-            <>
-              <TabPanel value={stepValue} index={0}>
-                {StepOne()}
-              </TabPanel>
-              <TabPanel value={stepValue} index={1}>
-                {StepTwo()}
-              </TabPanel>
-              <TabPanel value={stepValue} index={2}>
-                {StepThree(currentPost)}
-              </TabPanel>
-            </>
-          ) : null}
-        </Typography>
+          <CustomModal
+            isRadius
+            width={400}
+            height={200}
+            open={showOptionModal}
+            handleCloseModal={() => setShowOptionModal(false)}
+          >
+            <PostOptionModal
+              postId={currentPost.id}
+              post={currentPost}
+              handleFilterComment={() => null}
+              handleCloseModal={() => setShowOptionModal(false)}
+              handleOpenReportModal={handleOpenReportModal}
+            />
+          </CustomModal>
+          <ReportDetailModal
+            handleCloseModal={handleCloseReportModal}
+            open={reportModal.open}
+            type="POST"
+            currentTarget={currentPost}
+          />
+        </>
       ) : (
         <></>
       )}

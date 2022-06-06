@@ -83,7 +83,7 @@ const AppButtonsGroup = (props) => {
       <ClickAwayListener onClickAway={closeNotification}>
         <Typography component="div" className="notification-btns">
           <Typography component="div" className="btn-container">
-            <Button onClick={handleOpenMessageList} className={messageBtnClass}>
+            <Button onClick={() => null} className={messageBtnClass}>
               <NotificationNumber number={3} />
               <ChatBubbleIcon />
             </Button>

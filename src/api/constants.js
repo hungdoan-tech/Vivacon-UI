@@ -1,3 +1,6 @@
+export const API_URL = "http://localhost:8080/api/";
+export const SOCKET_URL = "http://localhost:8080/ws";
+export const CURRENT_VERSION = "v1";
 export const API_ENDPOINT_KEYS = {
   LOGIN: "/login",
   REGISTER: "/registration",
@@ -10,6 +13,7 @@ export const API_ENDPOINT_KEYS = {
   GET_PROFILE: "/profile",
   FOLLOWER: "/follower",
   FOLLOWING: "/following",
+  POST: '/post',
   RESEND: "/account/verification_token",
   FORGOT: "/account/password",
   CHECK: "/account/check",
@@ -22,4 +26,7 @@ export const API_ENDPOINT_KEYS = {
   POST_REPORT: "/postReport",
   COMMENT_REPORT: "/commentReport",
   STATISTIC: "/statistic",
+  CONVERSATION: '/conversation',
+  ACCOUNT: '/account',
+  NOTIFICATION: '/notification'
 };

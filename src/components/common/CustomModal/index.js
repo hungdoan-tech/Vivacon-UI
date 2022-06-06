@@ -19,7 +19,7 @@ const CustomModal = ({
   children,
 }) => {
   const [modalWidth, setModalWidth] = useState(0);
-  //console.log({children})
+
   return (
     <Modal
       open={open}
@@ -38,7 +38,7 @@ const CustomModal = ({
           <Box sx={{ width: "100%" }}>
             {title && (
               <AppBar className="custom-modal-header">
-                <Typography className="title">{title}</Typography>
+                <Typography component="div" className="title">{title}</Typography>
               </AppBar>
             )}
           </Box>

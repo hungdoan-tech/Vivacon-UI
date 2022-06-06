@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import useInfiniteList from "hooks/useInfiniteList";
 import ReactLoading from "react-loading";
 import "./style.scss";
+import _ from "lodash";
 
 const InfiniteList = (props) => {
   const [pageNumber, setPageNumber] = useState(0);
@@ -12,11 +13,16 @@ const InfiniteList = (props) => {
     handleGetData,
     handleClickItem,
     data,
+    activeCondition = null,
+    childProps,
+    parentDataList,
+    setParentDataList,
   } = props;
   const { dataList, isLoading, hasMore, isNoData } = useInfiniteList(
     handleGetData,
     data,
-    pageNumber
+    pageNumber,
+    parentDataList
   );
 
   const observer = useRef();
@@ -26,8 +32,16 @@ const InfiniteList = (props) => {
   }, []);
 
   useEffect(() => {
-    setPageNumber(0);
+    if (data.username) {
+      setPageNumber(0);
+    }
   }, [data.username]);
+
+  useEffect(() => {
+    if (!_.isEqual(dataList, parentDataList) && setParentDataList) {
+      setParentDataList(dataList);
+    }
+  }, [dataList]);
 
   const lastItemRef = useCallback(
     (node) => {
@@ -52,33 +66,38 @@ const InfiniteList = (props) => {
         <Container
           _renderItem={
             <>
-              {dataList.map((item, index) => {
-                if (dataList.length === index + 1) {
-                  return (
-                    <div ref={lastItemRef} key={index}>
-                      <Component
-                        item={item}
-                        key={index}
-                        handleClick={handleClickItem}
-                        index={index}
-                        dataList={dataList}
-                      />
-                    </div>
-                  );
-                } else {
-                  return (
-                    <div key={index}>
-                      <Component
-                        item={item}
-                        key={index}
-                        handleClick={handleClickItem}
-                        index={index}
-                        dataList={dataList}
-                      />
-                    </div>
-                  );
-                }
-              })}
+              {dataList &&
+                dataList.map((item, index) => {
+                  if (dataList.length === index + 1) {
+                    return (
+                      <div ref={lastItemRef} key={index}>
+                        <Component
+                          item={item}
+                          key={index}
+                          handleClick={handleClickItem}
+                          index={index}
+                          dataList={dataList}
+                          activeCondition={activeCondition}
+                          childProps={childProps}
+                        />
+                      </div>
+                    );
+                  } else {
+                    return (
+                      <div key={index}>
+                        <Component
+                          item={item}
+                          key={index}
+                          handleClick={handleClickItem}
+                          index={index}
+                          dataList={dataList}
+                          activeCondition={activeCondition}
+                          childProps={childProps}
+                        />
+                      </div>
+                    );
+                  }
+                })}
               {isLoading && pageNumber > 0 && (
                 <ReactLoading
                   className="loading-more-icon"
