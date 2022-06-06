@@ -48,6 +48,9 @@ import InfiniteList from "components/common/InfiniteList";
 import useSocket from "hooks/useSocket";
 import Picker from "emoji-picker-react";
 import { parseTextToEmojis, isOnlyEmojis } from "utils/emoji";
+import ImageUploader from "react-images-upload";
+import { uploadImages } from "api/postService";
+import { uploadImage } from "api/userService";
 
 const ChatPage = () => {
   const [inputMessage, setInputMessage] = useState("");
@@ -88,7 +91,7 @@ const ChatPage = () => {
     notificationAudio.play();
   };
   const onEmojiClick = (event, emojiObject) => {
-    console.log({emojiObject});
+    console.log({ emojiObject });
     setInputMessage(`${inputMessage}${emojiObject.emoji}`);
     setEmojiPicker(true);
   };
@@ -103,8 +106,8 @@ const ChatPage = () => {
       switch (message?.messageType) {
         case chattingType.USUAL_TEXT: {
           // startAudio();
-          if(message?.sender?.id !== getCurrentUser().accountId){
-            startAudio()
+          if (message?.sender?.id !== getCurrentUser().accountId) {
+            startAudio();
           }
           setSubmitMessage(message);
           break;
@@ -248,7 +251,7 @@ const ChatPage = () => {
     setInputMessage("");
   };
 
-  const sendMessage = (event, inputMessage) => {
+  const sendMessage = async (event, inputMessage) => {
     if (event.key === "Enter") {
       event.preventDefault();
       if (conversationID === null || inputMessage === "") return;
@@ -389,6 +392,23 @@ const ChatPage = () => {
 
   const handleUntyping = () => {
     untyping(conversationID);
+  };
+
+  const handleChangeImg = (img) => {
+    const data = new FormData();
+    data.append("file", img);
+    uploadImage(data)
+      .then((res) => {
+        if (res.status === 200) {
+          console.log({ img });
+          const tempEvent = { key: "Enter", preventDefault: () => null };
+          sendMessage(tempEvent, `[image|${res.data.url}]`);
+        }
+      })
+      .catch((err) => {
+        throw err;
+      })
+      .finally(() => {});
   };
 
   useEffect(() => {
@@ -639,7 +659,20 @@ const ChatPage = () => {
                 />{" "}
               </Typography>
               <Typography component="div" className="send-images">
-                <ImageOutlinedIcon className="icon" />
+                <>
+                  {" "}
+                  <input
+                    className="send-image"
+                    type="file"
+                    id="change-avatar"
+                    name="comment"
+                    required
+                    onChange={(e) => handleChangeImg(e.target.files[0])}
+                  />
+                  <label for="change-avatar" className="send-image-input">
+                    <ImageOutlinedIcon className="icon" />
+                  </label>
+                </>
               </Typography>
               <Typography component="div" className="like-icon">
                 <FavoriteBorderOutlinedIcon
@@ -685,13 +718,19 @@ const ChatPage = () => {
 };
 
 const MessageItem = ({ item: message, index, dataList: messageList }) => {
+  const [openImageModal, setOpenImageModal] = useState({
+    open: false,
+    image: "",
+  });
   if (message) {
     const condition = message?.sender?.username === getCurrentUser().username;
     const onlyEmojisCondition = isOnlyEmojis(message.content);
+    const imageList = message.content.match(/(?<=\[image\|)(.*?)(?=\])/gi);
     const messageClassName = classNames("message-item", {
-      owner: condition && !onlyEmojisCondition,
-      target: !condition && !onlyEmojisCondition,
+      owner: condition && !onlyEmojisCondition && !imageList,
+      target: !condition && !onlyEmojisCondition && !imageList,
       emojis: onlyEmojisCondition,
+      image: imageList,
     });
 
     const messageContainerClassName = classNames("message-item-container", {
@@ -702,20 +741,46 @@ const MessageItem = ({ item: message, index, dataList: messageList }) => {
       message?.sender?.username !== messageList[index + 1]?.sender.username;
 
     return (
-      <Typography component="div" className={messageContainerClassName}>
-        {!condition && (
-          <Typography className="sender-avatar">
-            {showAvatar && <img src={message.sender.avatar} />}
-          </Typography>
-        )}
-        <Typography
-          className={messageClassName}
-          align={condition ? "right" : "left"}
-          component="div"
-        >
-          {message.content}
+      <>
+        <Typography component="div" className={messageContainerClassName}>
+          {!condition && (
+            <Typography className="sender-avatar">
+              {showAvatar && <img src={message.sender.avatar} />}
+            </Typography>
+          )}
+          {imageList ? (
+            <Typography
+              className={messageClassName}
+              align={condition ? "right" : "left"}
+              component="div"
+            >
+              <img
+                src={imageList[0]}
+                onClick={() =>
+                  setOpenImageModal({ open: true, image: imageList[0] })
+                }
+              />
+            </Typography>
+          ) : (
+            <Typography
+              className={messageClassName}
+              align={condition ? "right" : "left"}
+              component="div"
+            >
+              {message.content}
+            </Typography>
+          )}
         </Typography>
-      </Typography>
+        <CustomModal
+          isRadius
+          width={800}
+          height={800}
+          open={openImageModal.open}
+          handleCloseModal={() => setOpenImageModal({ open: false, image: "" })}
+        >
+          <img src={openImageModal.image} width="800px" height="800px" />
+        </CustomModal>
+      </>
     );
   } else {
     return <></>;
@@ -741,6 +806,9 @@ const UserItem = ({
 }) => {
   if (conv) {
     const { typingOnConvList, currentConvId } = childProps;
+    const imageList = conv.latestMessage.content.match(
+      /(?<=\[image\|)(.*?)(?=\])/gi
+    );
     const participants = filterParticipants(conv?.participants);
     const userItemClassName = classNames("user-item", {
       active: conv.id === currentConvId,
@@ -800,7 +868,7 @@ const UserItem = ({
             ) : (
               conv.latestMessage &&
               `${resolveName(conv.latestMessage?.sender.fullName, "fullName")}:
-          ${conv.latestMessage?.content}`
+          ${imageList ? "Image" : `${conv.latestMessage?.content}`}`
             )}
           </Typography>
         </Typography>
