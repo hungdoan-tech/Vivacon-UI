@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Button, IconButton, Tooltip, Typography } from "@mui/material";
+import { Button, Typography } from "@mui/material";
 import SettingsIcon from "@mui/icons-material/Settings";
 import { withRouter } from "react-router-dom";
 import "./style.scss";
@@ -11,19 +11,18 @@ import {
   unfollowUserById,
   uploadImage,
   changeProfileAvatar,
-} from "../../../../../api/userService";
-import UserImagesTabs from "../../../../../components/common/UserImagesTabs";
-import useLoading from "../../../../../hooks/useLoading";
-import { getCurrentUser } from "../../../../../utils/jwtToken";
+} from "api/userService";
+import UserImagesTabs from "components/common/UserImagesTabs";
+import useLoading from "hooks/useLoading";
+import { getCurrentUser } from "utils/jwtToken";
 import CheckIcon from "@mui/icons-material/Check";
 import { Helmet } from "react-helmet";
-import CustomModal from "../../../../common/CustomModal";
+import CustomModal from "components/common/CustomModal";
 import _ from "lodash";
-import useSnackbar from "../../../../../hooks/useSnackbar";
+import useSnackbar from "hooks/useSnackbar";
 import ReactLoading from "react-loading";
 import classNames from "classnames";
-import FollowUserItem from "../../../../../components/common/FollowUserItem";
-import InfoIcon from "@mui/icons-material/Info";
+import FollowUserItem from "components/common/FollowUserItem";
 
 import { useTranslation } from "react-i18next";
 
@@ -59,8 +58,6 @@ const AccountReportModal = (props) => {
   const [pageNumber, setPageNumber] = useState(0);
   const [currentModalType, setCurrentModalType] = useState(null);
   const [fetchInfo, setFetchInfo] = useState({});
-
-  const [toolTipContent, setToolTipContent] = useState(props.title);
 
   //--GET DATA--
   const handleGetProfile = (username) => {
@@ -228,10 +225,6 @@ const AccountReportModal = (props) => {
     }
   }, [pageNumber, currentModalType]);
 
-  useEffect(() => {
-    setToolTipContent(props.title);
-  }, [props.title]);
-
   const handleOpenModal = (type) => {
     setCurrentModalType(type);
   };
@@ -338,11 +331,6 @@ const AccountReportModal = (props) => {
 
   return (
     <>
-      <Tooltip title={toolTipContent}>
-        <IconButton>
-          <InfoIcon />
-        </IconButton>
-      </Tooltip>
       <Typography component="div" align="center" className="profile-container">
         <Helmet>
           <title>{`${userProfile.fullName} (@${userProfile.username})`} </title>

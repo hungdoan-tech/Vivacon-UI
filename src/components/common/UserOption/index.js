@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { CardContent, Typography, Card } from "@mui/material";
 import { AuthUser } from "App";
-import { userOption } from "constant/data";
+import { userOption, adminOption } from "constant/data";
 import { useContext } from "react";
 import { useHistory } from "react-router-dom";
 import { getCurrentUser } from "utils/jwtToken";
@@ -13,16 +13,21 @@ const UserOption = (props) => {
   const history = useHistory();
 
   const { t: trans } = useTranslation();
-
+  let filterUserOption;
+  if (Auth.auth.isAdmin) {
+    filterUserOption = adminOption;
+  } else {
+    filterUserOption = userOption;
+  }
   return (
     <Typography
       component="div"
       className="user-option-container"
-      style={{ "--optionSize": userOption.length }}
+      style={{ "--optionSize": filterUserOption.length }}
     >
       <Card>
         <CardContent>
-          {userOption.map((option) => {
+          {filterUserOption.map((option) => {
             return (
               <Typography
                 component="div"

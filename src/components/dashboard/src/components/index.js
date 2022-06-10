@@ -2,11 +2,11 @@ import React, { useState } from "react";
 import "./style.scss";
 import Logo from "../imgs/logo.png";
 import { UilSignOutAlt } from "@iconscout/react-unicons";
-import { SidebarData } from "../Data/Data";
+import { SidebarData } from "../data/Data";
 import { UilBars } from "@iconscout/react-unicons";
 import { motion } from "framer-motion";
 import { Box, Tab, Tabs, Typography } from "@mui/material";
-import MainDash from "./MainDash";
+import MainDash from "./OverallDashboard";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;

@@ -35,6 +35,9 @@ import InfoIcon from "@mui/icons-material/Info";
 import { useTranslation } from "react-i18next";
 import { reportContent } from "constant/types";
 import { createAccountReport } from "api/reportService";
+import ReportDetailModal from "components/common/ReportDetailModal";
+import ProfileOptionModal from "components/common/ProfileOptionModal";
+import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -65,12 +68,9 @@ const ProfilePage = (props) => {
   };
 
   const Auth = useContext(AuthUser);
-  const [stepValue, setStepValue] = useState(0);
-  const [isShow, setIsShow] = useState(false);
   const [reportModal, setReportModal] = useState({
     open: false,
   });
-  const [globalState, setGlobalState] = useState({});
 
   const [username, setUsername] = useState(props.match.params.username);
   const [userProfile, setUserProfile] = useState({});
@@ -91,7 +91,7 @@ const ProfilePage = (props) => {
   });
 
   const [changeAvatarLoading, setChangeAvatarLoading] = useState(false);
-
+  const [showOptionModal, setShowOptionModal] = useState(false);
   const [img, setImg] = useState(null);
   const [pageNumber, setPageNumber] = useState(0);
   const [currentModalType, setCurrentModalType] = useState(null);
@@ -327,109 +327,6 @@ const ProfilePage = (props) => {
     );
   };
 
-  const handleCreateReport = (item) => {
-    setGlobalState(item);
-    handleNextStep();
-  };
-
-  const handleSubmitReport = () => {
-    const reportData = {
-      content: globalState.content,
-      sentitiveType: globalState.sentitiveType,
-      accountId: userProfile.id,
-    };
-
-    createAccountReport(reportData)
-      .then((res) => {
-        if (res.status === 200) {
-          setSnackbarState({
-            open: true,
-            content: "You have reported successfully",
-            type: "SUCCESS",
-          });
-          handleNextStep();
-        }
-      })
-      .catch((err) => {
-        throw err;
-      })
-      .finally(() => {
-        // setLocalLoading(false);
-      });
-  };
-
-  const handleNextStep = () => {
-    setStepValue(stepValue + 1);
-  };
-  const handlePrevStep = () => {
-    setStepValue(stepValue - 1);
-  };
-
-  const StepOne = () => {
-    return (
-      <CustomModal
-        isRadius
-        width={400}
-        height={300}
-        title="Why do you report this account?"
-        open={reportModal.open}
-        handleCloseModal={handleCloseReportModal}
-      >
-        {reportContent.map((item, index) => (
-          <p onClick={() => handleCreateReport(item)}>{item.content}</p>
-        ))}
-      </CustomModal>
-    );
-  };
-
-  const StepTwo = () => {
-    return (
-      <CustomModal
-        isRadius
-        width={400}
-        height={800}
-        title="Báo cáo"
-        open={reportModal.open}
-        handleCloseModal={handleCloseReportModal}
-      >
-        <button onClick={handlePrevStep}>Back</button>
-        <h2>Tại sao bạn báo cáo bài viết này?</h2>
-        {globalState.detailContent
-          ? globalState?.detailContent.map((item, index) => (
-              <>
-                <p key={item.id}>{item}</p>
-              </>
-            ))
-          : null}
-        <button onClick={handleSubmitReport}>Gửi báo cáo</button>
-      </CustomModal>
-    );
-  };
-
-  const StepThree = (post) => {
-    return (
-      <CustomModal
-        isRadius
-        width={400}
-        height={300}
-        title="Cảm ơn bạn đã cho chúng tôi biết"
-        open={reportModal.open}
-        handleCloseModal={handleCloseReportModal}
-      >
-        <>
-          <IconButton>
-            <InfoIcon />
-          </IconButton>
-          <div>Block</div>
-          {post && post?.createdBy?.isFollowing ? <div>Unfollow</div> : null}
-
-          <div>View More</div>
-          <div onClick={handleCloseReportModal}>Close</div>
-        </>
-      </CustomModal>
-    );
-  };
-
   const changeFormatByCondition = (condition) => {
     const followedButtonColor = classNames("followed-btn", {
       unfollowed: !condition,
@@ -470,7 +367,7 @@ const ProfilePage = (props) => {
   };
 
   const handleOpenReportModal = () => {
-    setIsShow(true);
+    setShowOptionModal(false);
     setReportModal({
       ...reportModal,
       open: true,
@@ -478,9 +375,11 @@ const ProfilePage = (props) => {
   };
 
   const handleCloseReportModal = () => {
-    setIsShow(false);
     setReportModal({ ...reportModal, open: false });
-    setStepValue(0);
+  };
+
+  const handleOpenOptionModal = () => {
+    setShowOptionModal(true);
   };
 
   return (
@@ -572,6 +471,13 @@ const ProfilePage = (props) => {
                       trans("profile.follow")
                     )}
                   </Button>
+                  <Typography className="profile-more-actions">
+                    {" "}
+                    <MoreHorizIcon
+                      className="profile-more-icon"
+                      onClick={handleOpenOptionModal}
+                    />
+                  </Typography>
                 </>
               )}
             </Typography>
@@ -623,11 +529,6 @@ const ProfilePage = (props) => {
               </p>
             </Typography>
           </Typography>
-
-          {!Auth.auth.isAdmin && (
-            <button onClick={handleOpenReportModal}>Report</button>
-          )}
-
           <Typography
             component="div"
             align="left"
@@ -677,20 +578,27 @@ const ProfilePage = (props) => {
       >
         {renderUnfollowModal()}
       </CustomModal>
-
-      {isShow && isShow ? (
-        <>
-          <TabPanel value={stepValue} index={0}>
-            {StepOne()}
-          </TabPanel>
-          <TabPanel value={stepValue} index={1}>
-            {StepTwo()}
-          </TabPanel>
-          <TabPanel value={stepValue} index={2}>
-            {StepThree(userProfile)}
-          </TabPanel>
-        </>
-      ) : null}
+      <CustomModal
+        isRadius
+        width={400}
+        height={150}
+        open={showOptionModal}
+        handleCloseModal={() => setShowOptionModal(false)}
+      >
+        <ProfileOptionModal
+          profileId={userProfile.id}
+          userProfile={userProfile}
+          handleFilterComment={() => null}
+          handleCloseModal={() => setShowOptionModal(false)}
+          handleOpenReportModal={handleOpenReportModal}
+        />
+      </CustomModal>
+      <ReportDetailModal
+        open={reportModal.open}
+        currentTarget={userProfile}
+        type="ACCOUNT"
+        handleCloseModal={handleCloseReportModal}
+      />
     </Typography>
   );
 };
