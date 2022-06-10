@@ -1,4 +1,4 @@
-import { Box, Button, IconButton, Tooltip, Typography } from "@mui/material";
+import { Box, Button, IconButton, Typography } from "@mui/material";
 import { useEffect, useState, useContext } from "react";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
@@ -53,20 +53,7 @@ const PostReportModal = ({ index, dataList, title, reportId }) => {
     showInImage: false,
   });
 
-  const [unfollowModal, setUnfollowModal] = useState({
-    open: false,
-    data: {},
-  });
-
-  const [toolTipContent, setToolTipContent] = useState(title);
-
   const [currentReportID, setCurrentReportID] = useState(reportId);
-
-  const Auth = useContext(AuthUser);
-
-  const [stepValue, setStepValue] = useState(0);
-  const [isShow, setIsShow] = useState(false);
-  const { setSnackbarState } = useSnackbar();
 
   const [submittedComment, setSubmittedComment] = useState({});
 
@@ -113,10 +100,6 @@ const PostReportModal = ({ index, dataList, title, reportId }) => {
   }, [currentIndex]);
 
   useEffect(() => {
-    setToolTipContent(title);
-  }, [title]);
-
-  useEffect(() => {
     setCurrentReportID(reportId);
   }, [reportId]);
 
@@ -126,126 +109,10 @@ const PostReportModal = ({ index, dataList, title, reportId }) => {
     );
   }, [currentReportID]);
 
-  const handleIncreaseIndex = () => {
-    setCurrentIndex(currentIndex + 1);
-    setCurrentReportID(dataList[currentIndex + 1].id);
-    setToolTipContent(title);
-  };
-
-  const handleDecreaseIndex = () => {
-    setCurrentIndex(currentIndex - 1);
-    setCurrentReportID(dataList[currentIndex - 1].id);
-    setToolTipContent(title);
-  };
-
-  const handleOpenUnfollowModal = (userInfo) => {
-    setIsShow(true);
-    setUnfollowModal({
-      open: true,
-      data: userInfo,
-    });
-  };
-
-  const handleCloseUnfollowModal = () => {
-    setIsShow(false);
-    setUnfollowModal({ ...unfollowModal, open: false });
-    setStepValue(0);
-  };
-
-  const handleCreateReport = (id, item) => {
-    const reportData = {
-      content: item.content,
-      sentitiveType: item.sentitiveType,
-      commentId: id,
-    };
-    handleNextStep();
-    // createPostReport(reportData)
-    //   .then((res) => {
-    //     if (res.status === 200) {
-    //       setSnackbarState({
-    //         open: true,
-    //         content: "You have reported successfully",
-    //         type: "SUCCESS",
-    //       });
-    //       handleNextStep();
-    //     }
-    //   })
-    //   .catch((err) => {
-    //     throw err;
-    //   })
-    //   .finally(() => {
-    //     // setLocalLoading(false);
-    //   });
-  };
-
-  const handleNextStep = () => {
-    setStepValue(stepValue + 1);
-  };
-  const handlePrevStep = () => {
-    setStepValue(stepValue - 1);
-  };
-
-  const StepOne = () => {
-    return (
-      <CustomModal
-        isRadius
-        width={400}
-        height={300}
-        title="Why do you report this port?"
-        open={unfollowModal.open}
-        handleCloseModal={handleCloseUnfollowModal}
-      >
-        {reportContent.map((item, index) => (
-          <p onClick={() => handleCreateReport(currentPost?.id, item)}>
-            {item.content}
-          </p>
-        ))}
-      </CustomModal>
-    );
-  };
-
-  const StepTwo = (post) => {
-    return (
-      <CustomModal
-        isRadius
-        width={400}
-        height={300}
-        title="Cảm ơn bạn đã cho chúng tôi biết"
-        open={unfollowModal.open}
-        handleCloseModal={handleCloseUnfollowModal}
-      >
-        <>
-          <IconButton>
-            <InfoIcon />
-          </IconButton>
-          <div>Block</div>
-          {post && post?.createdBy?.isFollowing ? <div>Unfollow</div> : null}
-
-          <div>View More</div>
-          <div onClick={handleCloseUnfollowModal}>Close</div>
-        </>
-      </CustomModal>
-    );
-  };
-
   return (
     <>
-      <Tooltip
-        title={commentReport.content + " " + commentReport.sentitiveType}
-      >
-        <IconButton>
-          <InfoIcon />
-        </IconButton>
-      </Tooltip>
       {currentPost.id ? (
         <Typography component="div" className="post-details-container">
-          {currentIndex > 0 && (
-            <div className="minus-post-index">
-              <Button onClick={handleDecreaseIndex}>
-                <ChevronLeftIcon className="icon" />
-              </Button>
-            </div>
-          )}
           <Typography component="div" className="post-details-carousel">
             <Carousel autoPlay={false} className="details-carousel">
               {currentPost.attachments?.map((item, i) => (
@@ -278,32 +145,7 @@ const PostReportModal = ({ index, dataList, title, reportId }) => {
                   >
                     {substringUsername(currentPost.createdBy?.username)}
                   </Typography>
-
-                  {/* {showPopUp.open &&
-                    showPopUp.id === currentPost.createdBy?.id &&
-                    !showPopUp.showInImage && (
-                      <CustomPopUp
-                        width={390}
-                        height={350}
-                        component={() => (
-                          <PopUpContent
-                            username={currentPost.createdBy?.username}
-                            setUpdatedItem={setUpdatedItem}
-                          />
-                        )}
-                      />
-                    )} */}
                 </Typography>
-                {/* {getCurrentUser().username !==
-                  currentPost.createdBy?.username && (
-                  <Typography className="owner-follow">
-                    <FollowButton
-                      userProfile={currentPost.createdBy}
-                      follow={currentPost.createdBy?.isFollowing}
-                      setUpdatedItem={setUpdatedItem}
-                    />
-                  </Typography>
-                )} */}
               </Typography>
               <Typography component="div" className="interaction-line2">
                 <CommentList
@@ -324,34 +166,8 @@ const PostReportModal = ({ index, dataList, title, reportId }) => {
                   {calculateFromNow(currentPost.lastModifiedAt)}
                 </Typography>
               </Typography>
-
-              <Typography component="div" className="interaction-line4">
-                <CommentInput
-                  postId={currentPost.id}
-                  setSubmittedComment={setSubmittedComment}
-                />
-              </Typography>
             </Typography>
           </Typography>
-
-          {currentIndex < dataList.length - 1 && (
-            <div className="plus-post-index">
-              <Button onClick={handleIncreaseIndex}>
-                <ChevronRightIcon className="icon" />
-              </Button>
-            </div>
-          )}
-
-          {isShow && isShow ? (
-            <>
-              <TabPanel value={stepValue} index={0}>
-                {StepOne()}
-              </TabPanel>
-              <TabPanel value={stepValue} index={1}>
-                {StepTwo(currentPost)}
-              </TabPanel>
-            </>
-          ) : null}
         </Typography>
       ) : (
         <></>

@@ -22,6 +22,7 @@ import InfoIcon from "@mui/icons-material/Info";
 import { createCommentReport } from "api/reportService";
 import useSnackbar from "hooks/useSnackbar";
 import CommentItem from "../CommentItem";
+import classNames from "classnames";
 
 const CommentList = ({
   currentPost,
@@ -119,64 +120,19 @@ const CommentList = ({
     handleUpdateTotalChild({ open: true, data: filtered }, index);
   };
 
-  console.log(commentReport);
-
-  return (
-    <>
-      {commentList.length > 0 ? (
-        !_.isEmpty(commentReport) && !_.isEmpty(commentReport) ? (
-          <Typography className="comment-container">
-            <Typography>
-              {commentReport.comment.parentComment ? (
-                <Typography className="comment-content">
-                  <h3>Parent Comment</h3>
-                  <img
-                    src={
-                      commentReport.comment.parentComment.createdBy?.avatar
-                        ? commentReport.comment.parentComment.createdBy?.avatar
-                        : require("images/no-avatar.png")
-                    }
-                    width="35"
-                    height="35"
-                    alt=""
-                  />
-
-                  <Typography className="content" component="div">
-                    <Typography className="content-line1" component="div">
-                      <strong>
-                        {substringUsername(
-                          commentReport.comment.parentComment.createdBy
-                            ?.username
-                        )}
-                      </strong>
-                      {"    "}
-                      {commentReport?.comment.parentComment.content}
-                    </Typography>
-                    <Typography className="content-line2" component="div">
-                      <Typography className="date-time" component="div">
-                        {calculateFromNow(
-                          convertUTCtoLocalDate(
-                            commentReport.comment.parentComment.createdAt
-                          )
-                        )}
-                      </Typography>
-
-                      {!Auth.auth.isAdmin && (
-                        <Typography className="reply" component="div">
-                          {trans("newFeed.reply")}
-                        </Typography>
-                      )}
-                    </Typography>
-                  </Typography>
-                </Typography>
-              ) : null}
-            </Typography>
-
-            <Typography className="comment-content">
+  const renderCommentReport = () => {
+    const isCommentChildClass = classNames("report-comment-content", {
+      "child": commentReport.comment.parentComment,
+    });
+    return (
+      <Typography className="report-comment-container">
+        <Typography>
+          {commentReport.comment.parentComment ? (
+            <Typography className="report-comment-content">
               <img
                 src={
-                  commentReport.createdBy?.avatar
-                    ? commentReport.createdBy?.avatar
+                  commentReport.comment.parentComment.createdBy?.avatar
+                    ? commentReport.comment.parentComment.createdBy?.avatar
                     : require("images/no-avatar.png")
                 }
                 width="35"
@@ -187,15 +143,19 @@ const CommentList = ({
               <Typography className="content" component="div">
                 <Typography className="content-line1" component="div">
                   <strong>
-                    {substringUsername(commentReport.createdBy?.username)}
+                    {substringUsername(
+                      commentReport.comment.parentComment.createdBy?.username
+                    )}
                   </strong>
                   {"    "}
-                  {commentReport?.comment?.content}
+                  {commentReport?.comment.parentComment.content}
                 </Typography>
                 <Typography className="content-line2" component="div">
                   <Typography className="date-time" component="div">
                     {calculateFromNow(
-                      convertUTCtoLocalDate(commentReport.createdAt)
+                      convertUTCtoLocalDate(
+                        commentReport.comment.parentComment.createdAt
+                      )
                     )}
                   </Typography>
 
@@ -207,8 +167,52 @@ const CommentList = ({
                 </Typography>
               </Typography>
             </Typography>
+          ) : null}
+        </Typography>
+
+        <Typography className={isCommentChildClass}>
+          <img
+            src={
+              commentReport.createdBy?.avatar
+                ? commentReport.createdBy?.avatar
+                : require("images/no-avatar.png")
+            }
+            width="35"
+            height="35"
+            alt=""
+          />
+
+          <Typography className="content" component="div">
+            <Typography className="content-line1" component="div">
+              <strong>
+                {substringUsername(commentReport.createdBy?.username)}
+              </strong>
+              {"    "}
+              {commentReport?.comment?.content}
+            </Typography>
+            <Typography className="content-line2" component="div">
+              <Typography className="date-time" component="div">
+                {calculateFromNow(
+                  convertUTCtoLocalDate(commentReport.createdAt)
+                )}
+              </Typography>
+
+              {!Auth.auth.isAdmin && (
+                <Typography className="reply" component="div">
+                  {trans("newFeed.reply")}
+                </Typography>
+              )}
+            </Typography>
           </Typography>
-        ) : (
+        </Typography>
+      </Typography>
+    );
+  };
+
+  const renderFullCommentList = () => {
+    return (
+      <>
+        {commentList.length > 0 ? (
           <Typography className="sended-comments-container">
             {commentList.map((comment, i) => (
               <CommentItem
@@ -232,91 +236,16 @@ const CommentList = ({
               </Typography>
             )}
           </Typography>
-        )
-      ) : !_.isEmpty(commentReport) && !_.isEmpty(commentReport) ? (
-        <Typography className="comment-container">
-          <Typography>
-            {commentReport.comment.parentComment ? (
-              <Typography className="comment-content">
-                <h3>Parent Comment</h3>
-                <img
-                  src={
-                    commentReport.comment.parentComment.createdBy?.avatar
-                      ? commentReport.comment.parentComment.createdBy?.avatar
-                      : require("images/no-avatar.png")
-                  }
-                  width="35"
-                  height="35"
-                  alt=""
-                />
+        ) : null}
+      </>
+    );
+  };
 
-                <Typography className="content" component="div">
-                  <Typography className="content-line1" component="div">
-                    <strong>
-                      {substringUsername(
-                        commentReport.comment.parentComment.createdBy?.username
-                      )}
-                    </strong>
-                    {"    "}
-                    {commentReport?.comment.parentComment.content}
-                  </Typography>
-                  <Typography className="content-line2" component="div">
-                    <Typography className="date-time" component="div">
-                      {calculateFromNow(
-                        convertUTCtoLocalDate(
-                          commentReport.comment.parentComment.createdAt
-                        )
-                      )}
-                    </Typography>
-
-                    {!Auth.auth.isAdmin && (
-                      <Typography className="reply" component="div">
-                        {trans("newFeed.reply")}
-                      </Typography>
-                    )}
-                  </Typography>
-                </Typography>
-              </Typography>
-            ) : null}
-          </Typography>
-
-          <Typography className="comment-content">
-            <img
-              src={
-                commentReport.createdBy?.avatar
-                  ? commentReport.createdBy?.avatar
-                  : require("images/no-avatar.png")
-              }
-              width="35"
-              height="35"
-              alt=""
-            />
-
-            <Typography className="content" component="div">
-              <Typography className="content-line1" component="div">
-                <strong>
-                  {substringUsername(commentReport.createdBy?.username)}
-                </strong>
-                {"    "}
-                {commentReport?.comment?.content}
-              </Typography>
-              <Typography className="content-line2" component="div">
-                <Typography className="date-time" component="div">
-                  {calculateFromNow(
-                    convertUTCtoLocalDate(commentReport.createdAt)
-                  )}
-                </Typography>
-
-                {!Auth.auth.isAdmin && (
-                  <Typography className="reply" component="div">
-                    {trans("newFeed.reply")}
-                  </Typography>
-                )}
-              </Typography>
-            </Typography>
-          </Typography>
-        </Typography>
-      ) : null}
+  return (
+    <>
+      {_.isEmpty(commentReport)
+        ? renderFullCommentList()
+        : renderCommentReport()}
     </>
   );
 };

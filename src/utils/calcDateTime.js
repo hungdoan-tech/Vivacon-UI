@@ -8,9 +8,9 @@ export const calculateFromNow = (dateTime) => {
   return moment(new Date(dateTime).getTime()).fromNow();
 };
 
-export const convertUTCtoLocalDate = (date) => {
+export const convertUTCtoLocalDate = (date, format) => {
   const convertedDate = moment(date)
     .add(-offset, "minutes")
-    .format("YYYY-MM-DDTHH:mm:ss.SSSsss");
+    .format(format || "YYYY-MM-DDTHH:mm:ss.SSSsss");
   return convertedDate;
 };

@@ -69,6 +69,11 @@
           justify-content: flex-end;
           margin-left: 50px;
           height: 70%;
+          .profile-more-actions {
+            .profile-more-icon {
+              cursor: pointer;
+            }
+          }
           .edit-btn,
           .message-btn,
           .followed-btn {
@@ -113,6 +118,7 @@
       }
       .info-detail-line3 {
         .full-name {
+          font-size: 18px;
           font-weight: 900;
         }
       }

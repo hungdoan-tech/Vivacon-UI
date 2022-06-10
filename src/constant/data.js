@@ -169,16 +169,28 @@ export const userOption = [
     navigateUrl: "/profile",
   },
   {
-    icon: <DashboardIcon />,
-    name: "dashboard.dashboard",
-    onClickHandle: () => null,
-    navigateUrl: "/dashboard",
-  },
-  {
     icon: <SettingsIcon />,
     name: "settingUI.setting",
     onClickHandle: () => null,
     navigateUrl: "/",
+  },
+  {
+    icon: <LogoutOutlinedIcon />,
+    name: "settingUI.logOut",
+    onClickHandle: () => {
+      removeJwtToken();
+      removeRefreshToken();
+    },
+    navigateUrl: "/login",
+  },
+];
+
+export const adminOption = [
+  {
+    icon: <DashboardIcon />,
+    name: "dashboard.dashboard",
+    onClickHandle: () => null,
+    navigateUrl: "/dashboard",
   },
   {
     icon: <LogoutOutlinedIcon />,

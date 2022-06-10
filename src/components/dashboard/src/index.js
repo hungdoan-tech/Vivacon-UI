@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
 import "./style.scss";
-import MainDash from "./components/MainDash";
+import OverallDashboard from "./components/OverallDashboard";
 import RightSide from "./components/RigtSide";
 import Sidebar from "./components";
-import PostReportPage from "../../pages/PostReportPage";
-import CommentReportPage from "components/pages/CommentReportPage";
-import AccountReportPage from "components/pages/AccountReportPage";
+import PostReportPage from "./pages/PostReportPage";
+import CommentReportPage from "components/dashboard/src/pages/CommentReportPage";
+import AccountReportPage from "components/dashboard/src/pages/AccountReportPage";
 
 import {
   getStatisticData,
@@ -62,7 +62,7 @@ const Dashboard = () => {
       <div className="AppGlass">
         <Sidebar setSelected={setSelected} selected={selected} />
         {selected == 0 && (
-          <MainDash
+          <OverallDashboard
             statisticData={statisticData}
             newestPostData={newestPostData}
             postInteractionData={postInteractionData}

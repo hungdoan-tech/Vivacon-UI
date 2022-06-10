@@ -2,15 +2,16 @@ import { Box, Button, IconButton, Tooltip, Typography } from "@mui/material";
 import CustomModal from "../CustomModal";
 import { reportContent } from "../../../constant/types";
 import { useState } from "react";
-import {
-    createCommentReport,
-  createPostReport,
-  getDetailPostReport,
-} from "../../../api/reportService";
 import useSnackbar from "hooks/useSnackbar";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
-import "./style.scss"
+import {
+  createAccountReport,
+  createCommentReport,
+  createPostReport,
+  getDetailPostReport,
+} from "api/reportService";
+import "./style.scss";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -91,6 +92,26 @@ const ReportDetailModal = ({ open, handleCloseModal, type, currentTarget }) => {
           // setLocalLoading(false);
         });
     }
+    if (type === "ACCOUNT") {
+      reportData.accountId = currentTarget.id;
+      createAccountReport(reportData)
+        .then((res) => {
+          if (res.status === 200) {
+            setSnackbarState({
+              open: true,
+              content: "You have reported successfully",
+              type: "SUCCESS",
+            });
+            handleNextStep();
+          }
+        })
+        .catch((err) => {
+          throw err;
+        })
+        .finally(() => {
+          // setLocalLoading(false);
+        });
+    }
   };
 
   const handleNextStep = () => {
@@ -98,9 +119,9 @@ const ReportDetailModal = ({ open, handleCloseModal, type, currentTarget }) => {
   };
 
   const handleCloseReportModal = () => {
-      handleCloseModal();
-      setStepValue(0);
-  }
+    handleCloseModal();
+    setStepValue(0);
+  };
 
   const StepOne = () => {
     return (
@@ -194,10 +215,10 @@ const ReportDetailModal = ({ open, handleCloseModal, type, currentTarget }) => {
           </Typography>
           <Typography className="other-action-btns">
             <Button className="block-action">
-              Block @{target.createdBy?.username}
+              Block @{target.createdBy?.username || target?.username}
             </Button>
             <Button className="unfollow-action">
-              Unfollow @{target.createdBy?.username}
+              Unfollow @{target.createdBy?.username || target?.username}
             </Button>
           </Typography>
           <Button className="close-btn" onClick={handleCloseReportModal}>

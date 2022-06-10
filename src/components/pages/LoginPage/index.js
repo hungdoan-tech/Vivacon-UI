@@ -19,6 +19,7 @@ import useLoading from "hooks/useLoading";
 import useSnackbar from "hooks/useSnackbar";
 import { useTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom";
+import {parseJwt} from 'utils/jwtToken'
 
 const LoginPage = () => {
   const [username, setUsername] = useState("");
@@ -56,7 +57,11 @@ const LoginPage = () => {
             type: "SUCCESS",
           });
           setTimeout(() => {
-            window.location.href = "/";
+            if (parseJwt(res.data.accessToken).roles.includes("ADMIN")) {
+              window.location.href = "/dashboard";
+            } else {
+              window.location.href = "/";
+            }
           }, 1000);
         }
       })
@@ -149,7 +154,10 @@ const LoginPage = () => {
             <Typography className="dont-have-account">
               {trans("signIn.haveNoAccount")}
             </Typography>
-            <Typography className="register-link" onClick={() => history.push('/register')}>
+            <Typography
+              className="register-link"
+              onClick={() => history.push("/register")}
+            >
               {trans("signIn.register")}
             </Typography>{" "}
           </Typography>

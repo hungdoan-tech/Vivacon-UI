@@ -44,8 +44,6 @@ const PostDetailsModal = ({ index, dataList, title, reportId }) => {
 
   const [showOptionModal, setShowOptionModal] = useState(false);
 
-  const [toolTipContent, setToolTipContent] = useState(title);
-
   const [currentReportID, setCurrentReportID] = useState(reportId);
 
   const [submittedComment, setSubmittedComment] = useState({});
@@ -91,10 +89,6 @@ const PostDetailsModal = ({ index, dataList, title, reportId }) => {
   }, [currentIndex]);
 
   useEffect(() => {
-    setToolTipContent(title);
-  }, [title]);
-
-  useEffect(() => {
     setCurrentReportID(reportId);
   }, [reportId]);
 
@@ -107,13 +101,11 @@ const PostDetailsModal = ({ index, dataList, title, reportId }) => {
   const handleIncreaseIndex = () => {
     setCurrentIndex(currentIndex + 1);
     setCurrentReportID(dataList[currentIndex + 1].id);
-    setToolTipContent(title);
   };
 
   const handleDecreaseIndex = () => {
     setCurrentIndex(currentIndex - 1);
     setCurrentReportID(dataList[currentIndex - 1].id);
-    setToolTipContent(title);
   };
 
   const handleOpenReportModal = (userInfo) => {
@@ -134,16 +126,6 @@ const PostDetailsModal = ({ index, dataList, title, reportId }) => {
 
   return (
     <>
-      {Auth.auth.isAdmin && (
-        <Tooltip
-          title={commentReport.content + " " + commentReport.sentitiveType}
-        >
-          <IconButton>
-            <InfoIcon />
-          </IconButton>
-        </Tooltip>
-      )}
-
       {currentPost.id ? (
         <>
           <Typography component="div" className="post-details-container">

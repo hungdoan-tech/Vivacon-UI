@@ -7,7 +7,7 @@ import { Slide } from "react-slideshow-image";
 import "react-slideshow-image/dist/styles.css";
 import Carousel from "react-material-ui-carousel";
 
-const MainDash = ({
+const OverallDashboard = ({
   statisticData,
   newestPostData,
   postInteractionData,
@@ -103,4 +103,4 @@ const MainDash = ({
   );
 };
 
-export default MainDash;
+export default OverallDashboard;

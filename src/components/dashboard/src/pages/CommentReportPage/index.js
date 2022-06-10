@@ -12,14 +12,17 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import moment from "moment";
-import CustomModal from "../../common/CustomModal";
+import CustomModal from "../../../../common/CustomModal";
 import Pagination from "@mui/material/Pagination";
-import { limitPerPage } from "../../../constant/types";
+import { limitPerPage, reportContent } from "../../../../../constant/types";
 
 import useSnackbar from "hooks/useSnackbar";
 
 import ConfirmDialog from "components/common/ConfirmDialog";
 import PostReportModal from "components/dashboard/src/components/PostReportModal";
+import ReportTable from "components/dashboard/src/components/ReportTable";
+import { Typography } from "@mui/material";
+import ReportHeader from "components/dashboard/src/components/ReportHeader";
 
 export default function CommentReportPage() {
   const [showCommentReportModal, setShowCommentReportModal] = useState({
@@ -39,6 +42,8 @@ export default function CommentReportPage() {
     useState(false);
   const [openConfirmApprovedDialog, setOpenConfirmApprovedDialog] =
     useState(false);
+
+  const [reportDetailContent, setReportDetailContent] = useState("");
 
   const { setSnackbarState } = useSnackbar();
 
@@ -100,7 +105,7 @@ export default function CommentReportPage() {
     });
   };
 
-  const handleCloseOpenReportModal = () => {
+  const handleCloseReportModal = () => {
     setShowCommentReportModal({
       open: false,
       index: -1,
@@ -117,7 +122,7 @@ export default function CommentReportPage() {
   };
 
   const handleRejectedCommentReport = (id) => {
-    handleCloseOpenReportModal();
+    handleCloseReportModal();
     rejectedCommentReport(id).then((res) => {
       if (res.status === 200) {
         setSnackbarState({
@@ -136,7 +141,7 @@ export default function CommentReportPage() {
   };
 
   const handleApprovedCommentReport = (id) => {
-    handleCloseOpenReportModal();
+    handleCloseReportModal();
     approvedCommentReport(id).then((res) => {
       if (res.status === 200) {
         setSnackbarState({
@@ -158,6 +163,93 @@ export default function CommentReportPage() {
     setPage(value);
   };
 
+  useEffect(() => {
+    if (showCommentReportModal.reportMessage) {
+      const filterReportDetail = reportContent.filter(
+        (item) => item.content === showCommentReportModal.reportMessage
+      )[0].detailContent;
+      const plainText = filterReportDetail.reduce((prev, curr) => {
+        if (prev === "") {
+          return " - " + curr;
+        }
+        return prev + "\n\n" + " - " + curr;
+      }, "");
+      setReportDetailContent(plainText);
+    }
+  }, [showCommentReportModal]);
+
+  const handleOpenConfirmDialog = (type) => {
+    if (type === "Approved") {
+      setOpenConfirmApprovedDialog(true);
+    }
+    if (type === "Rejected") {
+      setOpenConfirmRejectedDialog(true);
+    }
+  };
+
+  const getOpenDialog = (type) => {
+    if (type === "Approved") {
+      return openConfirmApprovedDialog;
+    }
+    if (type === "Rejected") {
+      return openConfirmRejectedDialog;
+    }
+  };
+
+  const handleCloseDialog = (type) => {
+    if (type === "Approved") {
+      setOpenConfirmApprovedDialog(false);
+    }
+    if (type === "Rejected") {
+      setOpenConfirmRejectedDialog(false);
+    }
+  };
+  const handleConfirmDialog = (type, id) => {
+    if (type === "Approved") {
+      setOpenConfirmApprovedDialog(false);
+      handleApprovedCommentReport(id);
+    }
+    if (type === "Rejected") {
+      setOpenConfirmRejectedDialog(false);
+      handleRejectedCommentReport(id);
+    }
+  };
+
+  const headers = [
+    {
+      displayName: "Comment Report ID",
+      align: "center",
+      field: "id",
+    },
+    {
+      displayName: "Content",
+      align: "left",
+      field: "content",
+    },
+    {
+      displayName: "Sensitive Type",
+      align: "left",
+      field: "sentitiveType",
+    },
+    {
+      displayName: "Date",
+      align: "left",
+      field: "createdAt",
+    },
+    {
+      displayName: "User Name",
+      align: "left",
+      multiField: true,
+      field: "createdBy.username",
+    },
+    {
+      displayName: "Comment Content",
+      align: "left",
+      multiField: true,
+      field: "comment.content",
+    },
+  ];
+
   return (
     <div className="Table">
       <h3>Comment Report Data</h3>
@@ -166,95 +258,32 @@ export default function CommentReportPage() {
           <option key={item}>{item}</option>
         ))}
       </select>
-      <TableContainer
-        component={Paper}
-        style={{ boxShadow: "0px 13px 20px 0px #80808029" }}
-      >
-        <Table sx={{ minWidth: 650 }} aria-label="simple table">
-          <TableHead>
-            <TableRow>
-              <TableCell>Comment Report ID</TableCell>
-              <TableCell align="left">Content</TableCell>
-              <TableCell align="left">Sensitive Type</TableCell>
-              <TableCell align="left">Date</TableCell>
-              <TableCell align="left">User Name</TableCell>
-              <TableCell align="left">Comment Content</TableCell>
-              <TableCell align="left"></TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody style={{ color: "white" }}>
-            {commentReportList?.content
-              ? commentReportList?.content.map((row, index) => (
-                  <>
-                    <ConfirmDialog
-                      handleClose={handleCloseConfirmRejectedDialog}
-                      handleConfirm={() => handleConfirmRejectedDialog(row.id)}
-                      open={openConfirmRejectedDialog}
-                      title="Are you sure want to rejected this report?"
-                      description="Report Content"
-                    />
-                    <ConfirmDialog
-                      handleClose={handleCloseConfirmApprovedDialog}
-                      handleConfirm={() => handleConfirmApprovedDialog(row.id)}
-                      open={openConfirmApprovedDialog}
-                      title="Are you sure want to approved this report?"
-                      description="Report Content"
-                    />
-
-                    <TableRow
-                      key={row.id}
-                      sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                    >
-                      <TableCell component="th" scope="row">
-                        {row.id}
-                      </TableCell>
-                      <TableCell align="left">{row.content}</TableCell>
-                      <TableCell align="left">{row.sentitiveType}</TableCell>
-
-                      <TableCell align="left">
-                        {moment(row.createdAt).format("DD/MM/YYYY")}
-                      </TableCell>
-
-                      <TableCell align="left">
-                        {row.createdBy.username}
-                      </TableCell>
-                      <TableCell align="left">{row.comment.content}</TableCell>
-                      <TableCell align="left" className="Details">
-                        <button
-                          onClick={() =>
-                            handleOpenReportModal(
-                              index,
-                              row,
-                              commentReportList?.content,
-                              row.content + " " + row.sentitiveType,
-                              row.id
-                            )
-                          }
-                        >
-                          Detail
-                        </button>
-                      </TableCell>
-                    </TableRow>
-                  </>
-                ))
-              : null}
-          </TableBody>
-        </Table>
-      </TableContainer>
+      <ReportTable
+        reportList={commentReportList}
+        page={page}
+        handleChangePage={handleChangePage}
+        handleCloseDialog={handleCloseDialog}
+        handleConfirmDialog={handleConfirmDialog}
+        getOpenDialog={getOpenDialog}
+        handleOpenReportModal={handleOpenReportModal}
+        headers={headers}
+      />
 
       <CustomModal
         open={showCommentReportModal.open}
-        title="Is this report correct?"
-        handleCloseModal={handleCloseOpenReportModal}
+        title=""
+        handleCloseModal={handleCloseReportModal}
         width={1200}
         height={800}
       >
-        <>
-          <div>
-            <button onClick={handleOpenRejectedDialog}>Rejected</button>
-            <button onClick={handleOpenApprovedDialog}>Approved</button>
-            <button onClick={handleCloseOpenReportModal}>Cancel</button>
-          </div>
+        <Typography component="div" className="report-admin-modal">
+          <ReportHeader
+            handleApprove={() => handleOpenConfirmDialog("Approved")}
+            handleReject={() => handleOpenConfirmDialog("Rejected")}
+            handleCancel={() => handleCloseReportModal()}
+            reportMessage={showCommentReportModal.reportMessage}
+            reportDetailContent={reportDetailContent}
+          />
           <PostReportModal
             title={showCommentReportModal.reportMessage}
             index={showCommentReportModal.index}
@@ -262,14 +291,8 @@ export default function CommentReportPage() {
             reportId={showCommentReportModal.reportId}
             setUpdatedItem={() => null}
           />
-        </>
+        </Typography>
       </CustomModal>
-      <Pagination
-        count={commentReportList?.totalPages}
-        color="primary"
-        page={page}
-        onChange={handleChangePage}
-      />
     </div>
   );
 }

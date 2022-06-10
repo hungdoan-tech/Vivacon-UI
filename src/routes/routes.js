@@ -12,7 +12,7 @@ import VerifyPage from "components/pages/VerifyPage";
 import FindAccountPage from "components/pages/FindAccountPage";
 import ForgotPasswordPage from "components/pages/ForgotPasswordPage";
 import Dashboard from "components/dashboard/src";
-import PostReportPage from "components/pages/PostReportPage";
+import PostReportPage from "components/dashboard/src/pages/PostReportPage";
 import ChatPage from "components/pages/ChatPage";
 import SettingPage from 'components/pages/SettingPage';
 import PostDetailPage from "components/pages/PostDetailPage";
