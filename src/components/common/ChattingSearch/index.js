@@ -11,7 +11,7 @@ import ReactLoading from "react-loading";
 import { getCurrentUser } from "utils/jwtToken";
 
 const ChattingSearch = (props) => {
-  const {handleNext} = props;
+  const {handleNext, isShare = false} = props;
   const [searchText, setSearchText] = useState("");
   const [resultList, setResultList] = useState(
     JSON.parse(localStorage.getItem("suggested_users")) || []
@@ -136,7 +136,7 @@ const ChattingSearch = (props) => {
           disabled={selectedList.length === 0}
           onClick={() => handleNext(selectedList)}
         >
-          Next
+          {isShare ? `Share` : `Next`}
         </Button>
       </Typography>
       <Typography component="div" className="chatting-search-input">
