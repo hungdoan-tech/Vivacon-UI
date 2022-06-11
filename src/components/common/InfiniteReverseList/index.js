@@ -51,6 +51,7 @@ const InfiniteReverseList = (props) => {
       if (lastItemObserver.current) lastItemObserver.current.disconnect();
       lastItemObserver.current = new IntersectionObserver(
         (entries) => {
+          console.log({entries})
           if (entries[0].isIntersecting && hasMore) {
             setPageNumber((prevPageNumber) => prevPageNumber + 1);
           }
@@ -126,6 +127,7 @@ const InfiniteReverseList = (props) => {
   }, []);
 
   useEffect(() => {
+    setShowViewNewestMessage(false);
     setPageNumber(0);
     setNumberOfNewMessage(0);
   }, [data.id]);
@@ -166,7 +168,7 @@ const InfiniteReverseList = (props) => {
                 dataList.map((item, index) => {
                   if (index === 0) {
                     return (
-                      <div ref={lastItemRef} key={index}>
+                      <div ref={lastItemRef} key={item.id}>
                         <Component
                           item={item}
                           key={index}
@@ -178,7 +180,7 @@ const InfiniteReverseList = (props) => {
                     );
                   } else if (index === dataList.length - pageNumber * 10 - 1) {
                     return (
-                      <div ref={messagesEndRef} key={index}>
+                      <div ref={messagesEndRef} key={item.id}>
                         <Component
                           item={item}
                           key={index}
@@ -190,7 +192,7 @@ const InfiniteReverseList = (props) => {
                     );
                   } else if (index === dataList.length - 1) {
                     return (
-                      <div ref={firstItemRef} key={index}>
+                      <div ref={firstItemRef} key={item.id}>
                         <Component
                           item={item}
                           key={index}
@@ -205,7 +207,7 @@ const InfiniteReverseList = (props) => {
                       <div key={index}>
                         <Component
                           item={item}
-                          key={index}
+                          key={item.id}
                           handleClick={handleClickItem}
                           index={index}
                           dataList={dataList}

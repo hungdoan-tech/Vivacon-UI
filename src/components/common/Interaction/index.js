@@ -12,6 +12,10 @@ import FollowUserItem from "../FollowUserItem";
 import { AuthUser } from "App";
 
 import { useTranslation } from "react-i18next";
+import ChattingSearch from "../ChattingSearch";
+import useSnackbar from "hooks/useSnackbar";
+import useSocket from "hooks/useSocket";
+import { checkConversationIsExistOrNot } from "api/chatService";
 
 const Interaction = ({ currentPost }) => {
   const { isLiked, id: postId } = currentPost;
@@ -22,6 +26,24 @@ const Interaction = ({ currentPost }) => {
   const [showLikeList, setShowLikeList] = useState(false);
   const [likeList, setLikeList] = useState([]);
   const [fetchInfo, setFetchInfo] = useState({});
+  const { handlers, states, setStates } = useSocket();
+  const { receivedMessage, newConversation, activeUsers, conversationList } =
+    states;
+  const {
+    setReceivedMessage,
+    setNewConversation,
+    setActiveUsers,
+    setConversationList,
+  } = setStates;
+  const {
+    chatInExistedConversation,
+    chatInVirtualConversation,
+    typing,
+    untyping,
+  } = handlers;
+
+  const [showChattingSearch, setShowChattingSearch] = useState(false);
+  const { setSnackbarState } = useSnackbar();
 
   const { t: trans } = useTranslation();
 
@@ -93,6 +115,38 @@ const Interaction = ({ currentPost }) => {
     setPageNumber(0);
   };
 
+  const handleOpenChattingSearchModal = () => {
+    setShowChattingSearch(true);
+  };
+
+  const handleCloseChattingSearchModal = () => {
+    setShowChattingSearch(false);
+  };
+
+  const handleSharePost = (selectedList) => {
+    const { id } = currentPost;
+    selectedList.map((selectedUser) => {
+      checkConversationIsExistOrNot(selectedUser.id)
+        .then((res) => {
+          if (res.status === 200) {
+            chatInExistedConversation(res.data.id, `[sharePost|${id}]`);
+          }
+        })
+        .catch(() => {
+          const tempList = [];
+          const { username } = selectedUser;
+          tempList.push(username);
+          chatInVirtualConversation(tempList, `[sharePost|${id}]`);
+        });
+      setSnackbarState({
+        open: true,
+        content: "Shared successfully",
+        type: "SUCCESS",
+      });
+    });
+    setShowChattingSearch(false);
+  };
+
   return (
     <>
       {!Auth.auth.isAdmin && (
@@ -110,7 +164,10 @@ const Interaction = ({ currentPost }) => {
             />
           )}
           <ChatBubbleOutlineOutlinedIcon className="comment-icon" />
-          <ShareOutlinedIcon className="share-icon" />
+          <ShareOutlinedIcon
+            className="share-icon"
+            onClick={handleOpenChattingSearchModal}
+          />
         </Typography>
       )}
 
@@ -155,6 +212,16 @@ const Interaction = ({ currentPost }) => {
             )}
           </Typography>
         </Typography>
+      </CustomModal>
+
+      <CustomModal
+        isRadius
+        width={400}
+        height={400}
+        open={showChattingSearch}
+        handleCloseModal={handleCloseChattingSearchModal}
+      >
+        <ChattingSearch handleNext={handleSharePost} isShare={true} />
       </CustomModal>
     </>
   );

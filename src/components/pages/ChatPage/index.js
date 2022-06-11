@@ -49,8 +49,9 @@ import useSocket from "hooks/useSocket";
 import Picker from "emoji-picker-react";
 import { parseTextToEmojis, isOnlyEmojis } from "utils/emoji";
 import ImageUploader from "react-images-upload";
-import { uploadImages } from "api/postService";
+import { uploadImages, getPostDetail } from "api/postService";
 import { uploadImage } from "api/userService";
+import { useHistory } from "react-router-dom";
 
 const ChatPage = () => {
   const [inputMessage, setInputMessage] = useState("");
@@ -718,73 +719,127 @@ const ChatPage = () => {
 };
 
 const MessageItem = ({ item: message, index, dataList: messageList }) => {
+  const [postInfo, setPostInfo] = useState(null);
   const [openImageModal, setOpenImageModal] = useState({
     open: false,
     image: "",
   });
-  if (message) {
-    const condition = message?.sender?.username === getCurrentUser().username;
-    const onlyEmojisCondition = isOnlyEmojis(message.content);
-    const imageList = message.content.match(/(?<=\[image\|)(.*?)(?=\])/gi);
-    const messageClassName = classNames("message-item", {
-      owner: condition && !onlyEmojisCondition && !imageList,
-      target: !condition && !onlyEmojisCondition && !imageList,
-      emojis: onlyEmojisCondition,
-      image: imageList,
-    });
+  const history = useHistory();
+  const getSharePostDetail = (id) => {
+    getPostDetail({ id })
+      .then((res) => {
+        if (res.status === 200) {
+          setPostInfo(res.data);
+        }
+      })
+      .catch((err) => {
+        throw err;
+      });
+  };
 
-    const messageContainerClassName = classNames("message-item-container", {
-      owner: condition,
-      target: !condition,
-    });
-    const showAvatar =
-      message?.sender?.username !== messageList[index + 1]?.sender.username;
+  useEffect(() => {
+    if (message) {
+      console.log({ messagesharePost: message });
+      const sharePost = message.content.match(
+        /(?<=\[sharePost\|)(.*?)(?=\])/gi
+      );
+      console.log({ sharePost });
+      const parseIntPostId = sharePost ? parseInt(sharePost[0]) : null;
+      if (parseIntPostId) {
+        console.log({ message });
+        getSharePostDetail(parseIntPostId);
+      } else {
+        setPostInfo(null);
+      }
+    }
+  }, [message]);
+  const condition = message?.sender?.username === getCurrentUser().username;
+  const onlyEmojisCondition = isOnlyEmojis(message.content);
 
-    return (
-      <>
-        <Typography component="div" className={messageContainerClassName}>
-          {!condition && (
-            <Typography className="sender-avatar">
-              {showAvatar && <img src={message.sender.avatar} />}
-            </Typography>
-          )}
-          {imageList ? (
-            <Typography
-              className={messageClassName}
-              align={condition ? "right" : "left"}
-              component="div"
-            >
-              <img
-                src={imageList[0]}
-                onClick={() =>
-                  setOpenImageModal({ open: true, image: imageList[0] })
-                }
-              />
-            </Typography>
-          ) : (
-            <Typography
-              className={messageClassName}
-              align={condition ? "right" : "left"}
-              component="div"
-            >
-              {message.content}
-            </Typography>
-          )}
-        </Typography>
-        <CustomModal
-          isRadius
-          width={800}
-          height={800}
-          open={openImageModal.open}
-          handleCloseModal={() => setOpenImageModal({ open: false, image: "" })}
-        >
-          <img src={openImageModal.image} width="800px" height="800px" />
-        </CustomModal>
-      </>
-    );
-  } else {
-    return <></>;
-  }
+  const imageList = message.content.match(/(?<=\[image\|)(.*?)(?=\])/gi);
+  const messageClassName = classNames("message-item", {
+    owner: condition && !onlyEmojisCondition && !imageList,
+    target: !condition && !onlyEmojisCondition && !imageList,
+    emojis: onlyEmojisCondition,
+    image: imageList,
+  });
+
+  const messageContainerClassName = classNames("message-item-container", {
+    owner: condition,
+    target: !condition,
+  });
+  const showAvatar =
+    message?.sender?.username !== messageList[index + 1]?.sender.username;
+
+  return (
+    <>
+      <Typography component="div" className={messageContainerClassName}>
+        {!condition && (
+          <Typography className="sender-avatar">
+            {showAvatar && <img src={message.sender.avatar} />}
+          </Typography>
+        )}
+        {imageList ? (
+          <Typography
+            className={messageClassName}
+            align={condition ? "right" : "left"}
+            component="div"
+          >
+            <img
+              src={imageList[0]}
+              onClick={() =>
+                setOpenImageModal({ open: true, image: imageList[0] })
+              }
+            />
+          </Typography>
+        ) : (
+          <Typography
+            className={messageClassName}
+            align={condition ? "right" : "left"}
+            component="div"
+          >
+            {postInfo ? (
+              <Typography component="div" className="share-post-message">
+                <Typography component="div" className="post-owner">
+                  <Typography component="div" className="avatar">
+                    <img src={postInfo.createdBy.avatar} />
+                  </Typography>
+                  <Typography component="div" className="username">
+                    {postInfo.createdBy?.username}
+                  </Typography>
+                </Typography>
+                <Typography component="div" className="post-content">
+                  <Typography
+                    component="div"
+                    className="attachment"
+                    onClick={() => {
+                      history.push(`/post/${postInfo.id}`);
+                    }}
+                  >
+                    <img src={postInfo.attachments[0].url} />
+                  </Typography>
+                  <Typography component="div" className="caption">
+                    {postInfo.caption}
+                  </Typography>
+                </Typography>
+              </Typography>
+            ) : (
+              `${message.content}`
+            )}
+          </Typography>
+        )}
+      </Typography>
+      <CustomModal
+        isRadius
+        width={800}
+        height={800}
+        open={openImageModal.open}
+        handleCloseModal={() => setOpenImageModal({ open: false, image: "" })}
+      >
+        <img src={openImageModal.image} width="800px" height="800px" />
+      </CustomModal>
+    </>
+  );
 };
 
 const MessageListContainer = ({ _renderItem }) => {
@@ -806,9 +861,12 @@ const UserItem = ({
 }) => {
   if (conv) {
     const { typingOnConvList, currentConvId } = childProps;
-    const imageList = conv.latestMessage.content.match(
+    const imageList = conv.latestMessage?.content.match(
       /(?<=\[image\|)(.*?)(?=\])/gi
     );
+    const sharePost = conv.latestMessage?.content.match(/(?<=\[sharePost\|)(.*?)(?=\])/gi);
+    const parseIntPostId = sharePost ? parseInt(sharePost[0]) : null;
+
     const participants = filterParticipants(conv?.participants);
     const userItemClassName = classNames("user-item", {
       active: conv.id === currentConvId,
@@ -868,7 +926,13 @@ const UserItem = ({
             ) : (
               conv.latestMessage &&
               `${resolveName(conv.latestMessage?.sender.fullName, "fullName")}:
-          ${imageList ? "Image" : `${conv.latestMessage?.content}`}`
+          ${
+            imageList
+              ? "Image"
+              : sharePost
+              ? "Post"
+              : `${conv.latestMessage?.content}`
+          }`
             )}
           </Typography>
         </Typography>
