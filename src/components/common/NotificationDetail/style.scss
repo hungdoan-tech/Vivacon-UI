@@ -1,6 +1,6 @@
 .notification-container {
   display: grid;
-  grid-template-columns: repeat(12, 1fr);
+  grid-template-columns: repeat(14, 1fr);
   padding: 5px 16px;
   p,
   strong {
@@ -15,6 +15,9 @@
     grid-column-start: 1;
     grid-column-end: 2;
     margin: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
     img {
       border-radius: 50px;
     }
@@ -22,7 +25,7 @@
   .notification-content {
     padding: 12px 0;
     grid-column-start: 3;
-    grid-column-end: 11;
+    grid-column-end: 12;
     .owner-activity {
       .notification-activity {
         width: 100% !important;
@@ -31,6 +34,7 @@
         display: flex;
         justify-content: space-between;
         .message-from-now {
+          color: var(--defaultColor) !important;
           width: 30%;
         }
         .message-content {
@@ -43,16 +47,26 @@
       }
       .date-time {
         font-size: 12px !important;
-        color: var(--defaultColor);
+        color: var(--defaultColor) !important;
         &.notification-from-now {
           width: 100% !important;
         }
       }
     }
   }
-  .seen-dot {
+  .noti-in-post {
     grid-column-start: 12;
-    grid-column-end: 12;
+    grid-column-end: 13;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    img {
+      margin: auto 0;
+    }
+  }
+  .seen-dot {
+    grid-column-start: 14;
+    grid-column-end: 14;
     width: 12px;
     height: 12px;
     border-radius: 12px;

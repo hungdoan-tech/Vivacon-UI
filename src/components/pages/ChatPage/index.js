@@ -101,6 +101,7 @@ const ChatPage = () => {
   };
 
   useEffect(() => {
+    console.log({receivedMessage})
     if (receivedMessage) {
       const message = receivedMessage;
       console.log("RECEIVED SOME", message);

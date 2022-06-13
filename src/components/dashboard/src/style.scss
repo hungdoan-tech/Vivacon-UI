@@ -14,35 +14,46 @@
 .Dashboard {
   /* padding: 0.5rem 3.5rem; */
   color: var(--black);
-  height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
   font-family: "Inter", sans-serif;
   border-radius: 5px;
-  background-color: transparent;
+  border: 0.25px solid var(--lightColor);
+  margin: auto !important;
+  background-color: var(--backgroundColor);
 
   .AppGlass {
     display: grid;
-    height: 97%;
-    width: 97%;
+    height: 100%;
+    min-height: 100vh;
+    width: 100%;
     background: var(--glass);
-    border-radius: 2rem;
-    gap: 16px;
-    grid-template-columns: 11rem auto 20rem;
+    grid-template-columns: repeat(24, 1fr);
     overflow: hidden;
+  }
+
+  select {
+    border-radius: 20px;
+    padding: 2px 10px;
+    background-color: var(--backgroundColor);
+    cursor: pointer;
+    color: var(--charColor);
+    border: 0.25px solid var(--lightColor);
+    box-shadow: 1px 2px 4px rgb(0 0 0 / 25%) !important;
+    margin: 10px 0;
   }
 
   @media screen and (max-width: 1200px) {
     .AppGlass {
-      grid-template-columns: 10% 50% auto;
+      grid-template-columns: repeat(28, 1fr);
       overflow-y: scroll;
     }
   }
 
   @media screen and (max-width: 768px) {
     .AppGlass {
-      grid-template-columns: 1fr;
+      grid-template-columns: repeat(28, 1fr);
     }
   }
 }

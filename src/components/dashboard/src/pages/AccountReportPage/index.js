@@ -25,6 +25,7 @@ import { reportContent } from "constant/types";
 import "./style.scss";
 import ReportTable from "components/dashboard/src/components/ReportTable";
 import ReportHeader from "components/dashboard/src/components/ReportHeader";
+import { useTranslation } from "react-i18next";
 
 export default function AccountReportPage() {
   const [showAccountReportModal, setShowAccountReportModal] = useState({
@@ -46,6 +47,7 @@ export default function AccountReportPage() {
   const [reportDetailContent, setReportDetailContent] = useState("");
 
   const { setSnackbarState } = useSnackbar();
+  const { t: trans } = useTranslation();
 
   useEffect(() => {
     fetchListAccountReport(page, limit);
@@ -137,9 +139,11 @@ export default function AccountReportPage() {
 
   useEffect(() => {
     if (showAccountReportModal.reportMessage) {
-      const filterReportDetail = reportContent.filter(
-        (item) => item.content === showAccountReportModal.reportMessage
-      )[0].detailContent;
+      const filterReportDetail = trans(
+        reportContent.filter(
+          (item) => item.content === showAccountReportModal.reportMessage
+        )[0].detailContent
+      ).split("\n");
       const plainText = filterReportDetail.reduce((prev, curr) => {
         if (prev === "") {
           return " - " + curr;
@@ -222,7 +226,6 @@ export default function AccountReportPage() {
     },
   ];
 
-
   return (
     <div className="Table">
       <h3>Account Report Data</h3>
@@ -254,7 +257,7 @@ export default function AccountReportPage() {
             handleApprove={() => handleOpenConfirmDialog("Approved")}
             handleReject={() => handleOpenConfirmDialog("Rejected")}
             handleCancel={() => handleCloseAccountReportModal()}
-            reportMessage={showAccountReportModal.reportMessage}
+            reportMessage={trans(showAccountReportModal.reportMessage)}
             reportDetailContent={reportDetailContent}
           />
           <AccountReportModal

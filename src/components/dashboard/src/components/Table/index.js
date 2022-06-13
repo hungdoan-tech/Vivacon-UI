@@ -7,28 +7,35 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import moment from "moment";
+import { convertUTCtoLocalDate } from "utils/calcDateTime";
+
 import "./style.scss";
 
 const makeStyle = (status) => {
+  const commentStyle = {
+    borderRadius: "20px",
+    fontWeight: 900,
+    padding: "5px 10px",
+  };
   if (status) {
     return {
-      background: "rgb(145 254 159 / 47%)",
-      color: "green",
-    };
-  } else if (status === "Pending") {
-    return {
-      background: "#ffadad8f",
-      color: "red",
+      ...commentStyle,
+      background: "rgba(49, 162, 76, 0.7)",
+      boxShadow: "rgb(49, 162, 76, 0.7) 0px 1.5px 3px 0px",
+      color: "white",
     };
   } else {
     return {
-      background: "#59bfff",
+      ...commentStyle,
+      background: "rgb(237, 236, 236, 0.7)",
+      boxShadow: "rgba(237, 236, 236, 0.7) 0px 1.5px 3px 0px",
       color: "white",
     };
   }
 };
 
 export default function BasicTable({ newestPostData }) {
+  console.log({ newestPostData });
   return (
     <div className="Table">
       <h3>Latest Post</h3>
@@ -64,11 +71,11 @@ export default function BasicTable({ newestPostData }) {
                 </TableCell> */}
                 <TableCell align="left">
                   <span className="status" style={makeStyle(row.active)}>
-                    {row.active}
+                    {row.active ? "Active" : "Unactive"}
                   </span>
                 </TableCell>
                 <TableCell align="left" className="left">
-                  {moment(row.createdAt).format("DD/MM/YYYY")}
+                  {convertUTCtoLocalDate(row.createdAt, "YYYY-MM-DD HH:mm:ss")}
                 </TableCell>
               </TableRow>
             ))}

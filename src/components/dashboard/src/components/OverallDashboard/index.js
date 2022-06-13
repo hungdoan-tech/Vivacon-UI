@@ -6,6 +6,9 @@ import "./style.scss";
 import { Slide } from "react-slideshow-image";
 import "react-slideshow-image/dist/styles.css";
 import Carousel from "react-material-ui-carousel";
+import FavoriteIcon from "@mui/icons-material/Favorite";
+import ChatBubbleIcon from "@mui/icons-material/ChatBubble";
+import { convertUTCtoLocalDate } from "utils/calcDateTime";
 
 const OverallDashboard = ({
   statisticData,
@@ -18,10 +21,10 @@ const OverallDashboard = ({
   return (
     <div className="MainDash">
       <div className="homepage-bg">
-        <img
+        {/* <img
           src={require("../../../../../assets/img/wave-bg.svg")}
           alt="background"
-        />
+        /> */}
       </div>
 
       <div className="homepage__hero">
@@ -32,19 +35,7 @@ const OverallDashboard = ({
           setSummaryPeriod={setSummaryPeriod}
         />
         <div className="homepage__top-cards slide-container">
-          <Slide
-            duration={5000}
-            prevArrow={
-              <div className="card__btn card__btn-prev">
-                <i className="bx bx-chevron-left" />
-              </div>
-            }
-            nextArrow={
-              <div className="card__btn card__btn-next">
-                <i className="bx bx-chevron-right" />
-              </div>
-            }
-          >
+          <Carousel duration={1000} autoPlay={true} animation="slide">
             {postInteractionData.map((item, index) => (
               <div
                 className="homepage__top-card each-slide"
@@ -53,48 +44,64 @@ const OverallDashboard = ({
                   // navigate(`/innovation/${item.id}`);
                 }}
               >
-                <div className="homepage__top-card-header">
-                  <div className="homepage__top-card-avatar-box">
-                    <div className="homepage__top-card-avatar-bg">
+                <div className="homepage__top-card-left-content">
+                  <div className="homepage__top-card-header">
+                    <div className="homepage__top-card-avatar-box">
                       <div className="homepage__top-card-avatar-bg">
-                        <div className="homepage__top-card-avatar-bg">
-                          <img src={item.url} alt="user" />
-                        </div>
+                        <img
+                          src={item.url || require("images/no-avatar.png")}
+                          alt="user"
+                        />
                       </div>
                     </div>
+                    <div className="homepage__top-card-user-box">
+                      <span className="username">{item.userName}</span>
+                      <span className="date-post">
+                        <i className="bx bxs-time-five" />
+                        {convertUTCtoLocalDate(
+                          item.createdAt,
+                          "YYYY-MM-DD HH:mm:ss"
+                        )}
+                      </span>
+                    </div>
                   </div>
-                  <div className="homepage__top-card-user-box">
-                    <span>{item.userName}</span>
+                  <div className="homepage__top-card-body">
+                    <div className="caption">"{item.caption}"</div>
+                  </div>
+                  <div className="homepage__top-card-footer">
+                    <div className="homepage__top-card-chip comment">
+                      <span>
+                        <ChatBubbleIcon className="icon" /> {item.totalComment}
+                      </span>
+                    </div>
+                    <div className="homepage__top-card-chip like">
+                      <span>
+                        <FavoriteIcon className="icon" /> {item.totalLike}
+                      </span>
+                    </div>
+                    <div className="homepage__top-card-chip interaction">
+                      <span>Total interaction: {item.totalInteraction}</span>
+                    </div>
                   </div>
                 </div>
-                <div className="homepage__top-card-body">
-                  <span>
-                    <i className="bx bxs-time-five" />
-                    {moment(item.createdAt).format("DD/MM/YYYY")}
-                  </span>
-                </div>
-                <div className="homepage__top-card-footer">
-                  <div className="homepage__top-card-chip">
-                    <span>Total comment: {item.totalComment}</span>
+                <div className="homepage__top-card-right-content">
+                  <div className="homepage__top-card-img">
+                    <Carousel autoPlay={false} className="details-carousel">
+                      {item.lstAttachmentDTO?.map((item, i) => (
+                        <img
+                          key={i}
+                          src={item.url}
+                          alt=""
+                          width="300"
+                          height="300"
+                        />
+                      ))}
+                    </Carousel>
                   </div>
-                  <div className="homepage__top-card-chip">
-                    <span>Total like: {item.totalLike}</span>
-                  </div>
-                  <div className="homepage__top-card-chip">
-                    <span>Total interaction: {item.totalInteraction}</span>
-                  </div>
-                </div>
-                <div className="homepage__top-card-img">
-                  <h3>{item.caption}</h3>
-                  <Carousel autoPlay={false} className="details-carousel">
-                    {item.lstAttachmentDTO?.map((item, i) => (
-                      <img key={i} src={item.url} alt="" />
-                    ))}
-                  </Carousel>
                 </div>
               </div>
             ))}
-          </Slide>
+          </Carousel>
         </div>
       </div>
 

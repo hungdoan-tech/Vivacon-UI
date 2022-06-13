@@ -23,6 +23,7 @@ import PostReportModal from "components/dashboard/src/components/PostReportModal
 import ReportTable from "components/dashboard/src/components/ReportTable";
 import { Typography } from "@mui/material";
 import ReportHeader from "components/dashboard/src/components/ReportHeader";
+import { useTranslation } from "react-i18next";
 
 export default function CommentReportPage() {
   const [showCommentReportModal, setShowCommentReportModal] = useState({
@@ -46,6 +47,7 @@ export default function CommentReportPage() {
   const [reportDetailContent, setReportDetailContent] = useState("");
 
   const { setSnackbarState } = useSnackbar();
+  const { t: trans } = useTranslation();
 
   useEffect(() => {
     fetchListCommentReport(page, limit);
@@ -165,9 +167,11 @@ export default function CommentReportPage() {
 
   useEffect(() => {
     if (showCommentReportModal.reportMessage) {
-      const filterReportDetail = reportContent.filter(
-        (item) => item.content === showCommentReportModal.reportMessage
-      )[0].detailContent;
+      const filterReportDetail = trans(
+        reportContent.filter(
+          (item) => item.content === showCommentReportModal.reportMessage
+        )[0].detailContent
+      ).split("\n");
       const plainText = filterReportDetail.reduce((prev, curr) => {
         if (prev === "") {
           return " - " + curr;
@@ -246,6 +250,7 @@ export default function CommentReportPage() {
       displayName: "Comment Content",
       align: "left",
       multiField: true,
+      multiLanguage: true,
       field: "comment.content",
     },
   ];
@@ -281,7 +286,7 @@ export default function CommentReportPage() {
             handleApprove={() => handleOpenConfirmDialog("Approved")}
             handleReject={() => handleOpenConfirmDialog("Rejected")}
             handleCancel={() => handleCloseReportModal()}
-            reportMessage={showCommentReportModal.reportMessage}
+            reportMessage={trans(showCommentReportModal.reportMessage)}
             reportDetailContent={reportDetailContent}
           />
           <PostReportModal

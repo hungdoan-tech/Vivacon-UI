@@ -30,6 +30,7 @@ const CommentList = ({
   setSubmittedComment,
   commentReport,
 }) => {
+  console.log({commentReport})
   const [commentList, setCommentList] = useState([]);
   const [fetchInfo, setFetchInfo] = useState({});
   const [pageNumber, setPageNumber] = useState(0);
@@ -173,8 +174,8 @@ const CommentList = ({
         <Typography className={isCommentChildClass}>
           <img
             src={
-              commentReport.createdBy?.avatar
-                ? commentReport.createdBy?.avatar
+              commentReport.comment?.createdBy?.avatar
+                ? commentReport.comment?.createdBy?.avatar
                 : require("images/no-avatar.png")
             }
             width="35"
@@ -185,7 +186,7 @@ const CommentList = ({
           <Typography className="content" component="div">
             <Typography className="content-line1" component="div">
               <strong>
-                {substringUsername(commentReport.createdBy?.username)}
+                {substringUsername(commentReport.comment?.createdBy?.username)}
               </strong>
               {"    "}
               {commentReport?.comment?.content}

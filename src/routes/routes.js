@@ -35,7 +35,6 @@ const RouterList = () => {
             path="/profile/:username"
             component={ProfilePage}
           />
-          <PrivateRoute exact path="/dashboard" component={Dashboard} />
           <PrivateRoute exact path="/report" component={PostReportPage} />
           <PrivateRoute exact path="/chat" component={ChatPage} />
           <PrivateRoute exact path="/setting" component={SettingPage} />

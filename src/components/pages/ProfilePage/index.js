@@ -190,6 +190,7 @@ const ProfilePage = (props) => {
     unfollowUserById(id)
       .then((res) => {
         if (res.status === 200) {
+          handleUpdateProfile()
           setSnackbarState({
             open: true,
             content: `${trans("follow.followed")} @${username}`,
@@ -202,6 +203,7 @@ const ProfilePage = (props) => {
       })
       .finally(() => {
         // setLocalLoading(false);
+        setLocalLoading({status: false, index})
       });
   };
 
@@ -210,6 +212,7 @@ const ProfilePage = (props) => {
     followUserById(id)
       .then((res) => {
         if (res.status === 200) {
+          handleUpdateProfile();
           setSnackbarState({
             open: true,
             content: `${trans("follow.unfollowed")} @${username}`,
@@ -222,6 +225,7 @@ const ProfilePage = (props) => {
       })
       .finally(() => {
         // setLocalLoading(false);
+        setLocalLoading({status: false, index})
       });
   };
 

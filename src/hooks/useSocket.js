@@ -6,15 +6,15 @@ import Stomp from "stompjs";
 import { getJwtToken } from "utils/cookie";
 import { getCurrentUser } from "utils/jwtToken";
 import { getConversations, getListOfConversationId } from "api/chatService";
-
 let stompClient = null;
-
 const useSocket = () => {
   let rooms = [];
+
   const [receivedMessage, setReceivedMessage] = useState(null);
   const [newConversation, setNewConversation] = useState({});
   const [activeUsers, setActiveUsers] = useState([]);
   const [conversationList, setConversationList] = useState({ content: [] });
+  const [newNotification, setNewNotification] = useState({});
 
   const onNewConversation = (payload) => {
     const newConv = JSON.parse(payload.body);
@@ -29,7 +29,8 @@ const useSocket = () => {
   };
 
   const onNewNotification = (payload) => {
-    console.log(JSON.parse(payload.body));
+    console.log({ newNotification1: JSON.parse(payload.body) });
+    setNewNotification(JSON.parse(payload.body));
   };
 
   const onMessageReceived = (payload) => {
@@ -72,14 +73,6 @@ const useSocket = () => {
         });
       }
     });
-    // getConversations({
-    //   limit: 2,
-    //   page: 0,
-    //   _sort: "lastModifiedAt",
-    //   _order: "desc",
-    // }).then((res) => {
-    //   setConversationList(res.data);
-    // });
   };
 
   const onError = (err) => {
@@ -152,18 +145,21 @@ const useSocket = () => {
       newConversation,
       activeUsers,
       conversationList,
+      newNotification,
     },
     setStates: {
       setReceivedMessage,
       setNewConversation,
       setActiveUsers,
       setConversationList,
+      setNewNotification,
     },
     handlers: {
       chatInExistedConversation,
       chatInVirtualConversation,
       typing,
       untyping,
+      connect,
     },
   };
 };

@@ -5,6 +5,11 @@
 .MuiTableRow-root.MuiTableRow-head > * {
   font-weight: bold !important;
 }
+.Table {
+  .MuiTableContainer-root {
+    box-shadow: 1px 2px 4px rgb(0 0 0 / 25%) !important;
+  }
+}
 
 .Table td,
 th {
@@ -30,9 +35,8 @@ th {
   }
 }
 
-
 @media screen and (max-width: 768px) {
-  .Table{
+  .Table {
     position: relative;
     display: flex;
     flex-direction: column;

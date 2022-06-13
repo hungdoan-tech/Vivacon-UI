@@ -20,6 +20,7 @@ import useSnackbar from "hooks/useSnackbar";
 
 import ConfirmDialog from "components/common/ConfirmDialog";
 import { convertUTCtoLocalDate } from "utils/calcDateTime";
+import { useTranslation } from "react-i18next";
 
 const ReportTable = ({
   reportList,
@@ -31,6 +32,7 @@ const ReportTable = ({
   handleOpenReportModal,
   headers,
 }) => {
+  const { t: trans } = useTranslation();
   return (
     <>
       <TableContainer
@@ -94,10 +96,12 @@ const ReportTable = ({
                               align={header.align}
                             >
                               {!header.multiField
-                                ? row[header.field]
-                                : row[header.field.split(".")[0]][
-                                    header.field.split(".")[1]
-                                  ]}
+                                ? trans(row[header.field])
+                                : trans(
+                                    row[header.field.split(".")[0]][
+                                      header.field.split(".")[1]
+                                    ]
+                                  )}
                             </TableCell>
                           );
                         } else

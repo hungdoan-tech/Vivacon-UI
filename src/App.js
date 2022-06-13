@@ -15,6 +15,7 @@ import classNames from "classnames";
 import { useCookies } from "react-cookie";
 import NotificationSnackbar from "components/common/NotificationSnackbar";
 import Footer from "components/common/Footer";
+import useSocket from "hooks/useSocket";
 
 export const AuthUser = createContext();
 export const Loading = createContext();
@@ -37,6 +38,11 @@ function App(props) {
   const [isExpiredToken, setIsExpiredToken] = useState(false);
   const [cookies, setCookie] = useCookies(["jwt-token", "refresh-token"]);
   const [isUpdateProfile, setIsUpdateProfile] = useState(false);
+
+  const { handlers } = useSocket();
+  const {
+    connect
+  } = handlers;
 
   const readCookie = () => {
     const token = getJwtToken();
@@ -62,6 +68,7 @@ function App(props) {
   };
 
   useEffect(() => {
+    connect();
     setAuth(readCookie());
   }, []);
 

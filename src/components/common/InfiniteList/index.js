@@ -38,7 +38,7 @@ const InfiniteList = (props) => {
   }, [data.username]);
 
   useEffect(() => {
-    if (!_.isEqual(dataList, parentDataList) && setParentDataList) {
+    if (!_.isEqual(dataList, parentDataList) && parentDataList) {
       setParentDataList(dataList);
     }
   }, [dataList]);

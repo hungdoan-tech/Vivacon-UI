@@ -25,6 +25,7 @@ import { IconButton, Tooltip, Typography, Button } from "@mui/material";
 import "./style.scss";
 import PostReportModal from "components/dashboard/src/components/PostReportModal";
 import ReportHeader from "components/dashboard/src/components/ReportHeader";
+import { useTranslation } from "react-i18next";
 
 export default function PostReportPage() {
   const [showPostReportModal, setShowPostReportModal] = useState({
@@ -48,6 +49,7 @@ export default function PostReportPage() {
   const [reportDetailContent, setReportDetailContent] = useState("");
 
   const { setSnackbarState } = useSnackbar();
+  const { t: trans } = useTranslation();
 
   useEffect(() => {
     fetchListPostReport(page, limit);
@@ -62,11 +64,13 @@ export default function PostReportPage() {
   }, [limit]);
 
   useEffect(() => {
-    console.log({ showPostReportModal });
+    console.log({ showPostReportModal, reportContent });
     if (showPostReportModal.reportMessage) {
-      const filterReportDetail = reportContent.filter(
-        (item) => item.content === showPostReportModal.reportMessage
-      )[0].detailContent;
+      const filterReportDetail = trans(
+        reportContent.filter(
+          (item) => item.content === showPostReportModal.reportMessage
+        )[0].detailContent
+      ).split("\n");
       const plainText = filterReportDetail.reduce((prev, curr) => {
         if (prev === "") {
           return " - " + curr;
@@ -258,7 +262,7 @@ export default function PostReportPage() {
             handleApprove={() => handleOpenConfirmDialog("Approved")}
             handleReject={() => handleOpenConfirmDialog("Rejected")}
             handleCancel={() => handleClosePostReportModal()}
-            reportMessage={showPostReportModal.reportMessage}
+            reportMessage={trans(showPostReportModal.reportMessage)}
             reportDetailContent={reportDetailContent}
           />
           <PostReportModal
