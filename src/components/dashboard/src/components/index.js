@@ -62,7 +62,7 @@ const Sidebar = ({ setSelected, selected }) => {
       >
         <div className="menu">
           <Box sx={{ width: "100%" }}>
-            <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+            <Box >
               {SidebarData.map((item, index) => {
                 return (
                   <div

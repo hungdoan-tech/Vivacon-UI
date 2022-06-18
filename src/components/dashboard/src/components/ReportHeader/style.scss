@@ -57,6 +57,8 @@
 }
 
 .Table {
+  grid-column-start: 5;
+  grid-column-end: 21;
   tbody {
     .MuiTableRow-root {
       &:hover {

@@ -5,6 +5,8 @@ import { motion, AnimateSharedLayout } from "framer-motion";
 import { UilTimes } from "@iconscout/react-unicons";
 import Chart from "react-apexcharts";
 import { PERIOD } from "../../../../../constant/types";
+import classNames from "classnames";
+import { ClickAwayListener, Typography } from "@mui/material";
 
 // parent Card
 const Card = (props) => {
@@ -46,6 +48,8 @@ function CompactCard({ param, setExpanded }) {
 
 // Expanded Card
 function ExpandedCard({ param, setExpanded, setSummaryPeriod }) {
+  console.log({ param });
+  const [currentPeriod, setCurrentPeroid] = useState(PERIOD.MONTHS);
   const data = {
     options: {
       chart: {
@@ -53,62 +57,110 @@ function ExpandedCard({ param, setExpanded, setSummaryPeriod }) {
       },
       xaxis: {
         categories: param.time,
+        labels: {
+          style: {
+            fontSize: "12px",
+          },
+        },
+      },
+      yaxis: {
+        labels: {
+          style: {
+            fontSize: "14px !important",
+          },
+        },
+      },
+      tooltip: {
+        enabled: true,
+      },
+      fill: {
+        colors: [param.color.chartColor],
+        type: "gradient",
+        gradient: {
+          shade: "light",
+          type: "horizontal",
+          shadeIntensity: 0.25,
+          gradientToColors: undefined,
+          inverseColors: true,
+          opacityFrom: 1,
+          opacityTo: 1,
+          stops: [20, 40, 100],
+        },
+      },
+      legend: {
+        position: "bottom",
+        offsetX: 0,
+        offsetY: 50,
       },
     },
-    series: [
-      {
-        name: "series-1",
-        data: [30, 40, 45, 50, 49, 60, 70, 91],
-      },
-    ],
   };
+
+  const handleClickPeriod = (type) => {
+    setSummaryPeriod(type);
+    setCurrentPeroid(type);
+  };
+
+  const peroidClassName = (type) =>
+    classNames({
+      active: currentPeriod === type,
+    });
 
   return (
     <motion.div
       className="ExpandedCard"
       style={{
-        background: param.color.backGround,
+        background: "white",
         boxShadow: param.color.boxShadow,
+        "--chartColor": param.color.chartColor,
       }}
       layoutId="expandableCard"
     >
-      <div style={{ alignSelf: "flex-end", cursor: "pointer", color: "white" }}>
-        <UilTimes onClick={setExpanded} />
-      </div>
-      <span>{param.title}</span>
+      <ClickAwayListener onClickAway={setExpanded}>
+        <div style={{ flex: 1 }}>
+          <div className="ChartHeader">
+            <span className="Title">{param.title}</span>
 
-      <div className="homepage__summary-filter-wrapper">
-        <div
-          onClick={() => {
-            setSummaryPeriod(PERIOD.MONTHS);
-          }}
-        >
-          <span>Month</span>
+            <div className="homepage__summary-filter-wrapper">
+              <div
+                onClick={() => {
+                  handleClickPeriod(PERIOD.MONTHS);
+                }}
+                className={peroidClassName(PERIOD.MONTHS)}
+              >
+                <span>Month</span>
+              </div>
+              <div
+                onClick={() => {
+                  handleClickPeriod(PERIOD.QUARTERS);
+                }}
+                className={peroidClassName(PERIOD.QUARTERS)}
+              >
+                <span>Quarter</span>
+              </div>
+              <div
+                onClick={() => {
+                  handleClickPeriod(PERIOD.YEARS);
+                }}
+                className={peroidClassName(PERIOD.YEARS)}
+              >
+                <span>Year</span>
+              </div>
+            </div>
+            <div className="CloseCardIcon">
+              <UilTimes onClick={setExpanded} />
+            </div>
+          </div>
+          <div className="chartContainer">
+            <Chart
+              options={data.options}
+              series={param.series}
+              type="bar"
+              width="700"
+              style={{ marginTop: "20px" }}
+            />
+          </div>
         </div>
-        <div
-          onClick={() => {
-            setSummaryPeriod(PERIOD.QUARTERS);
-          }}
-        >
-          <span>Quarter</span>
-        </div>
-        <div
-          onClick={() => {
-            setSummaryPeriod(PERIOD.YEARS);
-          }}
-        >
-          <span>Year</span>
-        </div>
-      </div>
-
-      <div className="chartContainer">
-        <Chart
-          options={data.options}
-          series={param.series}
-          type="bar"
-          width="500"
-        />
-      </div>
+      </ClickAwayListener>
     </motion.div>
   );
 }

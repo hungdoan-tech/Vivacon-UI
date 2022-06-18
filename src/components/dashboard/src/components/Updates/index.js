@@ -7,7 +7,7 @@ const Updates = ({ userAccountMostFollowerData }) => {
       {userAccountMostFollowerData.map((update) => {
         return (
           <div className="update">
-            <img src={update.url} alt="profile" />
+            <img src={update.url || require('images/no-avatar.png')} alt="profile" />
             <div className="noti">
               <div style={{ marginBottom: "0.5rem" }}>
                 <span> {update.userName}</span>

@@ -9,6 +9,7 @@ import { CookiesProvider, Cookies } from "react-cookie";
 import i18n from "./translation/i18n";
 import { I18nextProvider } from "react-i18next";
 
+
 ReactDOM.render(
   <React.StrictMode>
     <I18nextProvider i18n={i18n}>

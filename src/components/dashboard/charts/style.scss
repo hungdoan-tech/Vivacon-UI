@@ -225,6 +225,12 @@
   padding: 0.3rem 0.6rem;
   display: inline-flex;
   align-items: center;
+  &.comment {
+  }
+  &.like {
+  }
+  &.interaction {
+  }
 }
 
 .homepage__top-card-chip span,

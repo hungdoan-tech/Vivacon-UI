@@ -32,6 +32,7 @@ const Cards = ({
       color: {
         backGround: "linear-gradient(180deg, #bb67ff 0%, #c484f3 100%)",
         boxShadow: "0px 10px 20px 0px #e0c6f5",
+        chartColor: '#c484f3'
       },
       value: statisticData.totalPostCount,
       png: UilUsdSquare,
@@ -48,6 +49,7 @@ const Cards = ({
       color: {
         backGround: "linear-gradient(180deg, #FF919D 0%, #FC929D 100%)",
         boxShadow: "0px 10px 20px 0px #FDC0C7",
+        chartColor: '#FC929D',
       },
       value: statisticData.totalAccountCount,
       png: UilUsdSquare,

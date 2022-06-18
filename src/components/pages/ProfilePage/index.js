@@ -190,26 +190,7 @@ const ProfilePage = (props) => {
     unfollowUserById(id)
       .then((res) => {
         if (res.status === 200) {
-          setSnackbarState({
-            open: true,
-            content: `${trans("follow.followed")} @${username}`,
-            type: "SUCCESS",
-          });
-        }
-      })
-      .catch((err) => {
-        throw err;
-      })
-      .finally(() => {
-        // setLocalLoading(false);
-      });
-  };
-
-  const handleFollowUser = (id, username, index) => {
-    setLocalLoading({ status: true, index });
-    followUserById(id)
-      .then((res) => {
-        if (res.status === 200) {
+          handleUpdateProfile()
           setSnackbarState({
             open: true,
             content: `${trans("follow.unfollowed")} @${username}`,
@@ -222,6 +203,29 @@ const ProfilePage = (props) => {
       })
       .finally(() => {
         // setLocalLoading(false);
+        setLocalLoading({status: false, index})
+      });
+  };
+
+  const handleFollowUser = (id, username, index) => {
+    setLocalLoading({ status: true, index });
+    followUserById(id)
+      .then((res) => {
+        if (res.status === 200) {
+          handleUpdateProfile();
+          setSnackbarState({
+            open: true,
+            content: `${trans("follow.followed")} @${username}`,
+            type: "SUCCESS",
+          });
+        }
+      })
+      .catch((err) => {
+        throw err;
+      })
+      .finally(() => {
+        // setLocalLoading(false);
+        setLocalLoading({status: false, index})
       });
   };
 

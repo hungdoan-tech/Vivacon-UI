@@ -23,24 +23,6 @@ const Navbar = () => {
   const history = useHistory();
   const Auth = useContext(AuthUser);
 
-  const { handlers, states, setStates } = useSocket();
-  const { receivedMessage, newConversation, activeUsers, conversationList } =
-    states;
-  const {
-    setReceivedMessage,
-    setNewConversation,
-    setActiveUsers,
-    setConversationList,
-  } = setStates;
-  const {
-    chatInExistedConversation,
-    chatInVirtualConversation,
-    typing,
-    untyping,
-  } = handlers;
-
-  const { t: trans } = useTranslation();
-
   const handleClickAwayUserOption = () => {
     setUserOption(false);
   };

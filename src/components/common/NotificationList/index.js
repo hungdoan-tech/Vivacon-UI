@@ -2,43 +2,48 @@ import { Typography, Card, CardContent, Button } from "@mui/material";
 import { useState, useEffect } from "react";
 import { calculateFromNow } from "utils/calcDateTime";
 import NotificationDetail from "components/common/NotificationDetail";
-import { notificationList, messageList } from "constant/data";
 import { notificationType } from "constant/types";
 import "./style.scss";
 import classNames from "classnames";
 import InfiniteList from "components/common/InfiniteList";
 import { getNotificationList } from "api/notificationService";
+import useSocket from "hooks/useSocket";
 
-const NotificationList = ({ type, changePosition }) => {
+const NotificationList = ({ type, changePosition, closeNotification }) => {
   const [isAll, setAll] = useState(true);
-  const [data, setData] = useState([]);
+  const [parentDataList, setParentDataList] = useState([]);
+
+  const { handlers, states, setStates } = useSocket();
+  const { receivedMessage, newConversation, activeUsers, conversationList, newNotification } =
+    states;
+  const {
+    setReceivedMessage,
+    setNewConversation,
+    setActiveUsers,
+    setConversationList,
+  } = setStates;
+  const {
+    chatInExistedConversation,
+    chatInVirtualConversation,
+    typing,
+    untyping,
+  } = handlers;
 
   useEffect(() => {
-    const initData = initalData(type);
+    console.log({newNotification})
+  }, [newNotification])
+
+  useEffect(() => {
+    // const initData = initalData(type);
     setAll(true);
-    setData(initData);
   }, [type]);
 
-  const initalData = (type) => {
-    let initData;
-    if (type === notificationType.NOTIFICATION) {
-      initData = [...notificationList];
-    } else {
-      initData = [...messageList];
-    }
-    initData.map((item, index) => {
-      initData[index] = { ...item, fromNow: calculateFromNow(item.dateTime) };
-      return initData[index];
-    });
-    return initData;
-  };
-
   useEffect(() => {
-    if (!isAll) {
-      setData(data.filter((item) => item.seen === false));
-    } else {
-      setData(initalData(type));
-    }
+    // if (!isAll) {
+    //   setData(data.filter((item) => item.seen === false));
+    // } else {
+    //   setData(initalData(type));
+    // }
   }, [isAll]);
 
   const handleFilterChange = () => {
@@ -101,14 +106,14 @@ const NotificationList = ({ type, changePosition }) => {
               limit: 5,
               _sort: "timestamp",
               _order: "desc",
-              username: ''
+              username: "",
             }}
             component={NotificationDetail}
             handleClickItem={() => null}
-            noDataComponent={() => <></>}
-            childProps={{ type }}
-            parentDataList={[]}
-            setParentDataList={() => []}
+            noDataComponent={() => <>No data</>}
+            childProps={{ type, closeNotification }}
+            parentDataList={parentDataList}
+            setParentDataList={setParentDataList}
           />
         </CardContent>
       </Card>

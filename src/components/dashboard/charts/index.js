@@ -212,13 +212,13 @@ export default function Dashboard() {
                     </span>
                   </div>
                   <div className="homepage__top-card-footer">
-                    <div className="homepage__top-card-chip">
+                    <div className="homepage__top-card-chip comment">
                       <span>Total comment: {item.totalComment}</span>
                     </div>
-                    <div className="homepage__top-card-chip">
+                    <div className="homepage__top-card-chip like">
                       <span>Total like: {item.totalLike}</span>
                     </div>
-                    <div className="homepage__top-card-chip">
+                    <div className="homepage__top-card-chip interaction">
                       <span>Total interaction: {item.totalInteraction}</span>
                     </div>
                   </div>

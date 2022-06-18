@@ -19,7 +19,7 @@ import useLoading from "hooks/useLoading";
 import useSnackbar from "hooks/useSnackbar";
 import { useTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom";
-import {parseJwt} from 'utils/jwtToken'
+import { parseJwt } from "utils/jwtToken";
 
 const LoginPage = () => {
   const [username, setUsername] = useState("");

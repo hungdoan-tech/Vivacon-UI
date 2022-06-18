@@ -1,37 +1,56 @@
 import { Typography } from "@mui/material";
 import classNames from "classnames";
 import * as React from "react";
-import { notificationType } from "constant/types";
-import {calculateFromNow} from 'utils/calcDateTime';
+import { notificationStatus, notificationsType } from "constant/types";
+import { calculateFromNow } from "utils/calcDateTime";
 import "./style.scss";
+import { useHistory } from "react-router-dom";
 
-const NotificationDetail = ({ item, type }) => {
+const NotificationDetail = ({ item, type, childProps }) => {
+  const { closeNotification } = childProps;
+  const history = useHistory();
+  const handleClickNotificationItem = () => {
+    if (item.type !== notificationsType.FOLLOWING_ON_ME) {
+      history.push(`/post/${item.presentationId}`);
+    } else {
+      history.push(`/profile/${item.actionAuthor.username}`);
+    }
+    closeNotification();
+  };
+
   const renderNotificationContent = (item) => {
-    // let activityText;
-    // if (item.type === "POST") {
-    //   activityText = ` posted ${item.numberOfImages} ${
-    //     item.numberOfImages > 1 ? " new images" : " new image"
-    //   }`;
-    // }
-
-    // if (item.type === "LIKED") {
-    //   activityText = " liked your post";
-    // }
-    // if (item.type === "COMMENTED") {
-    //   activityText = " commented your post";
-    // }
-    // if (item.type === "FOLLOWED") {
-    //   activityText = " followed you";
-    // }
+    const actionAuthor = item?.actionAuthor.fullName;
     return (
-      <Typography component="div">
-        <Typography component="div" className="notification-activity">
-          <p><strong>{item.ownerName}</strong> {item.content}</p>
+      <>
+        <Typography component="div" className="present-image">
+          <img src={item.actionAuthor.avatar} width="50" height="50" />
         </Typography>
-        <Typography className={fromNowClassName}>
-          {calculateFromNow(new Date(item.timestamp))}
+        <Typography
+          component="div"
+          className="notification-content"
+          align="left"
+        >
+          <Typography component="div" className="owner-activity">
+            <Typography component="div" className="notification-activity">
+              <p>
+                <strong>{actionAuthor}</strong>{" "}
+                {item.content.split(actionAuthor)[1]}
+              </p>
+            </Typography>
+            <Typography className="notification-from-now">
+              {calculateFromNow(new Date(item.timestamp))}
+            </Typography>
+          </Typography>
         </Typography>
-      </Typography>
+        <Typography component="div" className="noti-in-post">
+          {item.type !== notificationsType.FOLLOWING_ON_ME && (
+            <img src={item.domainImage} width="50" height="50" />
+          )}
+        </Typography>
+        {item.status !== notificationStatus.SEEN && (
+          <Typography component="div" className="seen-dot"></Typography>
+        )}
+      </>
     );
   };
 
@@ -53,25 +72,17 @@ const NotificationDetail = ({ item, type }) => {
       </Typography>
     );
   };
-  const fromNowClassName = classNames("date-time", {
-    "notification-from-now": type === notificationType.NOTIFICATION,
-    "messages-from-now": type === notificationType.MESSAGE,
-  });
+  // const fromNowClassName = classNames("date-time", {
+  //   "notification-from-now": type === notificationType.NOTIFICATION,
+  //   "messages-from-now": type === notificationType.MESSAGE,
+  // });
   return (
-    <Typography component="div" className="notification-container">
-      <Typography component="div" className="present-image">
-        <img src={item.image} width="50" height="50" />
-      </Typography>
-      <Typography component="div" className="notification-content" align="left">
-        <Typography component="div" className="owner-activity">
-          {type === notificationType.NOTIFICATION
-            ? renderNotificationContent(item)
-            : renderMessageContent(item)}
-        </Typography>
-      </Typography>
-      {!item.seen && (
-        <Typography component="div" className="seen-dot"></Typography>
-      )}
+    <Typography
+      component="div"
+      className="notification-container"
+      onClick={handleClickNotificationItem}
+    >
+      {renderNotificationContent(item)}
     </Typography>
   );
 };

@@ -55,6 +55,7 @@ const AppButtonsGroup = (props) => {
         <NotificationList
           type={notificationType.MESSAGE}
           changePosition={changePosition}
+          closeNotification={closeNotification}
         />
       );
     }
@@ -63,6 +64,7 @@ const AppButtonsGroup = (props) => {
         <NotificationList
           type={notificationType.NOTIFICATION}
           changePosition={changePosition}
+          closeNotification={closeNotification}
         />
       );
     }

@@ -18,7 +18,7 @@ const renewAccessToken = async (refreshToken) => {
 };
 
 const axiosConfig = axios.create({
-  baseURL: `${API_URL}${CURRENT_VERSION}`,
+  baseURL: `${API_URL}/${CURRENT_VERSION}`,
   headers: {
     "Content-Type": "application/json",
   },

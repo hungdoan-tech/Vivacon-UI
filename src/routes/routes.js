@@ -14,43 +14,48 @@ import ForgotPasswordPage from "components/pages/ForgotPasswordPage";
 import Dashboard from "components/dashboard/src";
 import PostReportPage from "components/dashboard/src/pages/PostReportPage";
 import ChatPage from "components/pages/ChatPage";
-import SettingPage from 'components/pages/SettingPage';
+import SettingPage from "components/pages/SettingPage";
 import PostDetailPage from "components/pages/PostDetailPage";
 
 const RouterList = () => {
   const Auth = useContext(AuthUser);
   return (
     <Switch>
-      {!Auth.auth.isAdmin && (
+      {!Auth.auth.isLogin && (
         <>
-          <PrivateRoute exact path="/" component={PostsListPage} />
-          <PrivateRoute exact path="/not-found" component={NotFoundPage} />
-          <PrivateRoute exact path="/login" component={LoginPage} />
+          <Route exact path="/login" component={LoginPage} />
           <Route exact path="/register" component={RegisterPage} />
           <Route exact path="/verify" component={VerifyPage} />
           <Route exact path="/find-account" component={FindAccountPage} />
           <Route exact path="/forgot-password" component={ForgotPasswordPage} />
+          <Route path="*">
+            <Redirect push to="/login" replace />
+          </Route>
+        </>
+      )}
+      {Auth.auth.isLogin && !Auth.auth.isAdmin && (
+        <>
+          <PrivateRoute exact path="/login" component={LoginPage} />
+          <PrivateRoute exact path="/" component={PostsListPage} />
+          <PrivateRoute exact path="/not-found" component={NotFoundPage} />
           <PrivateRoute
             exact
             path="/profile/:username"
             component={ProfilePage}
           />
-          <PrivateRoute exact path="/dashboard" component={Dashboard} />
           <PrivateRoute exact path="/report" component={PostReportPage} />
           <PrivateRoute exact path="/chat" component={ChatPage} />
           <PrivateRoute exact path="/setting" component={SettingPage} />
           <PrivateRoute exact path="/post/:id" component={PostDetailPage} />
         </>
       )}
-      {Auth.auth.isAdmin && (
+      {Auth.auth.isLogin && Auth.auth.isAdmin && (
         <>
+          <PrivateRoute exact path="/login" component={LoginPage} />
           <PrivateRoute exact path="/not-found" component={NotFoundPage} />
           <PrivateRoute exact path="/dashboard" component={Dashboard} />
         </>
       )}
-      <Route path="*">
-        <Redirect to="/not-found" replace />
-      </Route>
     </Switch>
   );
 };
@@ -68,7 +73,7 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
             <Redirect
               to={{
                 pathname: "/",
-                state: { from: location },
+                // state: { from: location },
               }}
             />
           )
@@ -86,7 +91,7 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
             <Redirect
               to={{
                 pathname: "/login",
-                state: { from: location },
+                // state: { from: location },
               }}
             />
           )

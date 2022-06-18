@@ -6,7 +6,7 @@ const RightSide = ({ userAccountMostFollowerData }) => {
   return (
     <div className="RightSide">
       <div>
-        <h3>Top Accounts Most Follower</h3>
+        <h4>Top Accounts Most Follower</h4>
         <Updates userAccountMostFollowerData={userAccountMostFollowerData} />
       </div>
     </div>

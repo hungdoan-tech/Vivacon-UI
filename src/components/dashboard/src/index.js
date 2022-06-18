@@ -62,20 +62,23 @@ const Dashboard = () => {
       <div className="AppGlass">
         <Sidebar setSelected={setSelected} selected={selected} />
         {selected == 0 && (
-          <OverallDashboard
-            statisticData={statisticData}
-            newestPostData={newestPostData}
-            postInteractionData={postInteractionData}
-            statisticByTime={statisticByTime}
-            summaryPeriod={summaryPeriod}
-            setSummaryPeriod={setSummaryPeriod}
-          />
+          <>
+            <OverallDashboard
+              statisticData={statisticData}
+              newestPostData={newestPostData}
+              postInteractionData={postInteractionData}
+              statisticByTime={statisticByTime}
+              summaryPeriod={summaryPeriod}
+              setSummaryPeriod={setSummaryPeriod}
+            />
+            <RightSide
+              userAccountMostFollowerData={userAccountMostFollowerData}
+            />
+          </>
         )}
         {selected == 1 && <PostReportPage />}
         {selected == 2 && <CommentReportPage />}
         {selected == 3 && <AccountReportPage />}
-
-        <RightSide userAccountMostFollowerData={userAccountMostFollowerData} />
       </div>
     </div>
   );

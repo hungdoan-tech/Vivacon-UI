@@ -11,6 +11,7 @@ import {
   createPostReport,
   getDetailPostReport,
 } from "api/reportService";
+import { useTranslation } from "react-i18next";
 import "./style.scss";
 
 function TabPanel(props) {
@@ -38,7 +39,10 @@ const ReportDetailModal = ({ open, handleCloseModal, type, currentTarget }) => {
   const [globalState, setGlobalState] = useState({});
   const { setSnackbarState } = useSnackbar();
 
+  const { t: trans } = useTranslation();
+
   const handleCreateReport = (item) => {
+    console.log({ item, trans: trans(item.detailContent) });
     setGlobalState(item);
     handleNextStep();
   };
@@ -135,7 +139,7 @@ const ReportDetailModal = ({ open, handleCloseModal, type, currentTarget }) => {
       >
         <Typography component="div" className="report-modal-step1">
           <Typography className="report-question">
-            Why do you report this post?
+            {trans("report.whyReport")}
           </Typography>
           <Typography component="div" align="left" className="report-content">
             {reportContent.map((item, index) => (
@@ -143,7 +147,7 @@ const ReportDetailModal = ({ open, handleCloseModal, type, currentTarget }) => {
                 className="report-item"
                 onClick={() => handleCreateReport(item)}
               >
-                <p>{item.content}</p>
+                <p>{trans(item.content)}</p>
                 <ChevronRightIcon />
               </Typography>
             ))}
@@ -171,19 +175,21 @@ const ReportDetailModal = ({ open, handleCloseModal, type, currentTarget }) => {
             </Button>
           </Typography>
           <Typography className="report-question">
-            Tại sao bạn báo cáo bài viết này?
+            {trans("report.whyReport")}
           </Typography>
-          <ul className="reason-list-container">
+          <Typography className="reason-list-container">
             {globalState.detailContent
-              ? globalState?.detailContent.map((item, index) => (
-                  <>
-                    <li key={item.id}>{item}</li>
-                  </>
-                ))
+              ? trans(globalState?.detailContent)
+                  .split("\n")
+                  .map((item, index) => (
+                    <>
+                      <li key={item.id}>{item}</li>
+                    </>
+                  ))
               : null}
-          </ul>
+          </Typography>
           <Button className="submit-btn" onClick={handleSubmitReport}>
-            Gửi báo cáo
+            {trans("report.sendReport")}
           </Button>
         </Typography>
       </CustomModal>
@@ -206,7 +212,7 @@ const ReportDetailModal = ({ open, handleCloseModal, type, currentTarget }) => {
             src={require("images/action-complete.png")}
           />
           <Typography className="action-complete-label">
-            Cảm ơn bạn đã cho chúng tôi biết
+            {trans("report.thankYou")}
           </Typography>
           <Typography className="thank-you-label">
             {" "}
