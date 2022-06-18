@@ -193,7 +193,7 @@ const ProfilePage = (props) => {
           handleUpdateProfile()
           setSnackbarState({
             open: true,
-            content: `${trans("follow.followed")} @${username}`,
+            content: `${trans("follow.unfollowed")} @${username}`,
             type: "SUCCESS",
           });
         }
@@ -215,7 +215,7 @@ const ProfilePage = (props) => {
           handleUpdateProfile();
           setSnackbarState({
             open: true,
-            content: `${trans("follow.unfollowed")} @${username}`,
+            content: `${trans("follow.followed")} @${username}`,
             type: "SUCCESS",
           });
         }

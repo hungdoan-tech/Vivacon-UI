@@ -1,5 +1,5 @@
-export const API_URL = "http://localhost:8080/api/";
-export const SOCKET_URL = "http://localhost:8080/ws";
+export const API_URL = process.env.REACT_APP_API_URL;
+export const SOCKET_URL = process.env.REACT_APP_SOCKET_URL;
 export const CURRENT_VERSION = "v1";
 export const API_ENDPOINT_KEYS = {
   LOGIN: "/login",
@@ -13,7 +13,7 @@ export const API_ENDPOINT_KEYS = {
   GET_PROFILE: "/profile",
   FOLLOWER: "/follower",
   FOLLOWING: "/following",
-  POST: '/post',
+  POST: "/post",
   RESEND: "/account/verification_token",
   FORGOT: "/account/password",
   CHECK: "/account/check",
@@ -26,7 +26,7 @@ export const API_ENDPOINT_KEYS = {
   POST_REPORT: "/postReport",
   COMMENT_REPORT: "/commentReport",
   STATISTIC: "/statistic",
-  CONVERSATION: '/conversation',
-  ACCOUNT: '/account',
-  NOTIFICATION: '/notification'
+  CONVERSATION: "/conversation",
+  ACCOUNT: "/account",
+  NOTIFICATION: "/notification",
 };

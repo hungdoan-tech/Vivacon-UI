@@ -135,9 +135,9 @@ const useSocket = () => {
     );
   };
 
-  useEffect(() => {
-    connect();
-  }, []);
+  // useEffect(() => {
+  //   connect();
+  // }, []);
 
   return {
     states: {

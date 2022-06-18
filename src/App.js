@@ -22,7 +22,7 @@ export const Loading = createContext();
 export const Snackbar = createContext();
 export const UpdateProfile = createContext();
 
-function App(props) {
+function App() {
   const [openApp, setOpenApp] = useState(false);
   const [auth, setAuth] = useState({
     isLogin: false,
@@ -68,7 +68,7 @@ function App(props) {
   };
 
   useEffect(() => {
-    connect();
+    // connect();
     setAuth(readCookie());
   }, []);
 
