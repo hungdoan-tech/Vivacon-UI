@@ -68,7 +68,7 @@ function App() {
   };
 
   useEffect(() => {
-    // connect();
+    connect();
     setAuth(readCookie());
   }, []);
 

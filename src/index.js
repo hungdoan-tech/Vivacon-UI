@@ -8,15 +8,17 @@ import { CookiesProvider, Cookies } from "react-cookie";
 
 import i18n from "./translation/i18n";
 import { I18nextProvider } from "react-i18next";
-
+import { SocketStoreProvider } from "globalSocketState";
 
 ReactDOM.render(
   <React.StrictMode>
     <I18nextProvider i18n={i18n}>
       <CookiesProvider>
-        <BrowserRouter>
-          <App cookie={Cookies} />
-        </BrowserRouter>
+        <SocketStoreProvider>
+          <BrowserRouter>
+            <App cookie={Cookies} />
+          </BrowserRouter>
+        </SocketStoreProvider>
       </CookiesProvider>
     </I18nextProvider>
   </React.StrictMode>,
