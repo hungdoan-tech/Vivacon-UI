@@ -43,14 +43,8 @@
     margin: auto !important;
     margin-bottom: 10px !important;
     .hashtag-list {
-      display: flex;
-      flex-direction: row;
       overflow: auto;
-    }
-    .hashtag-item {
-      display: initial !important;
-      width: fit-content;
-      white-space: nowrap;
+      height: 200px;
     }
   }
 }
