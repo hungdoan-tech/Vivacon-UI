@@ -1,6 +1,6 @@
 .notification-container {
   display: grid;
-  grid-template-columns: repeat(14, 1fr);
+  grid-template-columns: repeat(15, 1fr);
   padding: 5px 16px;
   p,
   strong {
@@ -25,7 +25,8 @@
   .notification-content {
     padding: 12px 0;
     grid-column-start: 3;
-    grid-column-end: 12;
+    grid-column-end: 14;
+    margin-right: 5px;
     .owner-activity {
       .notification-activity {
         width: 100% !important;
@@ -55,18 +56,18 @@
     }
   }
   .noti-in-post {
-    grid-column-start: 12;
-    grid-column-end: 13;
+    grid-column-start: 14;
+    grid-column-end: 15;
     display: flex;
     flex-direction: column;
     justify-content: center;
     img {
-      margin: auto 0;
+      margin: auto 10px;
     }
   }
   .seen-dot {
-    grid-column-start: 14;
-    grid-column-end: 14;
+    grid-column-start: 15;
+    grid-column-end: 15;
     width: 12px;
     height: 12px;
     border-radius: 12px;

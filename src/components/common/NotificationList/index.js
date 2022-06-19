@@ -30,10 +30,6 @@ const NotificationList = ({ type, changePosition, closeNotification }) => {
   } = handlers;
 
   useEffect(() => {
-    console.log({newNotification})
-  }, [newNotification])
-
-  useEffect(() => {
     // const initData = initalData(type);
     setAll(true);
   }, [type]);
@@ -45,6 +41,10 @@ const NotificationList = ({ type, changePosition, closeNotification }) => {
     //   setData(initalData(type));
     // }
   }, [isAll]);
+
+  useEffect(() => {
+    console.log({newNotification111: newNotification})
+  }, [newNotification])
 
   const handleFilterChange = () => {
     setAll(!isAll);

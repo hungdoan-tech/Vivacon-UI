@@ -9,18 +9,31 @@ import "./style.scss";
 import NotificationList from "components/common/NotificationList";
 import classNames from "classnames";
 import { notificationType } from "constant/types";
+import useSocket from "hooks/useSocket";
+import _ from "lodash";
 
 const AppButtonsGroup = (props) => {
   const [openNoti, setOpenNoti] = React.useState(false);
   const [openMessage, setOpenMessage] = React.useState(false);
   const [changePosition, setChangePosition] = React.useState(false);
+  const [numberOfNotification, setNumberOfNotification] = React.useState(0);
 
+  const { handleOpenCreatePostModal } = props;
+
+  const { handlers, states, setStates } = useSocket();
   const {
-    handleOpenCreatePostModal,
-  } = props;
+    receivedMessage,
+    newConversation,
+    activeUsers,
+    conversationList,
+    newNotification,
+  } = states;
 
   const handleOpenNotificationList = () => {
     setOpenNoti(!openNoti);
+    if (!openNoti) {
+      setNumberOfNotification(0);
+    }
     if (openMessage) {
       setChangePosition(true);
       setOpenMessage(false);
@@ -48,6 +61,12 @@ const AppButtonsGroup = (props) => {
     setOpenMessage(false);
     setOpenNoti(false);
   };
+
+  React.useEffect(() => {
+    if (!_.isEmpty(newNotification)) {
+      setNumberOfNotification((prev) => prev + 1);
+    }
+  }, [newNotification]);
 
   const renderNotificationList = () => {
     if (openMessage) {
@@ -95,7 +114,7 @@ const AppButtonsGroup = (props) => {
               onClick={handleOpenNotificationList}
               className={notiBtnClass}
             >
-              <NotificationNumber number={9} />
+              <NotificationNumber number={numberOfNotification} />
               <NotificationsIcon className="notification-icon" />
             </Button>
           </Typography>

@@ -16,6 +16,7 @@ import { useCookies } from "react-cookie";
 import NotificationSnackbar from "components/common/NotificationSnackbar";
 import Footer from "components/common/Footer";
 import useSocket from "hooks/useSocket";
+import NotificationAlert from "components/common/NotificationAlert";
 
 export const AuthUser = createContext();
 export const Loading = createContext();
@@ -39,7 +40,7 @@ function App() {
   const [cookies, setCookie] = useCookies(["jwt-token", "refresh-token"]);
   const [isUpdateProfile, setIsUpdateProfile] = useState(false);
 
-  const { handlers } = useSocket();
+  const { handlers, states } = useSocket();
   const {
     connect
   } = handlers;
@@ -68,7 +69,7 @@ function App() {
   };
 
   useEffect(() => {
-    // connect();
+    connect();
     setAuth(readCookie());
   }, []);
 
@@ -122,6 +123,7 @@ function App() {
               ) : (
                 <InitLoading />
               )}
+              <NotificationAlert />
             </div>{" "}
           </Snackbar.Provider>
         </Loading.Provider>

@@ -3,7 +3,7 @@
   top: 60px;
   right: 50px;
   border: solid 0.25px transparent;
-  width: 350px;
+  width: 400px;
   height: 450px;
   animation: appearNotification 0.2s;
   &.left {
@@ -13,6 +13,7 @@
     right: 0px;
   }
   .notification-list-content {
+    position: relative;
     .title {
       font-weight: 900;
       height: 30px;
@@ -32,7 +33,7 @@
     .MuiCardContent-root {
       padding: 16px 0;
     }
-    width: 350px;
+    width: 400px;
     height: 450px;
     border-radius: 10px;
     background-color: var(--backgroundColor);
@@ -76,7 +77,7 @@
   }
 
   &.animation-change {
-    &.left{
+    &.left {
       animation: rightToLeft 0.2s;
     }
     &.right {
