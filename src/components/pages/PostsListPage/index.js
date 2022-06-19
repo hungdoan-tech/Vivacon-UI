@@ -5,6 +5,8 @@ import InfiniteList from "components/common/InfiniteList";
 import "./style.scss";
 import CustomModal from "components/common/CustomModal";
 import PostDetailsModal from "components/common/PostDetailsModal";
+import SuggestedAccounts from "components/common/SuggestedAccounts";
+import SuggestedHashtag from "components/common/SuggestedHashtag";
 import _ from "lodash";
 
 const ImagesListContainer = ({ _renderItem }) => {
@@ -37,6 +39,8 @@ const PostsListPage = () => {
   };
   return (
     <>
+      <SuggestedAccounts />
+      <SuggestedHashtag />
       <InfiniteList
         container={ImagesListContainer}
         handleGetData={getNewFeed}

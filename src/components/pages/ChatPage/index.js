@@ -176,6 +176,7 @@ const ChatPage = () => {
   };
 
   useEffect(() => {
+    console.log({newConversation})
     if (newConversation.id) {
       //If new conversation is chat 1vs1
       if (newConversation.participants.length >= 2) {

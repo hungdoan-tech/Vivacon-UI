@@ -1,13 +1,13 @@
 :root {
-  --mainColor: #0095f6;
-  --backgroundColor: #ffffff;
-  --charColor: #000000;
-  --defaultColor: #949494;
-  --notificationColor: #ff3838;
-  --lightColor: #edecec;
+  --mainColor: rgb(0, 149, 246);
+  --backgroundColor: rgb(255, 255, 255);
+  --charColor: rgb(0, 0, 0);
+  --defaultColor: rgb(148, 148, 148);
+  --notificationColor: rgb(255, 56, 56);
+  --lightColor: rgb(237, 236, 236);
   --darkBackground: rgba(45, 45, 45, 0.8);
   --hoverColor: rgba(0, 0, 0, 0.05);
   --mainHoverColor: rgba(224, 241, 255, 1);
-  --onlineColor: #31a24c;
+  --onlineColor: rgb(49, 162, 76);
   --purpleLightColor: rgba(227, 109, 227, 0.5);
 }
