@@ -17,6 +17,7 @@ import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import "./style.scss";
 import { useTranslation } from "react-i18next";
+import { handleCheckValidEmail } from "utils/checkValidInput";
 import _ from "lodash";
 
 function TabPanel(props) {
@@ -52,6 +53,39 @@ export default function FindAccountPage(props) {
 
   const [stepValue, setStepValue] = useState(0);
   const [optionValue, setOptionValue] = useState("option-01");
+  const [invalidMessage, setInvalidMessage] = useState({
+    email: "",
+  });
+  let err = {
+    email: "",
+  };
+
+  const checkTextField = () => {
+    err = {
+      email: email === "" ? "Email is required" : "",
+    };
+    setInvalidMessage(err);
+  };
+
+  const checkEmail = () => {
+    if (!handleCheckValidEmail(email) && email !== "") {
+      err = {
+        ...err,
+        email: "Email is unavailable.",
+      };
+      setInvalidMessage(err);
+    }
+  };
+
+  const canBeFindAnAccount = () => {
+    let isAccepted = true;
+    Object.values(err).map((value) => {
+      if (value !== "") {
+        isAccepted = false;
+      }
+    });
+    return isAccepted;
+  };
 
   const handleSubmitResetPassword = () => {
     setLoading(true);
@@ -72,11 +106,27 @@ export default function FindAccountPage(props) {
         }
       })
       .catch((err) => {
-        throw err;
+        setTimeout(() => {
+          setSnackbarState({
+            open: true,
+            content: err.response.data.message,
+            type: "FAIL",
+          });
+        }, 1000)
       })
       .finally(() => {
-        setLoading(false);
+        setTimeout(() => {
+          setLoading(false);
+        }, 1000)
       });
+  };
+
+  const handleSubmitStepOne = () => {
+    checkTextField();
+    checkEmail();
+    if(canBeFindAnAccount()) {
+      handleSubmitResetPassword();
+    }
   };
 
   const handleGetProfile = () => {
@@ -127,14 +177,26 @@ export default function FindAccountPage(props) {
             id="email"
             type="email"
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(e) => {
+              err = {
+                ...invalidMessage,
+                email: "",
+              };
+              setInvalidMessage(err);
+              setEmail(e.target.value);
+            }}
           />
         </FormControl>{" "}
+        {invalidMessage.email !== "" && (
+          <Typography className="error-textfield">
+            {invalidMessage.email}
+          </Typography>
+        )}
         <Typography component="div" align="center" className="action-btns">
           <Button className="cancel-btn" onClick={() => history.goBack()}>
             {trans("findAccount.cancel")}
           </Button>
-          <Button className="search-btn" onClick={handleGetProfile}>
+          <Button className="search-btn" onClick={handleSubmitStepOne}>
             {trans("findAccount.search")}
           </Button>
         </Typography>

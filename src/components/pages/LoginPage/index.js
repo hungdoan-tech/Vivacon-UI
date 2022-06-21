@@ -27,21 +27,72 @@ const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const { setLoading } = useLoading();
   const { setSnackbarState, snackbarState } = useSnackbar();
+  const [invalidMessage, setInvalidMessage] = useState({
+    username: "",
+    password: "",
+  });
+  let err = {
+    username: "",
+    password: "",
+  };
 
   const history = useHistory();
 
   const { t: trans } = useTranslation();
 
   const handleChangeUsername = (event) => {
+    err = {
+      ...invalidMessage,
+      username: "",
+    };
+    setInvalidMessage(err);
     setUsername(event.target.value);
   };
 
   const handleChangePassword = (event) => {
+    err = {
+      ...invalidMessage,
+      password: "",
+    };
+    setInvalidMessage(err);
     setPassword(event.target.value);
   };
 
   const handleClickShowPassword = () => {
     setShowPassword(!showPassword);
+  };
+
+  const checkTextField = () => {
+    err = {
+      username: username === "" ? "Username is required" : "",
+      password: password === "" ? "Password is required" : "",
+    };
+    setInvalidMessage(err);
+  };
+
+  const canBeLogined = () => {
+    let isAccepted = true;
+    if (err.password !== "" || err.username !== "") {
+      isAccepted = false;
+    }
+    return isAccepted;
+  };
+
+  const handleSubmitLogin = () => {
+    checkTextField();
+    if (canBeLogined()) {
+      handleLogin();
+    }
+  };
+
+  const handleSubmitLoginByEnter = (event) => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      checkTextField();
+      if (canBeLogined()) {
+        handleLogin();
+      }
+    }
   };
 
   const handleLogin = () => {
@@ -66,15 +117,27 @@ const LoginPage = () => {
         }
       })
       .catch((err) => {
-        throw err;
+        setTimeout(() => {
+          setSnackbarState({
+            open: true,
+            content: err.response.data.message,
+            type: "FAIL",
+          });
+        }, 1000);
       })
       .finally(() => {
-        setLoading(false);
+        setTimeout(() => {
+          setLoading(false);
+        }, 1000);
       });
   };
 
   return (
-    <Typography component="div" className="login-page">
+    <Typography
+      component="div"
+      className="login-page"
+      onKeyDown={handleSubmitLoginByEnter}
+    >
       <Typography component="div" className="intro-image">
         <img src={require("images/introduce3.png")} width="700" height="400" />
       </Typography>
@@ -94,12 +157,18 @@ const LoginPage = () => {
                   {trans("signIn.userName")}
                 </InputLabel>
                 <Input
+                  error={invalidMessage.username !== ""}
                   id="username"
                   type="text"
                   value={username}
                   onChange={handleChangeUsername}
                 />
               </FormControl>{" "}
+              {invalidMessage.username !== "" && (
+                <Typography className="error-textfield">
+                  {invalidMessage.username}
+                </Typography>
+              )}
             </Typography>
             <Typography component="div" align="center" className="text-input">
               <FormControl sx={{ m: 1, width: "100%" }} variant="standard">
@@ -107,6 +176,7 @@ const LoginPage = () => {
                   {trans("signIn.password")}
                 </InputLabel>
                 <Input
+                  error={invalidMessage.password !== ""}
                   id="password"
                   type={showPassword ? "text" : "password"}
                   value={password}
@@ -123,6 +193,11 @@ const LoginPage = () => {
                   }
                 />
               </FormControl>
+              {invalidMessage.password !== "" && (
+                <Typography className="error-textfield">
+                  {invalidMessage.password}
+                </Typography>
+              )}
             </Typography>
             <Typography
               className="forgot-password-link"
@@ -135,7 +210,7 @@ const LoginPage = () => {
           </Typography>
 
           <Typography component="div" align="center">
-            <Button className="login-btn" onClick={handleLogin}>
+            <Button className="login-btn" onClick={handleSubmitLogin}>
               {trans("signIn.login")}
             </Button>
           </Typography>

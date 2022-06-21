@@ -47,9 +47,17 @@ export const getStrongScore = (textInput) => {
   }
   return score === 5 ? (
     <strong style={{ color: "rgb(49, 162, 76)" }}>Strong</strong>
-  ) : score === 3  || score === 4 ? (
+  ) : score === 3 || score === 4 ? (
     <strong style={{ color: "rgb(255, 193, 7)" }}>Medium</strong>
   ) : (
     <strong style={{ color: "rgb(255, 56, 56)" }}>Weak</strong>
   );
+};
+
+export const handleCheckValidEmail = (email) => {
+  return String(email)
+    .toLowerCase()
+    .match(
+      /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+    );
 };
