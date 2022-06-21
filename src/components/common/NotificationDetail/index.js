@@ -2,13 +2,12 @@ import { Typography } from "@mui/material";
 import classNames from "classnames";
 import * as React from "react";
 import { notificationStatus, notificationsType } from "constant/types";
-import { calculateFromNow } from "utils/calcDateTime";
+import { calculateFromNow, convertUTCtoLocalDate } from "utils/calcDateTime";
 import "./style.scss";
 import { useHistory } from "react-router-dom";
 import { updateNotificationItem } from "api/notificationService";
 
 const NotificationDetail = ({ item, type, childProps }) => {
-  console.log('COMPARE CHANGE: ', {item})
   const { closeNotification, isAlert } = childProps;
   const history = useHistory();
 
@@ -52,7 +51,9 @@ const NotificationDetail = ({ item, type, childProps }) => {
               </p>
             </Typography>
             <Typography className="notification-from-now">
-              {calculateFromNow(new Date(item.timestamp))}
+              {calculateFromNow(
+                convertUTCtoLocalDate(new Date(item.timestamp))
+              )}
             </Typography>
           </Typography>
         </Typography>
