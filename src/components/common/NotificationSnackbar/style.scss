@@ -17,5 +17,8 @@
       color: var(--typeColor) !important;
       margin: auto 0;
     }
+    .snackbar-content {
+      white-space: break-spaces;
+    }
   }
 }

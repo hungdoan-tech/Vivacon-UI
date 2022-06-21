@@ -38,11 +38,11 @@ export const resendToken = async (data) => {
 };
 
 export const forgotPassword = async (data) => {
-  return await axiosConfig.post(API_ENDPOINT_KEYS.FORGOT, data);
+  return await axiosConfig.post(API_ENDPOINT_KEYS.PASSWORD, data);
 };
 
 export const changePassword = async (data) => {
-  return await axiosConfig.put(API_ENDPOINT_KEYS.FORGOT, data);
+  return await axiosConfig.put(API_ENDPOINT_KEYS.PASSWORD, data);
 };
 
 export const getUserInformation = async (email) => {

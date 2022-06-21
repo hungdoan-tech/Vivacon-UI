@@ -40,12 +40,6 @@ const useInfiniteReverseList = (
       handleGetData({ ...data, page: pageNumber })
         .then((res) => {
           const differenceContent = getDifferenceItemBetweenTwoArrays(res.data.content, dataList);
-          console.log(
-            { differenceContent },
-            "differenceContent",
-            res.data.content,
-            dataList
-          );
           const reverseList = [...differenceContent].reverse();
           setDataList((prevDataList) => {
             return [...new Set([...reverseList, ...prevDataList])];
@@ -72,12 +66,6 @@ const useInfiniteReverseList = (
     handleGetData({ ...data, page: 0 })
       .then((res) => {
         const differenceContent = getDifferenceItemBetweenTwoArrays(res.data.content, dataList);
-        console.log(
-          { differenceContent },
-          "differenceContent",
-          res.data.content,
-          dataList
-        );
         const reverseList = [...differenceContent].reverse();
         setDataList((prevDataList) => {
           return [...new Set([...reverseList])];

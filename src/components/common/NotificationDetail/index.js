@@ -5,16 +5,30 @@ import { notificationStatus, notificationsType } from "constant/types";
 import { calculateFromNow } from "utils/calcDateTime";
 import "./style.scss";
 import { useHistory } from "react-router-dom";
+import { updateNotificationItem } from "api/notificationService";
 
 const NotificationDetail = ({ item, type, childProps }) => {
-  const { closeNotification } = childProps;
+  console.log('COMPARE CHANGE: ', {item})
+  const { closeNotification, isAlert } = childProps;
   const history = useHistory();
+
+  const handleUpdateNotification = (status) => {
+    updateNotificationItem({
+      id: item.id,
+      status,
+    }).then((res) => {
+      if (res.status === 200) {
+      }
+    });
+  };
+
   const handleClickNotificationItem = () => {
     if (item.type !== notificationsType.FOLLOWING_ON_ME) {
       history.push(`/post/${item.presentationId}`);
     } else {
       history.push(`/profile/${item.actionAuthor.username}`);
     }
+    handleUpdateNotification(notificationStatus.SEEN);
     closeNotification();
   };
 
@@ -54,32 +68,13 @@ const NotificationDetail = ({ item, type, childProps }) => {
     );
   };
 
-  const renderMessageContent = (item) => {
-    return (
-      <Typography component="div">
-        {/* <strong>{item.ownerName}</strong>
-        <Typography component="div" className="message-activity">
-          <Typography className="message-content">
-            {item.isYourNewestMessage ? "You: " : `${item.ownerName}: `}{" "}
-            {item.newestMessage}
-          </Typography>
-          <Typography
-            className={fromNowClassName}
-          >
-            {item.fromNow}
-          </Typography>
-        </Typography> */}
-      </Typography>
-    );
-  };
-  // const fromNowClassName = classNames("date-time", {
-  //   "notification-from-now": type === notificationType.NOTIFICATION,
-  //   "messages-from-now": type === notificationType.MESSAGE,
-  // });
+  const unreadStyle = classNames("notification-container", {
+    unread: item.status === !isAlert && notificationStatus.SENT,
+  });
   return (
     <Typography
       component="div"
-      className="notification-container"
+      className={unreadStyle}
       onClick={handleClickNotificationItem}
     >
       {renderNotificationContent(item)}

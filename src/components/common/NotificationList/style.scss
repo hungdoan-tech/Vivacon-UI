@@ -6,6 +6,17 @@
   width: 400px;
   height: 450px;
   animation: appearNotification 0.2s;
+  .no-notification {
+    font-size: 16px;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    justify-content: center;
+    margin-top: 50px;
+    .MuiSvgIcon-root {
+      margin: auto;
+    }
+  }
   &.left {
     right: 30px;
   }
@@ -14,21 +25,33 @@
   }
   .notification-list-content {
     position: relative;
-    .title {
-      font-weight: 900;
-      height: 30px;
-      margin-left: 16px;
-    }
-    .filter-btn-group {
-      button {
-        font-size: 12px !important;
-        text-transform: capitalize;
+    .header {
+      position: absolute;
+      top: 0;
+      height: 60px;
+      background-color: var(--backgroundColor);
+      width: calc(100% - 32px);
+      padding: 16px 16px 8px 16px;
+      border-bottom: 0.25px solid var(--lightColor);
+      .title {
         font-weight: 900;
-        width: auto;
-        padding: 5px;
+        height: 30px;
       }
-      margin-left: 16px;
-      margin-bottom: 10px;
+      .filter-btn-group {
+        height: 30px;
+        button {
+          font-size: 12px !important;
+          text-transform: capitalize;
+          font-weight: 900;
+          width: auto;
+          padding: 5px;
+        }
+      }
+    }
+    .notification-list {
+      overflow: auto;
+      margin-top: 68px;
+      height: calc(450px - 92px);
     }
     .MuiCardContent-root {
       padding: 16px 0;
@@ -38,7 +61,6 @@
     border-radius: 10px;
     background-color: var(--backgroundColor);
     border: solid 0.25px var(--lightColor);
-    overflow: auto;
     &::after,
     &::before {
       content: "";

@@ -23,14 +23,15 @@ const NotificationAlert = () => {
   }, [newNotification]);
 
   useEffect(() => {
-    if (alertData.length === 200) {
+    if (alertData.length === 50) {
       const currentAlert = [...alertData];
-      setAlertData(currentAlert.slice(150, 200));
+      setAlertData(currentAlert.slice(30, 50));
     }
   }, [alertData]);
 
   const childProps = {
     closeNotification: () => null,
+    isAlert: true,
   };
 
   const handleDeteleAlert = (item) => {

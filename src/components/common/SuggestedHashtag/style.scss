@@ -2,7 +2,8 @@
   position: fixed;
   right: calc(50vw - 325px - 380px);
   z-index: 2;
-  max-height: 80vh;
+  max-height: 50vh;
+  min-height: 300px;
   width: 300px;
   padding: 16px;
   padding-bottom: 24px;
@@ -18,7 +19,8 @@
   }
   .hashtag-list {
     overflow: auto;
-    height: 70vh;
+    height: 40vh;
+    min-height: 280px;
     .hashtag-item {
       padding: 10px 20px;
       &:hover {

@@ -15,7 +15,7 @@ export const API_ENDPOINT_KEYS = {
   FOLLOWING: "/following",
   POST: "/post",
   RESEND: "/account/verification_token",
-  FORGOT: "/account/password",
+  PASSWORD: "/account/password",
   CHECK: "/account/check",
   ATTACTMENT: "/attachment",
   CHANGE_AVATAR: "/profile/avatar",
@@ -29,4 +29,5 @@ export const API_ENDPOINT_KEYS = {
   CONVERSATION: "/conversation",
   ACCOUNT: "/account",
   NOTIFICATION: "/notification",
+  SETTING: "/setting"
 };

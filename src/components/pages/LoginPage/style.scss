@@ -39,6 +39,10 @@
         color: var(--defaultColor);
         cursor: pointer;
       }
+      .error-textfield {
+        width: fit-content;
+        margin-left: 10px;
+      }
     }
     .login-btn {
       text-transform: capitalize !important;

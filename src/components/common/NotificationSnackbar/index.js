@@ -25,7 +25,7 @@ const NotificationSnackbar = (props) => {
         open={open}
         message={
           <>
-            <p>{content}</p>
+            <p className="snackbar-content">{content}</p>
             {renderIcon()}
           </>
         }

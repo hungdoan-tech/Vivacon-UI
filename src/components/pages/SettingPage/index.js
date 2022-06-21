@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
@@ -10,6 +10,7 @@ import "./style.scss";
 import PushNotificationsPage from "../PushNotificationsPage";
 import EmailNotificationsPage from "../EmailNotificationsPage";
 import ChangePasswordPage from "../ChangePasswordPage";
+import { getAllSetting } from "api/settingService";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -46,10 +47,27 @@ function a11yProps(index) {
 
 export default function SettingPage() {
   const [value, setValue] = React.useState(0);
+  const [globalSetting, setGlobalSetting] = useState([]);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
+
+  const handleGetAllSetting = () => {
+    getAllSetting()
+      .then((res) => {
+        if (res.status === 200) {
+          setGlobalSetting(res.data);
+        }
+      })
+      .catch((err) => {
+        throw err;
+      });
+  };
+
+  useEffect(() => {
+    handleGetAllSetting();
+  }, []);
 
   return (
     <Box sx={{ width: "100%" }} className="user-setting-container">
@@ -75,10 +93,16 @@ export default function SettingPage() {
         <ChangePasswordPage />
       </TabPanel>
       <TabPanel value={value} index={2} className="setting-content">
-        <EmailNotificationsPage />
+        <EmailNotificationsPage
+          globalSetting={globalSetting}
+          updateSetting={handleGetAllSetting}
+        />
       </TabPanel>
       <TabPanel value={value} index={3} className="setting-content">
-        <PushNotificationsPage />
+        <PushNotificationsPage
+          globalSetting={globalSetting}
+          updateSetting={handleGetAllSetting}
+        />
       </TabPanel>
     </Box>
   );
