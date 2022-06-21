@@ -47,9 +47,10 @@ const ChangePasswordPage = () => {
 
   const resetInvalidMessage = (field) => {
     err = {
-      ...err,
+      ...invalidMessage,
       [field]: "",
     };
+    console.log(err);
     setInvalidMessage(err);
   };
 
@@ -74,7 +75,7 @@ const ChangePasswordPage = () => {
         };
       }
     });
-    err = invaliObject;
+    err = {...invaliObject};
     setInvalidMessage(invaliObject);
   };
 
@@ -213,6 +214,7 @@ const ChangePasswordPage = () => {
                 <>
                   <Typography id={item.field} className="field-item">
                     <OutlinedInput
+                      error={invalidMessage[item.field] !== ""}
                       id={item.field}
                       type={"password"}
                       className="field-input-text"
