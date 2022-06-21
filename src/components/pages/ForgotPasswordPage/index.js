@@ -10,7 +10,7 @@ import {
   InputLabel,
   Typography,
 } from "@mui/material";
-import { changePassword, forgotPassword } from "api/userService";
+import { forgotPassword } from "api/userService";
 import useLoading from "hooks/useLoading";
 import useSnackbar from "hooks/useSnackbar";
 import React, { useState, useEffect } from "react";

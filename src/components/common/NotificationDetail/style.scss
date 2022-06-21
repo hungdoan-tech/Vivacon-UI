@@ -2,6 +2,9 @@
   display: grid;
   grid-template-columns: repeat(15, 1fr);
   padding: 5px 16px;
+  &.unread {
+    background-color: var(--mainHoverColor);
+  }
   p,
   strong {
     font-size: 14px !important;

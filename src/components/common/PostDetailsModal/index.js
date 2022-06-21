@@ -89,6 +89,12 @@ const PostDetailsModal = ({ index, dataList, title, reportId }) => {
   }, [currentIndex]);
 
   useEffect(() => {
+    if (currentIndex === 0) {
+      handleGetPostDetail();
+    }
+  }, [dataList[currentIndex]?.id]);
+
+  useEffect(() => {
     setCurrentReportID(reportId);
   }, [reportId]);
 
@@ -170,7 +176,10 @@ const PostDetailsModal = ({ index, dataList, title, reportId }) => {
                     </Typography>
                     <Typography className="post-more-actions">
                       {" "}
-                      <MoreHorizIcon className="post-more-icon" onClick={handleOpenOptionModal} />
+                      <MoreHorizIcon
+                        className="post-more-icon"
+                        onClick={handleOpenOptionModal}
+                      />
                     </Typography>
 
                     {/* {showPopUp.open &&

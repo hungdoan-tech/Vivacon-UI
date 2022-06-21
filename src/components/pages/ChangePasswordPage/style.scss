@@ -44,6 +44,12 @@
     .field-content {
       flex: 1;
       text-align: left;
+      .field-item {
+        position: relative;
+        .password-score {
+          font-size: 12px !important;
+        }
+      }
       .confirm-btn {
         margin-top: 10px;
         background-color: var(--mainColor);
@@ -53,6 +59,9 @@
       }
       .field-input-text {
         width: 70%;
+        input {
+          padding: 10px 15px;
+        }
       }
       .field-input-checkbox {
         color: var(--mainColor);
@@ -70,10 +79,16 @@
   }
   .submit-btn {
     margin-top: 10px;
+    position: relative;
     background-color: var(--mainColor);
     color: var(--backgroundColor);
     font-weight: 900;
     text-transform: capitalize;
+    width: 130px;
+    height: 34px;
+    &:hover {
+      background-color: var(--mainColor) !important;
+    }
   }
   .forgot-password-link {
     cursor: pointer;

@@ -172,7 +172,7 @@ export const userOption = [
     icon: <SettingsIcon />,
     name: "settingUI.setting",
     onClickHandle: () => null,
-    navigateUrl: "/",
+    navigateUrl: "/setting",
   },
   {
     icon: <LogoutOutlinedIcon />,
@@ -279,14 +279,17 @@ export const pushNotificationsFields = [
   {
     title: "Likes",
     field: "likes",
+    type: "PUSH_NOTIFICATION_ON_LIKE",
   },
   {
     title: "Comments",
     field: "comments",
+    type: "PUSH_NOTIFICATION_ON_COMMENT",
   },
   {
     title: "Follows",
     field: "follows",
+    type: "PUSH_NOTIFICATION_ON_FOLLOWING",
   },
 ];
 
@@ -295,11 +298,13 @@ export const emailNotificationFields = [
     title: "Report emails",
     field: "",
     checkBoxText: "Give report result that you reported.",
+    type: "EMAIL_ON_REPORTING_RESULT",
   },
   {
     title: "Reminder emails",
     field: "",
     checkBoxText: "Give notification you may have missed.",
+    type: "EMAIL_ON_MISSED_ACTIVITIES",
   },
 ];
 

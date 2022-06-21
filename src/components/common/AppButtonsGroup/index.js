@@ -8,9 +8,17 @@ import NotificationNumber from "components/common/NotificationNumber";
 import "./style.scss";
 import NotificationList from "components/common/NotificationList";
 import classNames from "classnames";
-import { notificationType } from "constant/types";
+import {
+  notificationStatus,
+  notificationsType,
+  notificationType,
+} from "constant/types";
 import useSocket from "hooks/useSocket";
 import _ from "lodash";
+import {
+  changeStatusOfAllNotificationFromSentToReceived,
+  getNotificationList,
+} from "api/notificationService";
 
 const AppButtonsGroup = (props) => {
   const [openNoti, setOpenNoti] = React.useState(false);
@@ -30,9 +38,17 @@ const AppButtonsGroup = (props) => {
   } = states;
 
   const handleOpenNotificationList = () => {
-    setOpenNoti(!openNoti);
     if (!openNoti) {
       setNumberOfNotification(0);
+      changeStatusOfAllNotificationFromSentToReceived()
+        .then(res => {
+          if(res.status === 200) {
+            setOpenNoti(true);
+          }
+        })
+        .catch((err) => {
+          throw err;
+        });
     }
     if (openMessage) {
       setChangePosition(true);
@@ -57,15 +73,39 @@ const AppButtonsGroup = (props) => {
     active: openMessage,
   });
 
+  const handleGetUnseenNotificationList = () => {
+    getNotificationList({
+      limit: 1,
+      _sort: "timestamp",
+      _order: "desc",
+      status: notificationStatus.SENT,
+      username: "",
+    })
+      .then((res) => {
+        if (res.status === 200) {
+          console.log({ notiN: res });
+          setNumberOfNotification(res.data.totalElements);
+        }
+      })
+      .catch((err) => {
+        throw err;
+      });
+  };
+
+  React.useEffect(() => {
+    handleGetUnseenNotificationList();
+  }, []);
+
   const closeNotification = () => {
     setOpenMessage(false);
     setOpenNoti(false);
   };
 
   React.useEffect(() => {
-    if (!_.isEmpty(newNotification)) {
-      setNumberOfNotification((prev) => prev + 1);
-    }
+    // if (!_.isEmpty(newNotification)) {
+    //   setNumberOfNotification((prev) => prev + 1);
+    // }
+    handleGetUnseenNotificationList();
   }, [newNotification]);
 
   const renderNotificationList = () => {
