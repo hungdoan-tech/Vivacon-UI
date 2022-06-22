@@ -2,21 +2,35 @@
   height: 40px;
   margin-bottom: 20px !important;
   display: flex;
-  img {
+  // position: relative;
+  .avatar {
     border-radius: 100px;
     border: solid 0.5px var(--lightColor);
   }
   .right-content {
     min-width: 100px;
     margin-left: 10px;
+    .username-container {
+      position: relative;
+      width: fit-content;
+    }
   }
   .owner-name {
     color: var(--charColor);
     font-weight: 600;
+    &:hover {
+      cursor: pointer;
+      text-decoration: underline;
+    }
   }
   .post-time {
     font-size: 13px;
     color: var(--defaultColor);
+  }
+  .pop-up-container {
+    .MuiCardContent-root {
+      padding: 0 !important;
+    }
   }
 }
 

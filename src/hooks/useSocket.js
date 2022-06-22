@@ -8,6 +8,7 @@ import { getCurrentUser } from "utils/jwtToken";
 import { getConversations, getListOfConversationId } from "api/chatService";
 import { useStoreSocket, actions, SocketStoreContext } from "globalSocketState";
 import {
+  CLEAN_SOCKET_STATES,
   GET_ACTIVE_USERS,
   GET_NEW_CONVERSATION,
   GET_NEW_NOTIFICATION,
@@ -36,7 +37,7 @@ const useSocket = () => {
 
   const onNewNotification = (payload) => {
     dispatch(setSocketState(GET_NEW_NOTIFICATION, JSON.parse(payload.body)));
-    console.log({state})
+    console.log({ state });
   };
 
   const onMessageReceived = (payload) => {
@@ -141,6 +142,10 @@ const useSocket = () => {
     );
   };
 
+  const cleanSocketState = () => {
+    dispatch(setSocketState(CLEAN_SOCKET_STATES, []));
+  };
+
   return {
     states: {
       ...state,
@@ -158,6 +163,7 @@ const useSocket = () => {
         dispatch(setSocketState(GET_NEW_NOTIFICATION, data)),
     },
     handlers: {
+      cleanSocketState,
       chatInExistedConversation,
       chatInVirtualConversation,
       typing,

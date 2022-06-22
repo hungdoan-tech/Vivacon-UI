@@ -17,6 +17,7 @@ import NotificationSnackbar from "components/common/NotificationSnackbar";
 import Footer from "components/common/Footer";
 import useSocket from "hooks/useSocket";
 import NotificationAlert from "components/common/NotificationAlert";
+import { useHistory } from "react-router-dom";
 
 export const AuthUser = createContext();
 export const Loading = createContext();
@@ -39,11 +40,10 @@ function App() {
   const [isExpiredToken, setIsExpiredToken] = useState(false);
   const [cookies, setCookie] = useCookies(["jwt-token", "refresh-token"]);
   const [isUpdateProfile, setIsUpdateProfile] = useState(false);
+  const history = useHistory();
 
   const { handlers, states } = useSocket();
-  const {
-    connect
-  } = handlers;
+  const { connect, cleanSocketState } = handlers;
 
   const readCookie = () => {
     const token = getJwtToken();
@@ -71,6 +71,9 @@ function App() {
   useEffect(() => {
     connect();
     setAuth(readCookie());
+    history.listen(() => {
+      cleanSocketState();
+    })
   }, []);
 
   useEffect(() => {
@@ -83,6 +86,7 @@ function App() {
   setTimeout(() => {
     setOpenApp(true);
   }, 1000);
+
 
   useEffect(() => {
     if (snackbarState.open) {

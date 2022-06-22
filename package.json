@@ -61,6 +61,7 @@
     "sockjs": "^0.3.21",
     "sockjs-client": "^1.5.1",
     "stompjs": "^2.3.3",
+    "use-long-press": "^2.0.2",
     "web-vitals": "^2.1.4"
   },
   "scripts": {

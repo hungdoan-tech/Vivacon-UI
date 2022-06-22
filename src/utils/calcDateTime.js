@@ -14,3 +14,11 @@ export const convertUTCtoLocalDate = (date, format) => {
     .format(format || "YYYY-MM-DDTHH:mm:ss.SSSsss");
   return convertedDate;
 };
+
+export const convertDateTimeOnNearest = (date) => {
+  const locale = getCurrentLanguage();
+  moment.locale(locale);
+  const convertedDate = moment(date).add(-offset, "minutes").calendar();
+  console.log(convertedDate);
+  return convertedDate
+};

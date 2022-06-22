@@ -7,7 +7,7 @@ import { Card, Typography, CardContent, Button } from "@mui/material";
 import "./style.scss";
 
 const CustomPopUp = (props) => {
-  const { children, width, height, positionRef } = props;
+  const { children, width, height, positionRef, hightZIndex } = props;
 
   const { left, bottom, top, right } = positionRef;
   const [positionState, setPositionState] = useState({
@@ -26,6 +26,7 @@ const CustomPopUp = (props) => {
           "--popUpHeight": `${height || 300}px`,
           "--positionLeft": `${positionState.left || 0}px`,
           "--positionTop": `${positionState.top + 20 || 0}px`,
+          "--popUpZIndex": hightZIndex ? 1302 : 1300
         }}
       >
         <CardContent>{children}</CardContent>

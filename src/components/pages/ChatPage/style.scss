@@ -237,6 +237,16 @@
             }
           }
         }
+        .date-time {
+          display: flex;
+          flex-direction: row;
+          &.owner {
+            justify-content: flex-end;
+          }
+          &.target {
+            justify-content: flex-start;
+          }
+        }
       }
       .latest-action {
         display: flex !important;
@@ -296,6 +306,7 @@
     .chat-input-container {
       min-height: 40px;
       max-height: 70px;
+      background-color: var(--backgroundColor);
       //   padding: 10px 0;
       display: flex;
       flex-direction: row;
@@ -379,4 +390,7 @@
       font-weight: 900;
     }
   }
+}
+.MuiTooltip-popper {
+  z-index: 0 !important;
 }
