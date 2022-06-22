@@ -16,6 +16,7 @@ import ChattingSearch from "../ChattingSearch";
 import useSnackbar from "hooks/useSnackbar";
 import useSocket from "hooks/useSocket";
 import { checkConversationIsExistOrNot } from "api/chatService";
+import { useHistory } from "react-router-dom";
 
 const Interaction = ({ currentPost }) => {
   const { isLiked, id: postId } = currentPost;
@@ -46,6 +47,7 @@ const Interaction = ({ currentPost }) => {
   const { setSnackbarState } = useSnackbar();
 
   const { t: trans } = useTranslation();
+  const history = useHistory();
 
   const Auth = useContext(AuthUser);
 
@@ -180,7 +182,15 @@ const Interaction = ({ currentPost }) => {
         {likeCount > 1 ? " " + trans("newFeed.like") : trans("newFeed.like")}
       </Typography>
       <Typography className="post-caption" align="left">
-        <strong>{currentPost.createdBy?.username}</strong> {currentPost.caption}
+        <strong
+          className="owner-name"
+          onClick={() =>
+            history.push(`/profile/${currentPost.createdBy?.username}`)
+          }
+        >
+          {currentPost.createdBy?.username}
+        </strong>{" "}
+        {currentPost.caption}
       </Typography>
 
       <CustomModal

@@ -17,7 +17,7 @@ const initialState: SocketStateType = {
 };
 
 const socketReducer = (state: SocketStateType = initialState, action) => {
-  console.log('socketREDUX', state, action)
+  console.log("socketREDUX", state, action);
   switch (action.type) {
     case types.GET_RECEIVE_MESSAGE:
       return {
@@ -43,6 +43,14 @@ const socketReducer = (state: SocketStateType = initialState, action) => {
       return {
         ...state,
         newNotification: action.payload,
+      };
+    case types.CLEAN_SOCKET_STATES:
+      return {
+        receivedMessage: null,
+        newConversation: {},
+        activeUsers: [],
+        conversationList: { content: [] },
+        newNotification: {},
       };
     default:
       return state;

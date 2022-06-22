@@ -1,0 +1,14 @@
+.Table {
+  padding: 20px 0;
+  .Mui-selected {
+    background-color: var(--mainColor) !important;
+  }
+  tbody {
+    .MuiTableRow-root {
+      &:hover {
+        cursor: pointer;
+        background-color: var(--mainHoverColor);
+      }
+    }
+  }
+}

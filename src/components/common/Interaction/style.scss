@@ -25,11 +25,18 @@
     text-decoration: underline;
   }
 }
+
 .post-caption {
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
+  .owner-name {
+    &:hover {
+      cursor: pointer;
+      text-decoration: underline;
+    }
+  }
   // margin: 10px 0 !important;
 }
 .follow-container {

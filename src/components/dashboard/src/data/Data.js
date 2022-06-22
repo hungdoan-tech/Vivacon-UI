@@ -10,7 +10,12 @@ import {
 
 // Analytics Cards imports
 import { UilUsdSquare, UilMoneyWithdrawal } from "@iconscout/react-unicons";
+import DashboardIcon from '@mui/icons-material/Dashboard';
 import { keyboard } from "@testing-library/user-event/dist/keyboard";
+import ContactPageIcon from '@mui/icons-material/ContactPage';
+import MarkUnreadChatAltIcon from '@mui/icons-material/MarkUnreadChatAlt';
+import BurstModeIcon from '@mui/icons-material/BurstMode';
+import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 
 // Recent Card Imports
 import img1 from "../imgs/img1.png";
@@ -20,24 +25,29 @@ import img3 from "../imgs/img3.png";
 // Sidebar Data
 export const SidebarData = [
   {
-    icon: UilEstate,
+    icon: DashboardIcon,
     heading: "Dashboard",
+    isSuperAdmin: false,
   },
   {
-    icon: UilClipboardAlt,
+    icon: BurstModeIcon,
     heading: "Post Report",
+    isSuperAdmin: false,
   },
   {
-    icon: UilClipboardAlt,
+    icon: MarkUnreadChatAltIcon,
     heading: "Comment Report",
+    isSuperAdmin: false,
   },
   {
-    icon: UilUsersAlt,
+    icon: ContactPageIcon,
     heading: "Account Report",
+    isSuperAdmin: false,
   },
   {
-    icon: UilChart,
-    heading: "Analytics",
+    icon: AdminPanelSettingsIcon,
+    heading: "Admin Management",
+    isSuperAdmin: true,
   },
 ];
 

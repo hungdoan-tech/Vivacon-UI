@@ -19,6 +19,7 @@ import {
   changeStatusOfAllNotificationFromSentToReceived,
   getNotificationList,
 } from "api/notificationService";
+import { useHistory } from "react-router-dom";
 
 const AppButtonsGroup = (props) => {
   const [openNoti, setOpenNoti] = React.useState(false);
@@ -37,12 +38,14 @@ const AppButtonsGroup = (props) => {
     newNotification,
   } = states;
 
+  const history = useHistory();
+
   const handleOpenNotificationList = () => {
     if (!openNoti) {
       setNumberOfNotification(0);
       changeStatusOfAllNotificationFromSentToReceived()
-        .then(res => {
-          if(res.status === 200) {
+        .then((res) => {
+          if (res.status === 200) {
             setOpenNoti(true);
           }
         })
@@ -137,15 +140,18 @@ const AppButtonsGroup = (props) => {
         </Button>
       </Typography>
       <Typography component="div" className="btn-container">
-        <Button>
+        <Button onClick={() => history.push("/")}>
           <HomeIcon />
         </Button>
       </Typography>
       <ClickAwayListener onClickAway={closeNotification}>
         <Typography component="div" className="notification-btns">
           <Typography component="div" className="btn-container">
-            <Button onClick={() => null} className={messageBtnClass}>
-              <NotificationNumber number={3} />
+            <Button
+              onClick={() => history.push("/chat")}
+              className={messageBtnClass}
+            >
+              <NotificationNumber number={0} />
               <ChatBubbleIcon />
             </Button>
           </Typography>

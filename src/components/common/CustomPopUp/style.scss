@@ -1,5 +1,5 @@
 .pop-up-container {
-  z-index: 1302;
+  z-index: var(--popUpZIndex);
   width: var(--popUpWidth);
   height: var(--popUpHeight);
   position: absolute;

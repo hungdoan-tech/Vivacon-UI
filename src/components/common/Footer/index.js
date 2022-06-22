@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import SimpleReactFooter from "simple-react-footer";
 import i18n from "translation/i18n";
 import { getCurrentLanguage } from "translation/util";
@@ -5,6 +6,7 @@ import "./style.scss";
 
 const Footer = () => {
   const changeLanguage = (e) => {
+    console.log({ language: e.target.value });
     i18n.changeLanguage(e.target.value);
   };
   const columns = [
@@ -50,7 +52,9 @@ const Footer = () => {
             <div className="d-flex align-items-center">
               <select onChange={changeLanguage} onClick={() => null}>
                 <option value="vi">Vietnamese</option>
-                <option value="en">English</option>
+                <option value="en" selected="selected">
+                  English
+                </option>
               </select>
             </div>
           ),

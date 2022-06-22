@@ -163,7 +163,7 @@ const PostReportModal = ({ index, dataList, title, reportId }) => {
                   setCurrentPost={setCurrentPost}
                 />
                 <Typography className="post-time-fromnow" align="left">
-                  {calculateFromNow(currentPost.lastModifiedAt)}
+                  {calculateFromNow(convertUTCtoLocalDate(currentPost.lastModifiedAt))}
                 </Typography>
               </Typography>
             </Typography>

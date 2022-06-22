@@ -4,6 +4,7 @@ import {
   Badge,
   Button,
   ClickAwayListener,
+  Tooltip,
 } from "@mui/material";
 import { useState, useEffect } from "react";
 import SockJS from "sockjs-client";
@@ -43,6 +44,7 @@ import CustomModal from "components/common/CustomModal";
 import ChattingSearch from "components/common/ChattingSearch";
 import ThreeDotsAnimation from "components/common/ThreeDotsAnimation";
 import InfiniteReverseList from "components/common/InfiniteReverseList";
+import { useLongPress } from "use-long-press";
 import _ from "lodash";
 import InfiniteList from "components/common/InfiniteList";
 import useSocket from "hooks/useSocket";
@@ -52,6 +54,11 @@ import ImageUploader from "react-images-upload";
 import { uploadImages, getPostDetail } from "api/postService";
 import { uploadImage } from "api/userService";
 import { useHistory } from "react-router-dom";
+import {
+  calculateFromNow,
+  convertDateTimeOnNearest,
+  convertUTCtoLocalDate,
+} from "utils/calcDateTime";
 
 const ChatPage = () => {
   const [inputMessage, setInputMessage] = useState("");
@@ -101,7 +108,7 @@ const ChatPage = () => {
   };
 
   useEffect(() => {
-    console.log({receivedMessage})
+    console.log({ receivedMessage });
     if (receivedMessage) {
       const message = receivedMessage;
       console.log("RECEIVED SOME", message);
@@ -176,7 +183,7 @@ const ChatPage = () => {
   };
 
   useEffect(() => {
-    console.log({newConversation})
+    console.log({ newConversation });
     if (newConversation.id) {
       //If new conversation is chat 1vs1
       if (newConversation.participants.length >= 2) {
@@ -726,7 +733,9 @@ const MessageItem = ({ item: message, index, dataList: messageList }) => {
     open: false,
     image: "",
   });
+  const [showDateTime, setShowDateTime] = useState(false);
   const history = useHistory();
+
   const getSharePostDetail = (id) => {
     getPostDetail({ id })
       .then((res) => {
@@ -766,7 +775,7 @@ const MessageItem = ({ item: message, index, dataList: messageList }) => {
     image: imageList,
   });
 
-  const messageContainerClassName = classNames("message-item-container", {
+  const messageContainerClassName = classNames({
     owner: condition,
     target: !condition,
   });
@@ -775,62 +784,88 @@ const MessageItem = ({ item: message, index, dataList: messageList }) => {
 
   return (
     <>
-      <Typography component="div" className={messageContainerClassName}>
+      <Typography
+        component="div"
+        className={`message-item-container ${messageContainerClassName}`}
+      >
         {!condition && (
           <Typography className="sender-avatar">
             {showAvatar && <img src={message.sender.avatar} />}
           </Typography>
         )}
         {imageList ? (
-          <Typography
-            className={messageClassName}
-            align={condition ? "right" : "left"}
-            component="div"
-          >
-            <img
-              src={imageList[0]}
-              onClick={() =>
-                setOpenImageModal({ open: true, image: imageList[0] })
-              }
-            />
-          </Typography>
-        ) : (
-          <Typography
-            className={messageClassName}
-            align={condition ? "right" : "left"}
-            component="div"
-          >
-            {postInfo ? (
-              <Typography component="div" className="share-post-message">
-                <Typography component="div" className="post-owner">
-                  <Typography component="div" className="avatar">
-                    <img src={postInfo.createdBy.avatar} />
-                  </Typography>
-                  <Typography component="div" className="username">
-                    {postInfo.createdBy?.username}
-                  </Typography>
-                </Typography>
-                <Typography component="div" className="post-content">
-                  <Typography
-                    component="div"
-                    className="attachment"
-                    onClick={() => {
-                      history.push(`/post/${postInfo.id}`);
-                    }}
-                  >
-                    <img src={postInfo.attachments[0].url} />
-                  </Typography>
-                  <Typography component="div" className="caption">
-                    {postInfo.caption}
-                  </Typography>
-                </Typography>
+          <>
+            <Tooltip
+              title={convertDateTimeOnNearest(message.timestamp)}
+              placement={condition ? "left" : "right"}
+            >
+              <Typography
+                className={messageClassName}
+                align={condition ? "right" : "left"}
+                component="div"
+              >
+                <img
+                  src={imageList[0]}
+                  onClick={(e) => {
+                    console.log("call");
+                    setOpenImageModal({ open: true, image: imageList[0] });
+                    e.stopPropagation();
+                  }}
+                />
               </Typography>
-            ) : (
-              `${message.content}`
-            )}
-          </Typography>
+            </Tooltip>
+          </>
+        ) : (
+          <Tooltip
+            title={convertDateTimeOnNearest(message.timestamp)}
+            placement={condition ? "left" : "right"}
+          >
+            <Typography
+              className={messageClassName}
+              align={condition ? "right" : "left"}
+              component="div"
+            >
+              {postInfo ? (
+                <Typography component="div" className="share-post-message">
+                  <Typography component="div" className="post-owner">
+                    <Typography component="div" className="avatar">
+                      <img src={postInfo.createdBy.avatar} />
+                    </Typography>
+                    <Typography component="div" className="username">
+                      {postInfo.createdBy?.username}
+                    </Typography>
+                  </Typography>
+                  <Typography component="div" className="post-content">
+                    <Typography
+                      component="div"
+                      className="attachment"
+                      onClick={(e) => {
+                        history.push(`/post/${postInfo.id}`);
+                        e.stopPropagation();
+                      }}
+                    >
+                      <img src={postInfo.attachments[0].url} />
+                    </Typography>
+                    <Typography component="div" className="caption">
+                      {postInfo.caption}
+                    </Typography>
+                  </Typography>
+                </Typography>
+              ) : (
+                `${message.content}`
+              )}
+            </Typography>
+          </Tooltip>
         )}
       </Typography>
+      {showDateTime && (
+        <Typography
+          component="div"
+          className={`date-time ${messageContainerClassName}`}
+        >
+          {calculateFromNow(convertUTCtoLocalDate(message.timestamp))}
+        </Typography>
+      )}
       <CustomModal
         isRadius
         width={800}
@@ -866,7 +901,9 @@ const UserItem = ({
     const imageList = conv.latestMessage?.content.match(
       /(?<=\[image\|)(.*?)(?=\])/gi
     );
-    const sharePost = conv.latestMessage?.content.match(/(?<=\[sharePost\|)(.*?)(?=\])/gi);
+    const sharePost = conv.latestMessage?.content.match(
+      /(?<=\[sharePost\|)(.*?)(?=\])/gi
+    );
     const parseIntPostId = sharePost ? parseInt(sharePost[0]) : null;
 
     const participants = filterParticipants(conv?.participants);

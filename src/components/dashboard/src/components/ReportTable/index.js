@@ -17,10 +17,15 @@ import PostDetailsModal from "components/common/PostDetailsModal";
 import Pagination from "@mui/material/Pagination";
 import { limitPerPage } from "constant/types";
 import useSnackbar from "hooks/useSnackbar";
+import "./style.scss";
 
 import ConfirmDialog from "components/common/ConfirmDialog";
 import { convertUTCtoLocalDate } from "utils/calcDateTime";
 import { useTranslation } from "react-i18next";
+import {
+  StyledTableCell,
+  StyledTableRow,
+} from "components/dashboard/src/components/StyledTable";
 
 const ReportTable = ({
   reportList,
@@ -41,15 +46,15 @@ const ReportTable = ({
       >
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>
-            <TableRow>
+            <StyledTableRow>
               {headers.map((header) => {
                 return (
-                  <TableCell align={header.align}>
+                  <StyledTableCell align={header.align}>
                     {header.displayName}
-                  </TableCell>
+                  </StyledTableCell>
                 );
               })}
-            </TableRow>
+            </StyledTableRow>
           </TableHead>
           <TableBody style={{ color: "white" }}>
             {reportList?.content
@@ -74,7 +79,7 @@ const ReportTable = ({
                       description="Report Content"
                     />
 
-                    <TableRow
+                    <StyledTableRow
                       key={row.id}
                       sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
                       onClick={() =>
@@ -90,7 +95,7 @@ const ReportTable = ({
                       {headers.map((header) => {
                         if (header.field !== "createdAt") {
                           return (
-                            <TableCell
+                            <StyledTableCell
                               component="th"
                               scope="row"
                               align={header.align}
@@ -102,19 +107,19 @@ const ReportTable = ({
                                       header.field.split(".")[1]
                                     ]
                                   )}
-                            </TableCell>
+                            </StyledTableCell>
                           );
                         } else
                           return (
-                            <TableCell align={header.align}>
+                            <StyledTableCell align={header.align}>
                               {convertUTCtoLocalDate(
                                 row[headers[3].field],
                                 "YYYY-MM-DD HH:mm:ss"
                               )}
-                            </TableCell>
+                            </StyledTableCell>
                           );
                       })}
-                    </TableRow>
+                    </StyledTableRow>
                   </>
                 ))
               : null}

@@ -29,5 +29,6 @@ export const API_ENDPOINT_KEYS = {
   CONVERSATION: "/conversation",
   ACCOUNT: "/account",
   NOTIFICATION: "/notification",
-  SETTING: "/setting"
+  SETTING: "/setting",
+  ADMIN: "/admin",
 };
