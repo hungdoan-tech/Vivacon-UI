@@ -328,3 +328,41 @@ export const changePasswordFields = [
     maxRow: 1,
   },
 ];
+
+export const createNewAdminFields = [
+  {
+    title: "Email",
+    field: "email",
+    type: "textField",
+    isPassword: false,
+    maxRow: 1,
+  },
+  {
+    title: "Full name",
+    field: "fullName",
+    type: "textField",
+    isPassword: false,
+    maxRow: 1,
+  },
+  {
+    title: "Username",
+    field: "username",
+    type: "textField",
+    isPassword: false,
+    maxRow: 1,
+  },
+  {
+    title: "Password",
+    field: "password",
+    type: "textField",
+    isPassword: true,
+    maxRow: 1,
+  },
+  {
+    title: "Confirm password",
+    field: "confirmPassword",
+    type: "textField",
+    isPassword: true,
+    maxRow: 1,
+  },
+];

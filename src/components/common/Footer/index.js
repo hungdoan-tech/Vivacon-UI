@@ -5,9 +5,6 @@ import { getCurrentLanguage } from "translation/util";
 import "./style.scss";
 
 const Footer = () => {
-  useEffect(() => {
-    i18n.changeLanguage("en");
-  }, []);
   const changeLanguage = (e) => {
     console.log({ language: e.target.value });
     i18n.changeLanguage(e.target.value);

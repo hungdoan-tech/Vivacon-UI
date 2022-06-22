@@ -54,12 +54,4 @@
 }
 
 .Table {
-  tbody {
-    .MuiTableRow-root {
-      &:hover {
-        cursor: pointer;
-        background-color: var(--mainHoverColor);
-      }
-    }
-  }
 }

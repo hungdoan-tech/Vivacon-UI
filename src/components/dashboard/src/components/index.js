@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import "./style.scss";
 import Logo from "../imgs/logo.png";
 import { UilSignOutAlt } from "@iconscout/react-unicons";
@@ -7,6 +7,8 @@ import { UilBars } from "@iconscout/react-unicons";
 import { motion } from "framer-motion";
 import { Box, Tab, Tabs, Typography } from "@mui/material";
 import MainDash from "./OverallDashboard";
+import { getCurrentUser } from "utils/jwtToken";
+import { AuthUser } from "App";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -32,10 +34,13 @@ const Sidebar = ({ setSelected, selected }) => {
   const [expanded, setExpaned] = useState(true);
 
   const [value, setValue] = useState(0);
+  const [adminInfo, setAdminInfo] = useState(getCurrentUser());
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
+
+  const Auth = useContext(AuthUser);
 
   const sidebarVariants = {
     true: {
@@ -55,6 +60,20 @@ const Sidebar = ({ setSelected, selected }) => {
       >
         <UilBars />
       </div>
+      <Typography component="div" className="admin-info">
+        <Typography component="div" className="admin-info-line1">
+          <img src={adminInfo.avatar} width="50px" height="50px" />
+          <Typography component="div" className="admin-name">
+            <p className="username">{adminInfo.username}</p>
+            <p className="fullname">{adminInfo.fullName}</p>
+          </Typography>
+        </Typography>
+        <Typography component="div" className="admin-info-line2">
+          <Typography className="admin-role">
+            Role: {adminInfo.roles}
+          </Typography>
+        </Typography>
+      </Typography>
       <motion.div
         className="sidebar"
         variants={sidebarVariants}
@@ -62,19 +81,36 @@ const Sidebar = ({ setSelected, selected }) => {
       >
         <div className="menu">
           <Box sx={{ width: "100%" }}>
-            <Box >
+            <Box>
               {SidebarData.map((item, index) => {
                 return (
-                  <div
-                    className={
-                      selected === index ? "menuItem active" : "menuItem"
-                    }
-                    key={index}
-                    onClick={() => setSelected(index)}
-                  >
-                    <item.icon />
-                    <span>{item.heading}</span>
-                  </div>
+                  <>
+                    {item.isSuperAdmin === false ? (
+                      <div
+                        className={
+                          selected === index ? "menuItem active" : "menuItem"
+                        }
+                        key={index}
+                        onClick={() => setSelected(index)}
+                      >
+                        <item.icon />
+                        <span>{item.heading}</span>
+                      </div>
+                    ) : (
+                      Auth.auth.isSuperAdmin && (
+                        <div
+                          className={
+                            selected === index ? "menuItem active" : "menuItem"
+                          }
+                          key={index}
+                          onClick={() => setSelected(index)}
+                        >
+                          <item.icon />
+                          <span>{item.heading}</span>
+                        </div>
+                      )
+                    )}
+                  </>
                 );
               })}
             </Box>

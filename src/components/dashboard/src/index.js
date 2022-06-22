@@ -17,6 +17,7 @@ import {
   getPostByNewestCreatedAt,
 } from "../../../api/statisticService";
 import { PERIOD } from "../../../constant/types";
+import AdminManagement from "./pages/AdminManagement";
 
 const Dashboard = () => {
   const [selected, setSelected] = useState(0);
@@ -61,7 +62,7 @@ const Dashboard = () => {
     <div className="Dashboard">
       <div className="AppGlass">
         <Sidebar setSelected={setSelected} selected={selected} />
-        {selected == 0 && (
+        {selected === 0 && (
           <>
             <OverallDashboard
               statisticData={statisticData}
@@ -76,9 +77,10 @@ const Dashboard = () => {
             />
           </>
         )}
-        {selected == 1 && <PostReportPage />}
-        {selected == 2 && <CommentReportPage />}
-        {selected == 3 && <AccountReportPage />}
+        {selected === 1 && <PostReportPage />}
+        {selected === 2 && <CommentReportPage />}
+        {selected === 3 && <AccountReportPage />}
+        {selected === 4 && <AdminManagement />}
       </div>
     </div>
   );

@@ -18,6 +18,7 @@ import Footer from "components/common/Footer";
 import useSocket from "hooks/useSocket";
 import NotificationAlert from "components/common/NotificationAlert";
 import { useHistory } from "react-router-dom";
+import i18n from "translation/i18n";
 
 export const AuthUser = createContext();
 export const Loading = createContext();
@@ -53,6 +54,13 @@ function App() {
         return {
           isLogin: true,
           isAdmin: true,
+          isSuperAdmin: false,
+        };
+      } else if (getCurrentUser().roles.includes("SUPER_ADMIN")) {
+        return {
+          isLogin: true,
+          isAdmin: true,
+          isSuperAdmin: true,
         };
       } else {
         return {
@@ -69,11 +77,12 @@ function App() {
   };
 
   useEffect(() => {
+    i18n.changeLanguage("en");
     connect();
     setAuth(readCookie());
     history.listen(() => {
       cleanSocketState();
-    })
+    });
   }, []);
 
   useEffect(() => {
@@ -86,7 +95,6 @@ function App() {
   setTimeout(() => {
     setOpenApp(true);
   }, 1000);
-
 
   useEffect(() => {
     if (snackbarState.open) {
@@ -122,7 +130,7 @@ function App() {
                   </div>
                   {loading && <ProgressLoading />}
                   <NotificationSnackbar snackbarState={snackbarState} />
-                  <Footer />
+                  {!auth.isAdmin && <Footer />}
                 </>
               ) : (
                 <InitLoading />

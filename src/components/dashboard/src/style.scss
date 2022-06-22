@@ -31,6 +31,7 @@
     background: var(--glass);
     grid-template-columns: repeat(24, 1fr);
     overflow: hidden;
+    position: relative;
   }
 
   select {
