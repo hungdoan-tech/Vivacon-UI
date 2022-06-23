@@ -123,3 +123,7 @@ export const searchAccountsByKeyword = async (data) => {
 export const getSuggestedListOnNewsFeed = async () => {
   return await axiosConfig.get(`${API_ENDPOINT_KEYS.ACCOUNT}/recommend`, {});
 };
+
+export const getSuggestedListOnProfile= async (id) => {
+  return await axiosConfig.get(`${API_ENDPOINT_KEYS.ACCOUNT}/recommend/profile/${id}`, {});
+};
