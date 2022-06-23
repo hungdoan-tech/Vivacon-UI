@@ -62,6 +62,7 @@
         justify-content: flex-start;
         .user-name {
           font-size: 28px;
+          margin: auto 0;
         }
         .action-btns {
           display: flex;
@@ -76,7 +77,8 @@
           }
           .edit-btn,
           .message-btn,
-          .followed-btn {
+          .followed-btn,
+          .show-suggested-users {
             margin-left: 20px;
             margin-right: 20px;
             text-transform: capitalize;
@@ -98,6 +100,10 @@
               color: var(--backgroundColor);
               background-color: var(--mainColor);
             }
+          }
+          .show-suggested-users{
+            padding: 0 !important;
+            min-width: 40px;
           }
           .edit-icon {
             align-self: center;

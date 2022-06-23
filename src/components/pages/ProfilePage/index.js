@@ -11,6 +11,7 @@ import {
   unfollowUserById,
   uploadImage,
   changeProfileAvatar,
+  getSuggestedListOnProfile,
 } from "api/userService";
 import UserImagesTabs from "components/common/UserImagesTabs";
 import useLoading from "hooks/useLoading";
@@ -38,6 +39,10 @@ import { createAccountReport } from "api/reportService";
 import ReportDetailModal from "components/common/ReportDetailModal";
 import ProfileOptionModal from "components/common/ProfileOptionModal";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
+import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+import { Icon } from "@iconify/react";
+import SuggestedOnProfile from "components/common/SuggestedOnProfile";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -96,6 +101,8 @@ const ProfilePage = (props) => {
   const [pageNumber, setPageNumber] = useState(0);
   const [currentModalType, setCurrentModalType] = useState(null);
   const [fetchInfo, setFetchInfo] = useState({});
+  const [openSuggestedUsers, setOpenSuggestedUsers] = useState(false);
+  const [suggestedUsers, setSuggestedUsers] = useState([]);
 
   //--GET DATA--
   const handleGetProfile = (username) => {
@@ -183,6 +190,22 @@ const ProfilePage = (props) => {
       });
   };
 
+  const handleGetSuggestedProfile = () => {
+    getSuggestedListOnProfile(userProfile.id)
+      .then((res) => {
+        if (res.status === 200) {
+          setSuggestedUsers(
+            res.data.filter(
+              (user) => user.username !== getCurrentUser().username
+            )
+          );
+        }
+      })
+      .then((err) => {
+        throw err;
+      });
+  };
+
   //--ACTION--
   const handleUnfollowUser = (id, username, index) => {
     handleCloseUnfollowModal();
@@ -190,7 +213,7 @@ const ProfilePage = (props) => {
     unfollowUserById(id)
       .then((res) => {
         if (res.status === 200) {
-          handleUpdateProfile()
+          handleUpdateProfile();
           setSnackbarState({
             open: true,
             content: `${trans("follow.unfollowed")} @${username}`,
@@ -203,7 +226,7 @@ const ProfilePage = (props) => {
       })
       .finally(() => {
         // setLocalLoading(false);
-        setLocalLoading({status: false, index})
+        setLocalLoading({ status: false, index });
       });
   };
 
@@ -225,7 +248,7 @@ const ProfilePage = (props) => {
       })
       .finally(() => {
         // setLocalLoading(false);
-        setLocalLoading({status: false, index})
+        setLocalLoading({ status: false, index });
       });
   };
 
@@ -265,6 +288,10 @@ const ProfilePage = (props) => {
       handleGetFollowingUsers(userProfile.id);
     }
   }, [pageNumber, currentModalType]);
+
+  useEffect(() => {
+    handleGetSuggestedProfile();
+  }, [userProfile]);
 
   const handleOpenModal = (type) => {
     setCurrentModalType(type);
@@ -470,9 +497,34 @@ const ProfilePage = (props) => {
                         width={18}
                       />
                     ) : userProfile.following ? (
-                      <CheckIcon className="followed-icon" />
+                      <Icon
+                        icon="bxs:user-check"
+                        className="followed-icon"
+                        width="20"
+                        height="20"
+                      />
                     ) : (
                       trans("profile.follow")
+                    )}
+                  </Button>
+                  <Button
+                    className="show-suggested-users"
+                    onClick={() => {
+                      setOpenSuggestedUsers(!openSuggestedUsers);
+                    }}
+                  >
+                    {openSuggestedUsers ? (
+                      <Icon
+                        icon="akar-icons:chevron-up"
+                        width="20"
+                        height="20"
+                      />
+                    ) : (
+                      <Icon
+                        icon="akar-icons:chevron-down"
+                        width="20"
+                        height="20"
+                      />
                     )}
                   </Button>
                   <Typography className="profile-more-actions">
@@ -544,6 +596,14 @@ const ProfilePage = (props) => {
           </Typography>
         </Typography>
       </Typography>
+
+      {openSuggestedUsers && (
+        <SuggestedOnProfile
+          suggestedUsers={suggestedUsers}
+          setSuggestedUsers={setSuggestedUsers}
+        />
+      )}
+
       <UserImagesTabs
         username={username}
         handleUpdateProfile={handleUpdateProfile}
