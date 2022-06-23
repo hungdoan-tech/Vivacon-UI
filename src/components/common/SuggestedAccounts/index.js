@@ -1,13 +1,15 @@
 import { useState, useEffect } from "react";
 import { Typography } from "@mui/material";
 import { getCurrentUser } from "utils/jwtToken";
-import { getProfile } from "api/userService";
+import { getProfile, getSuggestedListOnNewsFeed } from "api/userService";
 import ReactLoading from "react-loading";
+import FollowButton from "../FollowButton";
 import "./style.scss";
 
 const SuggestedAccounts = () => {
   const [isLoading, setLoading] = useState(false);
   const [userInfo, setUserInfo] = useState(null);
+  const [suggestList, setSuggestList] = useState([]);
   const handleGetProfile = (username) => {
     setLoading(true);
     getProfile(username, { limit: 1 })
@@ -23,12 +25,29 @@ const SuggestedAccounts = () => {
         setLoading(false);
       });
   };
+
+  const handleGetSuggestedList = () => {
+    getSuggestedListOnNewsFeed()
+      .then((res) => {
+        if (res.status === 200) {
+          setSuggestList(
+            res.data.filter(
+              (user) => user.username !== getCurrentUser().username
+            )
+          );
+        }
+      })
+      .catch((err) => {
+        throw err;
+      });
+  };
   useEffect(() => {
     handleGetProfile(getCurrentUser().username);
+    handleGetSuggestedList();
   }, []);
 
   return (
-    <>
+    <Typography component="div" className="suggested-accounts-container">
       {userInfo && (
         <Typography component="div" className="suggested-accounts">
           <Typography className="mini-profile">
@@ -59,16 +78,46 @@ const SuggestedAccounts = () => {
           <Typography component="div" className="rest"></Typography>
         </Typography>
       )}
-      {isLoading && (
-        <ReactLoading
-          className="loading-icon"
-          type="spokes"
-          color="#00000"
-          height={20}
-          width={20}
-        />
-      )}
-    </>
+
+      <Typography className="suggested-account-list">
+        <Typography className="title">Suggestions for you</Typography>
+        <Typography className="suggest-list">
+          {suggestList.length > 0 ? (
+            suggestList.map((user, index) => {
+              return (
+                <Typography className="suggest-item">
+                  <img src={user.avatar} width="30px" height="30px" />
+                  <Typography className="right-content">
+                    <Typography className="username">
+                      {user.username}
+                    </Typography>
+                    <Typography className="details">
+                      {user.mutualFriends?.length > 0
+                        ? `Followed by ${user.mutualFriends[0].username} ${
+                            user.mutualFriends.length > 1 &&
+                            `+ ${user.mutualFriends.length - 1} more`
+                          }`
+                        : "Popular"}
+                    </Typography>
+                  </Typography>
+                  <FollowButton
+                    userProfile={user}
+                    isFollowing={user.isFollowing}
+                    setFollowing={(res) => {
+                      const currList = [...suggestList];
+                      currList[index].isFollowing = res;
+                      setSuggestList(currList);
+                    }}
+                  />
+                </Typography>
+              );
+            })
+          ) : (
+            <p>No suggested user</p>
+          )}
+        </Typography>
+      </Typography>
+    </Typography>
   );
 };
 

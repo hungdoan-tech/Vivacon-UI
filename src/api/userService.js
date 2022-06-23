@@ -119,3 +119,7 @@ export const searchAccountsByKeyword = async (data) => {
     },
   });
 };
+
+export const getSuggestedListOnNewsFeed = async () => {
+  return await axiosConfig.get(`${API_ENDPOINT_KEYS.ACCOUNT}/recommend`, {});
+};
