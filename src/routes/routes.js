@@ -16,6 +16,7 @@ import PostReportPage from "components/dashboard/src/pages/PostReportPage";
 import ChatPage from "components/pages/ChatPage";
 import SettingPage from "components/pages/SettingPage";
 import PostDetailPage from "components/pages/PostDetailPage";
+import HashtagPage from "components/pages/HashtagPage";
 
 const RouterList = () => {
   const Auth = useContext(AuthUser);
@@ -47,6 +48,7 @@ const RouterList = () => {
           <PrivateRoute exact path="/chat" component={ChatPage} />
           <PrivateRoute exact path="/setting" component={SettingPage} />
           <PrivateRoute exact path="/post/:id" component={PostDetailPage} />
+          <PrivateRoute exact path="/hashtag/:name" component={HashtagPage} />
         </>
       )}
       {Auth.auth.isLogin && Auth.auth.isAdmin && (
