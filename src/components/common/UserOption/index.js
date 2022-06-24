@@ -7,6 +7,7 @@ import { useHistory } from "react-router-dom";
 import { getCurrentUser } from "utils/jwtToken";
 import "./style.scss";
 import { useTranslation } from "react-i18next";
+import { removeLocalStorageField } from "utils/cookie";
 
 const UserOption = (props) => {
   const Auth = useContext(AuthUser);
@@ -35,6 +36,8 @@ const UserOption = (props) => {
                 onClick={() => {
                   option.onClickHandle();
                   if (option.name === "settingUI.logOut") {
+                    removeLocalStorageField("suggested_users");
+                    removeLocalStorageField("recent_search");
                     window.location.href = "/login";
                   } else {
                     if (option.name === "settingUI.profile") {

@@ -47,4 +47,8 @@ export const removeDeviceToken = () => {
   return cookie.remove("device-token");
 };
 
+export const removeLocalStorageField = (field) => {
+  return localStorage.removeItem(field);
+}
+
 export const isExpiredToken = () => !getJwtToken();

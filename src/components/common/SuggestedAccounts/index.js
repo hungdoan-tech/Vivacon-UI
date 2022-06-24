@@ -33,7 +33,7 @@ const SuggestedAccounts = () => {
           setSuggestList(
             res.data.filter(
               (user) => user.username !== getCurrentUser().username
-            )
+            ).slice(0, 6)
           );
         }
       })
@@ -93,9 +93,10 @@ const SuggestedAccounts = () => {
                     </Typography>
                     <Typography className="details">
                       {user.mutualFriends?.length > 0
-                        ? `Followed by ${user.mutualFriends[0].username} ${
-                            user.mutualFriends.length > 1 &&
-                            `+ ${user.mutualFriends.length - 1} more`
+                        ? `Both follow ${user.mutualFriends[0].username} ${
+                            user.mutualFriends.length > 1
+                              ? `+ ${user.mutualFriends.length - 1} more`
+                              : ""
                           }`
                         : "Popular"}
                     </Typography>
