@@ -87,10 +87,18 @@
         }
         .username {
           font-weight: 900;
+          &:hover {
+            cursor: pointer;
+            text-decoration: underline;
+          }
         }
         .details {
           font-size: 12px;
           color: var(--defaultColor);
+          margin: 0;
+        }
+        button {
+          padding: 0;
         }
       }
     }
@@ -98,7 +106,7 @@
 }
 
 @media only screen and (max-width: 1375px) {
-  .suggested-accounts {
+  .suggested-accounts-container {
     position: initial;
     width: 650px;
     margin: auto !important;

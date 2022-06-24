@@ -108,7 +108,10 @@ const LoginPage = () => {
             type: "SUCCESS",
           });
           setTimeout(() => {
-            if (parseJwt(res.data.accessToken).roles.includes("ADMIN")) {
+            if (
+              parseJwt(res.data.accessToken).roles.includes("ADMIN") ||
+              parseJwt(res.data.accessToken).roles.includes("SUPER_ADMIN")
+            ) {
               window.location.href = "/dashboard";
             } else {
               window.location.href = "/";

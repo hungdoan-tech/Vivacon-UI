@@ -66,45 +66,75 @@ const useInfiniteList = (handleGetData, data, pageNumber, parentDataList) => {
   }, [pageNumber]);
 
   useEffect(() => {
-    setLoading(true);
-    setError(false);
-    setNoData(false);
-    // let cancel;
-    handleGetData({ ...data, page: 0 })
-      .then((res) => {
-        const differenceContent = getDifferenceItemBetweenTwoArrays(
-          res.data.content,
-          dataList
-        );
-        setDataList((prevDataList) => {
-          return [...new Set([...differenceContent])];
+    if (data.username) {
+      setLoading(true);
+      setError(false);
+      setNoData(false);
+      // let cancel;
+      handleGetData({ ...data, page: 0 })
+        .then((res) => {
+          const differenceContent = getDifferenceItemBetweenTwoArrays(
+            res.data.content,
+            dataList
+          );
+          setDataList((prevDataList) => {
+            return [...new Set([...differenceContent])];
+          });
+          setHasMore(!res.data.last);
+          setLoading(false);
+        })
+        .catch((e) => {
+          // if (axios.isCancel(e)) return;
+          setError(true);
         });
-        setHasMore(!res.data.last);
-        setLoading(false);
-      })
-      .catch((e) => {
-        // if (axios.isCancel(e)) return;
-        setError(true);
-      });
+    }
     // return () => cancel();
   }, [data.username]);
 
   useEffect(() => {
-    setLoading(true);
-    setError(false);
-    setNoData(false);
-    // let cancel;
-    handleGetData({ ...data, page: 0 })
-      .then((res) => {
-        setDataList((prevDataList) => {
-          return [...new Set([...res.data.content])];
+    if (data.name) {
+      setLoading(true);
+      setError(false);
+      setNoData(false);
+      // let cancel;
+      handleGetData({ ...data, page: 0 })
+        .then((res) => {
+          const differenceContent = getDifferenceItemBetweenTwoArrays(
+            res.data.content,
+            dataList
+          );
+          setDataList((prevDataList) => {
+            return [...new Set([...differenceContent])];
+          });
+          setHasMore(!res.data.last);
+          setLoading(false);
+        })
+        .catch((e) => {
+          // if (axios.isCancel(e)) return;
+          setError(true);
         });
-        setHasMore(!res.data.last);
-        setLoading(false);
-      })
-      .catch((e) => {
-        setError(true);
-      });
+    }
+    // return () => cancel();
+  }, [data.name]);
+
+  useEffect(() => {
+    if (data.status) {
+      setLoading(true);
+      setError(false);
+      setNoData(false);
+      // let cancel;
+      handleGetData({ ...data, page: 0 })
+        .then((res) => {
+          setDataList((prevDataList) => {
+            return [...new Set([...res.data.content])];
+          });
+          setHasMore(!res.data.last);
+          setLoading(false);
+        })
+        .catch((e) => {
+          setError(true);
+        });
+    }
   }, [data.status]);
 
   return { isLoading, error, dataList, hasMore, isNoData };

@@ -4,12 +4,16 @@ import { getCurrentUser } from "utils/jwtToken";
 import { getProfile, getSuggestedListOnNewsFeed } from "api/userService";
 import ReactLoading from "react-loading";
 import FollowButton from "../FollowButton";
+import { useHistory } from "react-router-dom";
 import "./style.scss";
 
 const SuggestedAccounts = () => {
   const [isLoading, setLoading] = useState(false);
   const [userInfo, setUserInfo] = useState(null);
   const [suggestList, setSuggestList] = useState([]);
+
+  const history = useHistory();
+
   const handleGetProfile = (username) => {
     setLoading(true);
     getProfile(username, { limit: 1 })
@@ -31,9 +35,9 @@ const SuggestedAccounts = () => {
       .then((res) => {
         if (res.status === 200) {
           setSuggestList(
-            res.data.filter(
-              (user) => user.username !== getCurrentUser().username
-            ).slice(0, 6)
+            res.data
+              .filter((user) => user.username !== getCurrentUser().username)
+              .slice(0, 6)
           );
         }
       })
@@ -88,7 +92,10 @@ const SuggestedAccounts = () => {
                 <Typography className="suggest-item">
                   <img src={user.avatar} width="30px" height="30px" />
                   <Typography className="right-content">
-                    <Typography className="username">
+                    <Typography
+                      className="username"
+                      onClick={() => history.push(`/profile/${user.username}`)}
+                    >
                       {user.username}
                     </Typography>
                     <Typography className="details">
