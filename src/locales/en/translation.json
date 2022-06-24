@@ -139,5 +139,16 @@
     "thankYou": "Thank you for letting me know",
     "sendReport": "Send a report",
     "whyReport": "Why you report this post?"
+  },
+  "footer": {
+    "resources": "Resources",
+    "about": "About",
+    "careers": "Careers",
+    "contact": "Contact",
+    "admin": "Admin",
+    "legal": "Legal",
+    "privacy": "Privacy",
+    "terms": "Terms",
+    "language": "Language"
   }
 }

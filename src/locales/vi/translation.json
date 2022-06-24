@@ -139,5 +139,16 @@
     "thankYou": "Cảm ơn bạn đã cho chúng tôi biết",
     "sendReport": "Gửi báo cáo",
     "whyReport": "Tại sao bạn báo cáo bài viết này?"
+  },
+  "footer": {
+    "resources": "Nguồn",
+    "about": "Giới thiệu",
+    "careers": "Việc làm",
+    "contact": "Liên hệ",
+    "admin": "Quản trị viên",
+    "legal": "Vi phạm",
+    "privacy": "Riêng tư",
+    "terms": "Điều khoản",
+    "language": "Ngôn ngữ"
   }
 }

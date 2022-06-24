@@ -18,6 +18,7 @@ const Card = (props) => {
           param={props}
           setExpanded={() => setExpanded(false)}
           setSummaryPeriod={props.setSummaryPeriod}
+          setSummaryUserPeriod={props.setSummaryUserPeriod}
         />
       ) : (
         <CompactCard param={props} setExpanded={() => setExpanded(true)} />
@@ -47,7 +48,12 @@ function CompactCard({ param, setExpanded }) {
 }
 
 // Expanded Card
-function ExpandedCard({ param, setExpanded, setSummaryPeriod }) {
+function ExpandedCard({
+  param,
+  setExpanded,
+  setSummaryPeriod,
+  setSummaryUserPeriod,
+}) {
   console.log({ param });
   const [currentPeriod, setCurrentPeroid] = useState(PERIOD.MONTHS);
   const data = {
@@ -97,6 +103,7 @@ function ExpandedCard({ param, setExpanded, setSummaryPeriod }) {
 
   const handleClickPeriod = (type) => {
     setSummaryPeriod(type);
+    setSummaryUserPeriod(type);
     setCurrentPeroid(type);
   };
 

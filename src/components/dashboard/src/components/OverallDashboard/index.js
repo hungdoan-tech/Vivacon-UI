@@ -17,6 +17,8 @@ const OverallDashboard = ({
   statisticByTime,
   summaryPeriod,
   setSummaryPeriod,
+  statisticUserByTime,
+  setSummaryUserPeriod,
 }) => {
   return (
     <div className="MainDash">
@@ -33,6 +35,8 @@ const OverallDashboard = ({
           statisticByTime={statisticByTime}
           summaryPeriod={summaryPeriod}
           setSummaryPeriod={setSummaryPeriod}
+          statisticUserByTime={statisticUserByTime}
+          setSummaryUserPeriod={setSummaryUserPeriod}
         />
         <div className="homepage__top-cards slide-container">
           <Carousel duration={1000} autoPlay={true} animation="slide">

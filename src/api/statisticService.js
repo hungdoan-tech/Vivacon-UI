@@ -64,3 +64,24 @@ export const getPostByNewestCreatedAt = async (data) => {
     }
   );
 };
+
+export const getUserQuantityStatisticInMonths = async () => {
+  return await axiosConfig.get(
+    `${API_ENDPOINT_KEYS.STATISTIC}/user/in/months`,
+    {}
+  );
+};
+
+export const getUserQuantityStatisticInQuarters = async () => {
+  return await axiosConfig.get(
+    `${API_ENDPOINT_KEYS.STATISTIC}/user/in/quarters`,
+    {}
+  );
+};
+
+export const getUserQuantityStatisticInYears = async () => {
+  return await axiosConfig.get(
+    `${API_ENDPOINT_KEYS.STATISTIC}/user/in/years`,
+    {}
+  );
+};

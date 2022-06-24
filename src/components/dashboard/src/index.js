@@ -15,6 +15,9 @@ import {
   getPostQuantityStatisticInYears,
   getTheTopPostInteraction,
   getPostByNewestCreatedAt,
+  getUserQuantityStatisticInMonths,
+  getUserQuantityStatisticInQuarters,
+  getUserQuantityStatisticInYears,
 } from "../../../api/statisticService";
 import { PERIOD } from "../../../constant/types";
 import AdminManagement from "./pages/AdminManagement";
@@ -22,7 +25,9 @@ import AdminManagement from "./pages/AdminManagement";
 const Dashboard = () => {
   const [selected, setSelected] = useState(0);
   const [summaryPeriod, setSummaryPeriod] = useState(PERIOD.MONTHS);
+  const [summaryUserPeriod, setSummaryUserPeriod] = useState(PERIOD.MONTHS);
   const [statisticByTime, setStatisticByTime] = useState([]);
+  const [statisticUserByTime, setStatisticUserByTime] = useState([]);
   const [statisticData, setStatisticData] = useState([]);
   const [newestPostData, setNewestPostData] = useState([]);
   const [postInteractionData, setPostInteractionData] = useState([]);
@@ -44,6 +49,22 @@ const Dashboard = () => {
       );
     }
   }, [summaryPeriod]);
+
+  useEffect(() => {
+    if (summaryUserPeriod === PERIOD.MONTHS) {
+      getUserQuantityStatisticInMonths().then((res) =>
+        setStatisticUserByTime(res.data)
+      );
+    } else if (summaryUserPeriod === PERIOD.QUARTERS) {
+      getUserQuantityStatisticInQuarters().then((res) =>
+        setStatisticUserByTime(res.data)
+      );
+    } else if (summaryUserPeriod === PERIOD.YEARS) {
+      getUserQuantityStatisticInYears().then((res) =>
+        setStatisticUserByTime(res.data)
+      );
+    }
+  }, [summaryUserPeriod]);
 
   useEffect(() => {
     getStatisticData().then((res) => setStatisticData(res.data));
@@ -69,8 +90,10 @@ const Dashboard = () => {
               newestPostData={newestPostData}
               postInteractionData={postInteractionData}
               statisticByTime={statisticByTime}
+              statisticUserByTime={statisticUserByTime}
               summaryPeriod={summaryPeriod}
               setSummaryPeriod={setSummaryPeriod}
+              setSummaryUserPeriod={setSummaryUserPeriod}
             />
             <RightSide
               userAccountMostFollowerData={userAccountMostFollowerData}
