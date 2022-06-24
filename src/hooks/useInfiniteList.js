@@ -6,7 +6,13 @@ import { API_ENDPOINT_KEYS } from "api/constants";
 import _ from "lodash";
 import { getDifferenceItemBetweenTwoArrays } from "utils/resolveData";
 
-const useInfiniteList = (handleGetData, data, pageNumber, parentDataList) => {
+const useInfiniteList = (
+  handleGetData,
+  data,
+  pageNumber,
+  parentDataList,
+  changedField
+) => {
   const [isLoading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [dataList, setDataList] = useState([]);
@@ -66,33 +72,31 @@ const useInfiniteList = (handleGetData, data, pageNumber, parentDataList) => {
   }, [pageNumber]);
 
   useEffect(() => {
-    if (data.username) {
-      setLoading(true);
-      setError(false);
-      setNoData(false);
-      // let cancel;
-      handleGetData({ ...data, page: 0 })
-        .then((res) => {
-          const differenceContent = getDifferenceItemBetweenTwoArrays(
-            res.data.content,
-            dataList
-          );
-          setDataList((prevDataList) => {
-            return [...new Set([...differenceContent])];
-          });
-          setHasMore(!res.data.last);
-          setLoading(false);
-        })
-        .catch((e) => {
-          // if (axios.isCancel(e)) return;
-          setError(true);
+    setLoading(true);
+    setError(false);
+    setNoData(false);
+    // let cancel;
+    handleGetData({ ...data, page: 0 })
+      .then((res) => {
+        const differenceContent = getDifferenceItemBetweenTwoArrays(
+          res.data.content,
+          dataList
+        );
+        setDataList((prevDataList) => {
+          return [...new Set([...differenceContent])];
         });
-    }
+        setHasMore(!res.data.last);
+        setLoading(false);
+      })
+      .catch((e) => {
+        // if (axios.isCancel(e)) return;
+        setError(true);
+      });
     // return () => cancel();
   }, [data.username]);
 
   useEffect(() => {
-    if (data.name) {
+    if (changedField) {
       setLoading(true);
       setError(false);
       setNoData(false);
@@ -115,26 +119,24 @@ const useInfiniteList = (handleGetData, data, pageNumber, parentDataList) => {
         });
     }
     // return () => cancel();
-  }, [data.name]);
+  }, [changedField]);
 
   useEffect(() => {
-    if (data.status) {
-      setLoading(true);
-      setError(false);
-      setNoData(false);
-      // let cancel;
-      handleGetData({ ...data, page: 0 })
-        .then((res) => {
-          setDataList((prevDataList) => {
-            return [...new Set([...res.data.content])];
-          });
-          setHasMore(!res.data.last);
-          setLoading(false);
-        })
-        .catch((e) => {
-          setError(true);
+    setLoading(true);
+    setError(false);
+    setNoData(false);
+    // let cancel;
+    handleGetData({ ...data, page: 0 })
+      .then((res) => {
+        setDataList((prevDataList) => {
+          return [...new Set([...res.data.content])];
         });
-    }
+        setHasMore(!res.data.last);
+        setLoading(false);
+      })
+      .catch((e) => {
+        setError(true);
+      });
   }, [data.status]);
 
   return { isLoading, error, dataList, hasMore, isNoData };

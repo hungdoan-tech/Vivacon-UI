@@ -104,6 +104,7 @@ const HashtagPage = (props) => {
             name: `#${props.match.params.name}`,
             limit: 9,
           }}
+          changedField={props.match.params.name}
           component={ImageItem}
           noDataComponent={() => <h3>No post</h3>}
           handleClickItem={handleOpenPostDetailsModal}

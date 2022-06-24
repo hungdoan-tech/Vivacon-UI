@@ -17,12 +17,14 @@ const InfiniteList = (props) => {
     childProps,
     parentDataList,
     setParentDataList,
+    changedField = null,
   } = props;
   const { dataList, isLoading, hasMore, isNoData } = useInfiniteList(
     handleGetData,
     data,
     pageNumber,
-    parentDataList
+    parentDataList,
+    changedField
   );
 
   const observer = useRef();
