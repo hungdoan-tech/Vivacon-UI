@@ -31,4 +31,5 @@ export const API_ENDPOINT_KEYS = {
   NOTIFICATION: "/notification",
   SETTING: "/setting",
   ADMIN: "/admin",
+  HASHTAG: "/hashtag",
 };
