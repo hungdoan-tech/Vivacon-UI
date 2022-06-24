@@ -104,24 +104,21 @@
   .css-8z7n5c-MuiImageList-root {
     overflow: unset !important;
   }
-  .MuiBox-root {
-    padding: 0 !important;
-    .MuiImageListItem-root {
-      cursor: pointer;
-      &:hover {
-        &::after {
-          content: "";
-          position: absolute;
-          background-color: rgba(0, 0, 0, 0.3);
-          width: 100%;
-          height: 100%;
-        }
-        .post-action-btns {
-          display: flex !important;
-          justify-content: center;
-          align-items: center;
-          flex-direction: row;
-        }
+  .MuiImageListItem-root {
+    cursor: pointer;
+    &:hover {
+      &::after {
+        content: "";
+        position: absolute;
+        background-color: rgba(0, 0, 0, 0.3);
+        width: 100%;
+        height: 100%;
+      }
+      .post-action-btns {
+        display: flex !important;
+        justify-content: center;
+        align-items: center;
+        flex-direction: row;
       }
     }
   }
