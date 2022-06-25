@@ -60,7 +60,7 @@ export const changeProfileAvatar = async (data) => {
 };
 
 export const getProfile = async (username, data) => {
-  return await axiosConfig.get(`${API_ENDPOINT_KEYS.GET_PROFILE}/${username}`, {
+  return await axiosConfig.get(`${API_ENDPOINT_KEYS.PROFILE}/${username}`, {
     params: data,
   });
 };
@@ -124,6 +124,13 @@ export const getSuggestedListOnNewsFeed = async () => {
   return await axiosConfig.get(`${API_ENDPOINT_KEYS.ACCOUNT}/recommend`, {});
 };
 
-export const getSuggestedListOnProfile= async (id) => {
-  return await axiosConfig.get(`${API_ENDPOINT_KEYS.ACCOUNT}/recommend/profile/${id}`, {});
+export const getSuggestedListOnProfile = async (id) => {
+  return await axiosConfig.get(
+    `${API_ENDPOINT_KEYS.ACCOUNT}/recommend/profile/${id}`,
+    {}
+  );
+};
+
+export const editProfile = async (data) => {
+  return await axiosConfig.post(`${API_ENDPOINT_KEYS.PROFILE}/edit`, data);
 };

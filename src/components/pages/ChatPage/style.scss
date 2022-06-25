@@ -224,6 +224,9 @@
                 }
                 .username {
                   font-weight: 900;
+                  &:hover {
+                    text-decoration: underline;
+                  }
                 }
               }
               .post-content {
@@ -232,6 +235,14 @@
                     width: 200px;
                     height: 200px;
                     border-radius: 10px;
+                  }
+                }
+                .hashtag-part {
+                  font-weight: 900;
+                  display: initial;
+                  &:hover {
+                    text-decoration: underline;
+                    cursor: pointer;
                   }
                 }
               }

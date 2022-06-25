@@ -10,7 +10,7 @@ export const API_ENDPOINT_KEYS = {
   UPLOAD_IMAGE: "/attachments",
   RENEW_TOKEN: "/refresh-token",
   CREATE_POST: "/post",
-  GET_PROFILE: "/profile",
+  PROFILE: "/profile",
   FOLLOWER: "/follower",
   FOLLOWING: "/following",
   POST: "/post",

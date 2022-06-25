@@ -41,10 +41,14 @@ export default function PostReportPage() {
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(5);
 
-  const [openConfirmRejectedDialog, setOpenConfirmRejectedDialog] =
-    useState(false);
-  const [openConfirmApprovedDialog, setOpenConfirmApprovedDialog] =
-    useState(false);
+  const [openConfirmRejectedDialog, setOpenConfirmRejectedDialog] = useState({
+    open: false,
+    id: -1,
+  });
+  const [openConfirmApprovedDialog, setOpenConfirmApprovedDialog] = useState({
+    open: false,
+    id: -1,
+  });
 
   const [reportDetailContent, setReportDetailContent] = useState("");
 
@@ -117,12 +121,18 @@ export default function PostReportPage() {
     });
   };
 
-  const handleOpenConfirmDialog = (type) => {
+  const handleOpenConfirmDialog = (type, id) => {
     if (type === "Approved") {
-      setOpenConfirmApprovedDialog(true);
+      setOpenConfirmApprovedDialog({
+        open: true,
+        id,
+      });
     }
     if (type === "Rejected") {
-      setOpenConfirmRejectedDialog(true);
+      setOpenConfirmRejectedDialog({
+        open: true,
+        id,
+      });
     }
   };
 
@@ -137,20 +147,48 @@ export default function PostReportPage() {
 
   const handleCloseDialog = (type) => {
     if (type === "Approved") {
-      setOpenConfirmApprovedDialog(false);
+      setOpenConfirmApprovedDialog({
+        open: false,
+        id: -1,
+      });
     }
     if (type === "Rejected") {
-      setOpenConfirmRejectedDialog(false);
+      setOpenConfirmRejectedDialog({
+        open: false,
+        id: -1,
+      });
     }
   };
   const handleConfirmDialog = (type, id) => {
     if (type === "Approved") {
-      setOpenConfirmApprovedDialog(false);
+      setOpenConfirmApprovedDialog({
+        open: false,
+        id: -1,
+      });
       handleApprovedPostReport(id);
     }
     if (type === "Rejected") {
-      setOpenConfirmRejectedDialog(false);
+      setOpenConfirmRejectedDialog({
+        open: false,
+        id: -1,
+      });
       handleRejectedPostReport(id);
+    }
+    updateReportListAfterDeleting(id);
+  };
+
+  const updateReportListAfterDeleting = (id) => {
+    if (postReportList.content?.length === 1 && page > 1) {
+      fetchListPostReport(page - 1, limit);
+      setPage(page - 1);
+    } else {
+      const filteredReportList = [...postReportList.content].filter(
+        (rp) => rp.id !== id
+      );
+      setPostReportList({
+        ...postReportList,
+        content: filteredReportList,
+      });
     }
   };
 
@@ -259,8 +297,12 @@ export default function PostReportPage() {
       >
         <Typography component="div" className="report-admin-modal">
           <ReportHeader
-            handleApprove={() => handleOpenConfirmDialog("Approved")}
-            handleReject={() => handleOpenConfirmDialog("Rejected")}
+            handleApprove={() =>
+              handleOpenConfirmDialog("Approved", showPostReportModal.reportId)
+            }
+            handleReject={() =>
+              handleOpenConfirmDialog("Rejected", showPostReportModal.reportId)
+            }
             handleCancel={() => handleClosePostReportModal()}
             reportMessage={trans(showPostReportModal.reportMessage)}
             reportDetailContent={reportDetailContent}

@@ -12,7 +12,7 @@ export const createPost = async (data) => {
 export const getPostsByUserName = async (data) => {
   const { _sort, limit, _order } = data;
   return await axiosConfig.get(
-    `${API_ENDPOINT_KEYS.GET_PROFILE}/${data.username}/outline-post`,
+    `${API_ENDPOINT_KEYS.PROFILE}/${data.username}/outline-post`,
     {
       params: {
         _sort,

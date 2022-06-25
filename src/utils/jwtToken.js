@@ -1,4 +1,13 @@
-import { getJwtToken } from "utils/cookie";
+import axios from "axios";
+import {
+  getJwtToken,
+  getRefreshToken,
+  saveJwtToken,
+  saveRefreshToken,
+  removeRefreshToken,
+  removeJwtToken,
+} from "utils/cookie";
+import { renewAccessToken } from "api/axiosConfig";
 
 export const parseJwt = (token) => {
   var base64Url = token.split(".")[1];
@@ -17,4 +26,23 @@ export const parseJwt = (token) => {
 
 export const getCurrentUser = () => {
   return parseJwt(getJwtToken());
+};
+
+export const updateCookieToken = () => {
+  const refreshToken = getRefreshToken();
+  console.log({ refreshToken });
+  if (refreshToken) {
+    renewAccessToken(refreshToken)
+      .then((res) => {
+        const { accessToken: newToken, refreshToken: newRefreshToken } = res;
+        console.log({ newToken, newRefreshToken });
+        saveJwtToken(newToken);
+        saveRefreshToken(newRefreshToken);
+      })
+      .catch((err) => {
+        removeJwtToken();
+        removeRefreshToken();
+        window.location.reload();
+      });
+  }
 };

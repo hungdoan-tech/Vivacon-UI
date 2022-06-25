@@ -37,6 +37,14 @@
       text-decoration: underline;
     }
   }
+  .hashtag-part {
+    color: var(--mainColor);
+    display: initial;
+    &:hover {
+      text-decoration: underline;
+      cursor: pointer;
+    }
+  }
   // margin: 10px 0 !important;
 }
 .follow-container {

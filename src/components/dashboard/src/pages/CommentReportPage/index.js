@@ -39,10 +39,14 @@ export default function CommentReportPage() {
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(5);
 
-  const [openConfirmRejectedDialog, setOpenConfirmRejectedDialog] =
-    useState(false);
-  const [openConfirmApprovedDialog, setOpenConfirmApprovedDialog] =
-    useState(false);
+  const [openConfirmRejectedDialog, setOpenConfirmRejectedDialog] = useState({
+    open: false,
+    id: -1,
+  });
+  const [openConfirmApprovedDialog, setOpenConfirmApprovedDialog] = useState({
+    open: false,
+    id: -1,
+  });
 
   const [reportDetailContent, setReportDetailContent] = useState("");
 
@@ -72,24 +76,6 @@ export default function CommentReportPage() {
       .finally(() => {});
   };
 
-  const handleCloseConfirmRejectedDialog = () => {
-    setOpenConfirmRejectedDialog(false);
-  };
-
-  const handleConfirmRejectedDialog = (id) => {
-    setOpenConfirmRejectedDialog(false);
-    handleRejectedCommentReport(id);
-  };
-
-  const handleCloseConfirmApprovedDialog = () => {
-    setOpenConfirmApprovedDialog(false);
-  };
-
-  const handleConfirmApprovedDialog = (id) => {
-    setOpenConfirmApprovedDialog(false);
-    handleApprovedCommentReport(id);
-  };
-
   const handleOpenReportModal = (
     index,
     item,
@@ -115,14 +101,6 @@ export default function CommentReportPage() {
     });
   };
 
-  const handleOpenRejectedDialog = () => {
-    setOpenConfirmRejectedDialog(true);
-  };
-
-  const handleOpenApprovedDialog = () => {
-    setOpenConfirmApprovedDialog(true);
-  };
-
   const handleRejectedCommentReport = (id) => {
     handleCloseReportModal();
     rejectedCommentReport(id).then((res) => {
@@ -132,12 +110,6 @@ export default function CommentReportPage() {
           content: `You have rejected a comment report successfully`,
           type: "SUCCESS",
         });
-      }
-      if (commentReportList && commentReportList?.content.length === 1) {
-        fetchListCommentReport(page - 1, limit);
-        setPage(page - 1);
-      } else {
-        fetchListCommentReport(page, limit);
       }
     });
   };
@@ -151,12 +123,6 @@ export default function CommentReportPage() {
           content: `You have approved a comment report successfully`,
           type: "SUCCESS",
         });
-      }
-      if (commentReportList && commentReportList?.content.length === 1) {
-        fetchListCommentReport(page - 1, limit);
-        setPage(page - 1);
-      } else {
-        fetchListCommentReport(page, limit);
       }
     });
   };
@@ -182,12 +148,18 @@ export default function CommentReportPage() {
     }
   }, [showCommentReportModal]);
 
-  const handleOpenConfirmDialog = (type) => {
+  const handleOpenConfirmDialog = (type, id) => {
     if (type === "Approved") {
-      setOpenConfirmApprovedDialog(true);
+      setOpenConfirmApprovedDialog({
+        open: true,
+        id,
+      });
     }
     if (type === "Rejected") {
-      setOpenConfirmRejectedDialog(true);
+      setOpenConfirmRejectedDialog({
+        open: true,
+        id,
+      });
     }
   };
 
@@ -202,20 +174,49 @@ export default function CommentReportPage() {
 
   const handleCloseDialog = (type) => {
     if (type === "Approved") {
-      setOpenConfirmApprovedDialog(false);
+      setOpenConfirmApprovedDialog({
+        open: false,
+        id: -1
+      });
     }
     if (type === "Rejected") {
-      setOpenConfirmRejectedDialog(false);
+      setOpenConfirmRejectedDialog({
+        open: false,
+        id: -1
+      });
     }
   };
   const handleConfirmDialog = (type, id) => {
     if (type === "Approved") {
-      setOpenConfirmApprovedDialog(false);
+      setOpenConfirmApprovedDialog({
+        open: false,
+        id: -1
+      });
       handleApprovedCommentReport(id);
     }
     if (type === "Rejected") {
-      setOpenConfirmRejectedDialog(false);
+      setOpenConfirmRejectedDialog({
+        open: false,
+        id: -1
+      });
       handleRejectedCommentReport(id);
+    }
+    updateReportListAfterDeleting(id);
+  };
+
+  const updateReportListAfterDeleting = (id) => {
+    if (commentReportList.content?.length === 1 && page > 1) {
+      fetchListCommentReport(page - 1, limit);
+      setPage(page - 1);
+    } else {
+      const filteredReportList = [...commentReportList.content].filter(
+        (rp) => rp.id !== id
+      );
+      console.log({ commentReportList, filteredReportList, id });
+      setCommentReportList({
+        ...commentReportList,
+        content: filteredReportList,
+      });
     }
   };
 
@@ -283,8 +284,18 @@ export default function CommentReportPage() {
       >
         <Typography component="div" className="report-admin-modal">
           <ReportHeader
-            handleApprove={() => handleOpenConfirmDialog("Approved")}
-            handleReject={() => handleOpenConfirmDialog("Rejected")}
+            handleApprove={() =>
+              handleOpenConfirmDialog(
+                "Approved",
+                showCommentReportModal.reportId
+              )
+            }
+            handleReject={() =>
+              handleOpenConfirmDialog(
+                "Rejected",
+                showCommentReportModal.reportId
+              )
+            }
             handleCancel={() => handleCloseReportModal()}
             reportMessage={trans(showCommentReportModal.reportMessage)}
             reportDetailContent={reportDetailContent}

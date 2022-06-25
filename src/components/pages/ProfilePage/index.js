@@ -15,7 +15,7 @@ import {
 } from "api/userService";
 import UserImagesTabs from "components/common/UserImagesTabs";
 import useLoading from "hooks/useLoading";
-import { getCurrentUser } from "utils/jwtToken";
+import { getCurrentUser, updateCookieToken } from "utils/jwtToken";
 import CheckIcon from "@mui/icons-material/Check";
 import { Helmet } from "react-helmet";
 import CustomModal from "components/common/CustomModal";
@@ -103,6 +103,8 @@ const ProfilePage = (props) => {
   const [fetchInfo, setFetchInfo] = useState({});
   const [openSuggestedUsers, setOpenSuggestedUsers] = useState(false);
   const [suggestedUsers, setSuggestedUsers] = useState([]);
+
+  const history = useHistory()
 
   //--GET DATA--
   const handleGetProfile = (username) => {
@@ -385,6 +387,7 @@ const ProfilePage = (props) => {
                 type: "SUCCESS",
               });
               setImg(res.data.url);
+              updateCookieToken();
             }
           });
         }
@@ -465,7 +468,7 @@ const ProfilePage = (props) => {
             <Typography className="action-btns">
               {getCurrentUser().username === userProfile.username ? (
                 <>
-                  <Button className="edit-btn">
+                  <Button className="edit-btn" onClick={() => history.push('/setting')}>
                     {trans("profile.editInformation")}
                   </Button>
                   <SettingsIcon className="edit-icon" />

@@ -59,7 +59,7 @@ const Navbar = () => {
       <Typography className="app-user" component="div" align="center">
         <ClickAwayListener onClickAway={handleClickAwayUserOption}>
           <Box sx={{ position: "relative" }}>
-            <Button onClick={handleOpenUserOption}>
+            <Typography className="profile-avatar" onClick={handleOpenUserOption}>
               <Typography
                 className="user-avatar"
                 component="div"
@@ -72,7 +72,7 @@ const Navbar = () => {
                   alt=""
                 />
               </Typography>
-            </Button>
+            </Typography>
             {openUserOption && (
               <UserOption handleClose={() => setUserOption(false)} />
             )}

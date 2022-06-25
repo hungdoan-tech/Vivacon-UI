@@ -26,6 +26,7 @@ import {
   StyledTableCell,
   StyledTableRow,
 } from "components/dashboard/src/components/StyledTable";
+import { Typography } from "@mui/material";
 
 const ReportTable = ({
   reportList,
@@ -63,18 +64,24 @@ const ReportTable = ({
                     <ConfirmDialog
                       handleClose={() => handleCloseDialog("Rejected")}
                       handleConfirm={() =>
-                        handleConfirmDialog("Rejected", row.id)
+                        handleConfirmDialog(
+                          "Rejected",
+                          getOpenDialog("Rejected").id
+                        )
                       }
-                      open={getOpenDialog("Rejected")}
+                      open={getOpenDialog("Rejected").open}
                       title="Are you sure want to rejected this report?"
                       description="Report Content"
                     />
                     <ConfirmDialog
                       handleClose={() => handleCloseDialog("Approved")}
                       handleConfirm={() =>
-                        handleConfirmDialog("Approved", row.id)
+                        handleConfirmDialog(
+                          "Approved",
+                          getOpenDialog("Approved").id
+                        )
                       }
-                      open={getOpenDialog("Approved")}
+                      open={getOpenDialog("Approved").open}
                       title="Are you sure want to approved this report?"
                       description="Report Content"
                     />
@@ -124,6 +131,9 @@ const ReportTable = ({
                 ))
               : null}
           </TableBody>
+          {reportList.content?.length === 0 && (
+            <Typography component="td" colSpan={100} className="no-data-table">No Data</Typography>
+          )}
         </Table>
       </TableContainer>
       <Pagination

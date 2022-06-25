@@ -20,6 +20,7 @@ import {
   getNotificationList,
 } from "api/notificationService";
 import { useHistory } from "react-router-dom";
+import { Icon } from "@iconify/react";
 
 const AppButtonsGroup = (props) => {
   const [openNoti, setOpenNoti] = React.useState(false);
@@ -136,12 +137,13 @@ const AppButtonsGroup = (props) => {
     <Typography className="app-btns-container" component="div" align="center">
       <Typography component="div" className="btn-container">
         <Button onClick={handleOpenCreatePostModal}>
-          <AddIcon />
+          <Icon icon="akar-icons:plus" width={26} height={26} />
         </Button>
       </Typography>
       <Typography component="div" className="btn-container">
         <Button onClick={() => history.push("/")}>
-          <HomeIcon />
+          {/* <HomeIcon /> */}
+          <Icon icon="ant-design:home-filled" width={26} height={26} />
         </Button>
       </Typography>
       <ClickAwayListener onClickAway={closeNotification}>
@@ -152,7 +154,7 @@ const AppButtonsGroup = (props) => {
               className={messageBtnClass}
             >
               <NotificationNumber number={0} />
-              <ChatBubbleIcon />
+              <Icon icon="bi:chat-fill" width={26} height={26} />
             </Button>
           </Typography>
           <Typography component="div" className="btn-container">
@@ -161,7 +163,12 @@ const AppButtonsGroup = (props) => {
               className={notiBtnClass}
             >
               <NotificationNumber number={numberOfNotification} />
-              <NotificationsIcon className="notification-icon" />
+              <Icon
+                icon="clarity:notification-solid"
+                className="notification-icon"
+                width={26}
+                height={26}
+              />
             </Button>
           </Typography>
           {renderNotificationList()}

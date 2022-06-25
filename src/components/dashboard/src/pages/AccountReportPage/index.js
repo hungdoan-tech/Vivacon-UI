@@ -40,10 +40,14 @@ export default function AccountReportPage() {
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(5);
 
-  const [openConfirmRejectedDialog, setOpenConfirmRejectedDialog] =
-    useState(false);
-  const [openConfirmApprovedDialog, setOpenConfirmApprovedDialog] =
-    useState(false);
+  const [openConfirmRejectedDialog, setOpenConfirmRejectedDialog] = useState({
+    open: false,
+    id: -1,
+  });
+  const [openConfirmApprovedDialog, setOpenConfirmApprovedDialog] = useState({
+    open: false,
+    id: -1,
+  });
   const [reportDetailContent, setReportDetailContent] = useState("");
 
   const { setSnackbarState } = useSnackbar();
@@ -105,12 +109,6 @@ export default function AccountReportPage() {
           type: "SUCCESS",
         });
       }
-      if (accountReportList && accountReportList?.content.length === 1) {
-        fetchListAccountReport(page - 1, limit);
-        setPage(page - 1);
-      } else {
-        fetchListAccountReport(page, limit);
-      }
     });
   };
 
@@ -123,12 +121,6 @@ export default function AccountReportPage() {
           content: `You have approved a account report successfully`,
           type: "SUCCESS",
         });
-      }
-      if (accountReportList && accountReportList?.content.length === 1) {
-        fetchListAccountReport(page - 1, limit);
-        setPage(page - 1);
-      } else {
-        fetchListAccountReport(page, limit);
       }
     });
   };
@@ -154,12 +146,18 @@ export default function AccountReportPage() {
     }
   }, [showAccountReportModal]);
 
-  const handleOpenConfirmDialog = (type) => {
+  const handleOpenConfirmDialog = (type, id) => {
     if (type === "Approved") {
-      setOpenConfirmApprovedDialog(true);
+      setOpenConfirmApprovedDialog({
+        open: true,
+        id,
+      });
     }
     if (type === "Rejected") {
-      setOpenConfirmRejectedDialog(true);
+      setOpenConfirmRejectedDialog({
+        open: true,
+        id,
+      });
     }
   };
 
@@ -174,20 +172,48 @@ export default function AccountReportPage() {
 
   const handleCloseDialog = (type) => {
     if (type === "Approved") {
-      setOpenConfirmApprovedDialog(false);
+      setOpenConfirmApprovedDialog({
+        open: false,
+        id: -1,
+      });
     }
     if (type === "Rejected") {
-      setOpenConfirmRejectedDialog(false);
+      setOpenConfirmRejectedDialog({
+        open: false,
+        id: -1,
+      });
     }
   };
   const handleConfirmDialog = (type, id) => {
     if (type === "Approved") {
-      setOpenConfirmApprovedDialog(false);
+      setOpenConfirmApprovedDialog({
+        open: false,
+        id: -1,
+      });
       handleApprovedAccountReport(id);
     }
     if (type === "Rejected") {
-      setOpenConfirmRejectedDialog(false);
+      setOpenConfirmRejectedDialog({
+        open: false,
+        id: -1,
+      });
       handleRejectedAccountReport(id);
+    }
+    updateReportListAfterDeleting(id);
+  };
+
+  const updateReportListAfterDeleting = (id) => {
+    if (accountReportList.content?.length === 1 && page > 1) {
+      fetchListAccountReport(page - 1, limit);
+      setPage(page - 1);
+    } else {
+      const filteredReportList = [...accountReportList.content].filter(
+        (rp) => rp.id !== id
+      );
+      setAccountReportList({
+        ...accountReportList,
+        content: filteredReportList,
+      });
     }
   };
 
@@ -254,8 +280,18 @@ export default function AccountReportPage() {
       >
         <Typography component="div" className="report-admin-modal">
           <ReportHeader
-            handleApprove={() => handleOpenConfirmDialog("Approved")}
-            handleReject={() => handleOpenConfirmDialog("Rejected")}
+            handleApprove={() =>
+              handleOpenConfirmDialog(
+                "Approved",
+                showAccountReportModal.item.id
+              )
+            }
+            handleReject={() =>
+              handleOpenConfirmDialog(
+                "Rejected",
+                showAccountReportModal.item.id
+              )
+            }
             handleCancel={() => handleCloseAccountReportModal()}
             reportMessage={trans(showAccountReportModal.reportMessage)}
             reportDetailContent={reportDetailContent}

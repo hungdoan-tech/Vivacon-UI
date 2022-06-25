@@ -21,22 +21,33 @@
     grid-column-end: 10;
     display: flex;
     justify-content: flex-start;
+    margin-left: 14px;
     button {
       padding: 5px !important;
       &:hover {
         background-color: var(--lightColor) !important;
       }
     }
-    .MuiButton-root {
-      margin: 5px 0;
-      padding: 0;
+    .profile-avatar {
+      &:hover {
+        cursor: pointer;
+      }
+    }
+    .MuiButton-root,
+    .profile-avatar {
+      padding: 0 !important;
+      margin: auto 0 !important;
       border-radius: 100px;
+      width: 45px;
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-end;
       .user-avatar {
         img {
           border-radius: 100px;
         }
-        width: 50px;
-        height: 50px;
+        width: 45px;
+        height: 45px;
       }
       .user-name {
         text-transform: capitalize;

@@ -12,7 +12,7 @@ import { API_URL, CURRENT_VERSION } from "./constants";
 
 let refreshTokenRequest = null;
 
-const renewAccessToken = async (refreshToken) => {
+export const renewAccessToken = async (refreshToken) => {
   const { data } = await renewToken({ refreshToken });
   return data;
 };

@@ -34,6 +34,7 @@ import {
   targetAvatarLayout,
   getStatusOfConversation,
   getAllCurrentInteractionUser,
+  handleFilterHashtagOfCaption,
 } from "utils/resolveData";
 import classNames from "classnames";
 import InfiniteScrollReverse from "react-infinite-scroll-reverse";
@@ -782,6 +783,12 @@ const MessageItem = ({ item: message, index, dataList: messageList }) => {
   const showAvatar =
     message?.sender?.username !== messageList[index + 1]?.sender.username;
 
+  const handleClickHashtag = ({ target }) => {
+    if (target.nodeName === "HASHTAG") {
+      history.push(`/hashtag/${target.textContent.split("#")[1]}`);
+    }
+  };
+
   return (
     <>
       <Typography
@@ -831,7 +838,13 @@ const MessageItem = ({ item: message, index, dataList: messageList }) => {
                     <Typography component="div" className="avatar">
                       <img src={postInfo.createdBy.avatar} />
                     </Typography>
-                    <Typography component="div" className="username">
+                    <Typography
+                      component="div"
+                      className="username"
+                      onClick={() =>
+                        history.push(`/profile/${postInfo.createdBy?.username}`)
+                      }
+                    >
                       {postInfo.createdBy?.username}
                     </Typography>
                   </Typography>
@@ -847,7 +860,14 @@ const MessageItem = ({ item: message, index, dataList: messageList }) => {
                       <img src={postInfo.attachments[0].url} />
                     </Typography>
                     <Typography component="div" className="caption">
-                      {postInfo.caption}
+                      <span
+                        onClick={handleClickHashtag}
+                        dangerouslySetInnerHTML={{
+                          __html: handleFilterHashtagOfCaption(
+                            postInfo.caption
+                          ),
+                        }}
+                      />
                     </Typography>
                   </Typography>
                 </Typography>

@@ -170,3 +170,22 @@ export const getDifferenceItemBetweenTwoArrays = (array1, array2) => {
   });
   return result;
 }
+
+export const handleFilterHashtagOfCaption = (caption) => {
+  const hashtagList = caption.match(/(?<=(.*?)#)(.*?)(?=($|\s))/gi);
+  console.log({ hashtagList });
+  let val = caption;
+  let result = [];
+  if (hashtagList) {
+    hashtagList.map((hashtagName) => {
+      const hashtag = `#${hashtagName}`;
+      val =
+        val.slice(0, val.indexOf(hashtag)) +
+        '<hashtag class="hashtag-part">' +
+        hashtag +
+        "</hashtag>" +
+        val.slice(val.indexOf(hashtag) + hashtag.length, val.length);
+    });
+  }
+  return val;
+};

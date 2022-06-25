@@ -9,6 +9,7 @@ import {
   Checkbox,
   Button,
 } from "@mui/material";
+import { editProfile } from "api/userService";
 import { editProfileTextFields } from "constant/data";
 import { useState, useEffect } from "react";
 import { getCurrentUser } from "utils/jwtToken";
@@ -16,6 +17,22 @@ import "./style.scss";
 
 const EditProfilePage = () => {
   const [currentUser, setCurrentUser] = useState(getCurrentUser());
+  // const [inputData, setInputData] = useState({
+  //   bio: "",
+  //   fullName: "string",
+  //   gender: null,
+  //   phoneNumber: "",
+  // });
+
+  // const handleEditProfile = () => {
+  //   editProfile({
+  //     bio: "",
+  //     fullName: "string",
+  //     gender: null,
+  //     phoneNumber: "",
+  //   });
+  // };
+
   return (
     <Typography
       component="div"

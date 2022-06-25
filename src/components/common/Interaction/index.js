@@ -17,6 +17,7 @@ import useSnackbar from "hooks/useSnackbar";
 import useSocket from "hooks/useSocket";
 import { checkConversationIsExistOrNot } from "api/chatService";
 import { useHistory } from "react-router-dom";
+import { handleFilterHashtagOfCaption } from "utils/resolveData";
 
 const Interaction = ({ currentPost }) => {
   const { isLiked, id: postId } = currentPost;
@@ -149,6 +150,12 @@ const Interaction = ({ currentPost }) => {
     setShowChattingSearch(false);
   };
 
+  const handleClickHashtag = ({ target }) => {
+    if (target.nodeName === "HASHTAG") {
+      history.push(`/hashtag/${target.textContent.split("#")[1]}`);
+    }
+  };
+
   return (
     <>
       {!Auth.auth.isAdmin && (
@@ -190,7 +197,12 @@ const Interaction = ({ currentPost }) => {
         >
           {currentPost.createdBy?.username}
         </strong>{" "}
-        {currentPost.caption}
+        <span
+          onClick={handleClickHashtag}
+          dangerouslySetInnerHTML={{
+            __html: handleFilterHashtagOfCaption(currentPost.caption),
+          }}
+        />
       </Typography>
 
       <CustomModal
