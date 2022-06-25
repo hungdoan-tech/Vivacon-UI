@@ -29,6 +29,7 @@ const CommentList = ({
   submittedComment,
   setSubmittedComment,
   commentReport,
+  isOnModal
 }) => {
   console.log({commentReport})
   const [commentList, setCommentList] = useState([]);
@@ -229,6 +230,7 @@ const CommentList = ({
                   totalCommentChildList[i] || { open: false, data: [] }
                 }
                 isReply={totalReply[i] || { open: false, hastag: "" }}
+                isOnModal={isOnModal}
               />
             ))}
             {!fetchInfo.last && (

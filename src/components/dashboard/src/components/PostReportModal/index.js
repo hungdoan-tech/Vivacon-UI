@@ -44,7 +44,7 @@ function TabPanel(props) {
   );
 }
 
-const PostReportModal = ({ index, dataList, title, reportId }) => {
+const PostReportModal = ({ index, dataList, title, reportId, type }) => {
   const [currentIndex, setCurrentIndex] = useState(index);
   const [currentPost, setCurrentPost] = useState({});
   const [showPopUp, setShowPopUp] = useState({
@@ -62,7 +62,10 @@ const PostReportModal = ({ index, dataList, title, reportId }) => {
   const history = useHistory();
   const handleGetPostDetail = () => {
     getPostDetail({
-      id: dataList[currentIndex]?.id,
+      id:
+        type === "comment"
+          ? dataList[currentIndex]?.comment.post.id
+          : dataList[currentIndex]?.post.id,
       _sort: "createdAt",
       _order: "desc",
     }).then((res) => {
@@ -163,7 +166,9 @@ const PostReportModal = ({ index, dataList, title, reportId }) => {
                   setCurrentPost={setCurrentPost}
                 />
                 <Typography className="post-time-fromnow" align="left">
-                  {calculateFromNow(convertUTCtoLocalDate(currentPost.lastModifiedAt))}
+                  {calculateFromNow(
+                    convertUTCtoLocalDate(currentPost.lastModifiedAt)
+                  )}
                 </Typography>
               </Typography>
             </Typography>

@@ -47,42 +47,35 @@ const Footer = () => {
         },
       ],
     },
-    {
-      title: "Language",
-      resources: [
-        {
-          name: (
-            <div className="d-flex align-items-center">
-              <select
-                onChange={changeLanguage}
-                onClick={(e) => e.preventDefault()}
-              >
-                <option value="vi">Vietnamese</option>
-                <option value="en" selected="selected">
-                  English
-                </option>
-              </select>
-            </div>
-          ),
-          // link: "",
-        },
-      ],
-    },
+    // {
+    //   title: "Language",
+    //   resources: [
+    //     {
+    //       name: (
+    //         <div className="d-flex align-items-center">
+    //           <select
+    //             onChange={changeLanguage}
+    //             onClick={(e) => e.preventDefault()}
+    //           >
+    //             <option value="vi">Vietnamese</option>
+    //             <option value="en" selected="selected">
+    //               English
+    //             </option>
+    //           </select>
+    //         </div>
+    //       ),
+    //       // link: "",
+    //     },
+    //   ],
+    // },
   ];
 
   return (
     <>
       <SimpleReactFooter
-        //   description={description}
-        //   title={title}
         columns={columns}
-        //   linkedin="fluffy_cat_on_linkedin"
-        //   facebook="fluffy_cat_on_fb"
-        //   twitter="fluffy_cat_on_twitter"
-        //   instagram="fluffy_cat_live"
-        //   youtube="UCFt6TSF464J8K82xeA?"
         pinterest="fluffy_cats_collections"
-        copyright="darkgrey"
+        copyright="Vivacon"
         iconColor="darkgrey"
         backgroundColor="transparent"
         fontColor="darkgrey"

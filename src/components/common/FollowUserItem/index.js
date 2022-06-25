@@ -11,6 +11,7 @@ import { AuthUser } from "../../../App";
 import "./style.scss";
 import { useTranslation } from "react-i18next";
 import OutlineProfile from "../OulineProfile";
+import UsernameContainer from "../UsernameContainer";
 
 const FollowUserItem = (props) => {
   const { handleCloseModal, user } = props;
@@ -73,7 +74,7 @@ const FollowUserItem = (props) => {
           </Typography>
         </Typography>
         <Typography component="div" className="follow-name">
-          <Typography
+          {/* <Typography
             className="username-container"
             component="div"
             onMouseEnter={handleOpenPopUp}
@@ -103,7 +104,8 @@ const FollowUserItem = (props) => {
                 />
               </CustomPopUp>
             )}
-          </Typography>
+          </Typography> */}
+          <UsernameContainer username={user.username} isOnModal={true} />
           <Typography className="fullName">{user.fullName}</Typography>
         </Typography>
         {getCurrentUser().accountId !== user.id && !Auth.auth.isAdmin && (

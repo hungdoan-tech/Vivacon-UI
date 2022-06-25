@@ -13,7 +13,6 @@ import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import moment from "moment";
 import CustomModal from "components/common/CustomModal";
-import PostDetailsModal from "components/common/PostDetailsModal";
 import Pagination from "@mui/material/Pagination";
 import { limitPerPage } from "constant/types";
 import useSnackbar from "hooks/useSnackbar";

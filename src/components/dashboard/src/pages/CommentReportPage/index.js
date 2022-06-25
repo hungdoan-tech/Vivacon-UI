@@ -110,6 +110,7 @@ export default function CommentReportPage() {
           content: `You have rejected a comment report successfully`,
           type: "SUCCESS",
         });
+        updateReportListAfterDeleting(id);
       }
     });
   };
@@ -123,6 +124,7 @@ export default function CommentReportPage() {
           content: `You have approved a comment report successfully`,
           type: "SUCCESS",
         });
+        updateReportListAfterDeleting(id);
       }
     });
   };
@@ -201,7 +203,6 @@ export default function CommentReportPage() {
       });
       handleRejectedCommentReport(id);
     }
-    updateReportListAfterDeleting(id);
   };
 
   const updateReportListAfterDeleting = (id) => {
@@ -306,6 +307,7 @@ export default function CommentReportPage() {
             dataList={showCommentReportModal.dataList}
             reportId={showCommentReportModal.reportId}
             setUpdatedItem={() => null}
+            type="comment"
           />
         </Typography>
       </CustomModal>

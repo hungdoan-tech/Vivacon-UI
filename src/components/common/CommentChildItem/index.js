@@ -23,6 +23,7 @@ import useSnackbar from "hooks/useSnackbar";
 import CommentItem from "../CommentItem";
 import CommentOptionModal from "../CommentOptionModal";
 import ReportDetailModal from "../ReportDetailModal";
+import UsernameContainer from "../UsernameContainer";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -50,6 +51,7 @@ const CommentChildItem = ({
   currentPost,
   handleFilterCommentChild,
   index,
+  isOnModal,
 }) => {
   const [showCommentOption, setShowCommentOption] = useState(false);
   const { t: trans } = useTranslation();
@@ -61,7 +63,7 @@ const CommentChildItem = ({
   const [showOptionModal, setShowOptionModal] = useState(false);
 
   const handleOpenReportModal = () => {
-    setShowOptionModal(false)
+    setShowOptionModal(false);
     setReportModal({
       ...reportModal,
       open: true,
@@ -91,9 +93,13 @@ const CommentChildItem = ({
         />
         <Typography className="content" component="div">
           <Typography className="content-line1" component="div">
-            <strong>{substringUsername(childCmt.createdBy?.username)}</strong>
+            {/* <strong>{substringUsername(childCmt.createdBy?.username)}</strong> */}
+            <UsernameContainer
+              username={childCmt.createdBy?.username}
+              isOnModal={isOnModal}
+            />
             {"    "}
-            {childCmt.content}
+            <p className="comment-text-content">{childCmt.content}</p>
           </Typography>
           <Typography className="content-line2" component="div">
             <Typography className="date-time" component="div">

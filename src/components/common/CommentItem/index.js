@@ -23,6 +23,7 @@ import useSnackbar from "hooks/useSnackbar";
 import CommentChildItem from "../CommentChildItem";
 import CommentOptionModal from "../CommentOptionModal";
 import ReportDetailModal from "../ReportDetailModal";
+import UsernameContainer from "../UsernameContainer";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -55,6 +56,7 @@ const CommentItem = ({
   isReply,
   handleUpdateReply,
   currentPost,
+  isOnModal,
 }) => {
   const [createdTime, setCreatedTime] = useState(
     calculateFromNow(convertUTCtoLocalDate(comment.createdAt))
@@ -184,7 +186,7 @@ const CommentItem = ({
   // }, 60000);
 
   const handleOpenReportModal = () => {
-    setShowOptionModal(false)
+    setShowOptionModal(false);
     setReportModal({
       ...reportModal,
       open: true,
@@ -216,9 +218,11 @@ const CommentItem = ({
 
           <Typography className="content" component="div">
             <Typography className="content-line1" component="div">
-              <strong>{substringUsername(comment.createdBy?.username)}</strong>
-              {"    "}
-              {comment.content}
+              <UsernameContainer
+                username={comment.createdBy?.username}
+                isOnModal={isOnModal}
+              />
+              <p className="comment-text-content">{comment.content}</p>
             </Typography>
             <Typography className="content-line2" component="div">
               <Typography className="date-time" component="div">
@@ -269,6 +273,7 @@ const CommentItem = ({
                 comment={comment}
                 index={index}
                 handleFilterCommentChild={handleFilterCommentChild}
+                isOnModal={isOnModal}
               />
             );
           })}

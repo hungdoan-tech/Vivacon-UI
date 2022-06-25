@@ -43,3 +43,17 @@
   font-size: 12px !important;
   padding: 5px 0;
 }
+
+.pop-up-container {
+  animation: showAnimation 0s 0.75s forwards;
+  visibility: hidden;
+  .css-46bh2p-MuiCardContent-root{
+    padding: 0 !important;
+  }
+
+  @keyframes showAnimation {
+    to {
+      visibility: visible;
+    }
+  }
+}

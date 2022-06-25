@@ -154,6 +154,7 @@ const UserImagesTabs = (props) => {
             index={showPostDetailsModal.index}
             item={showPostDetailsModal.item}
             dataList={showPostDetailsModal.dataList}
+            isOnModal={true}
           />
         </CustomModal>
       </TabPanel>
@@ -233,7 +234,7 @@ const NoDataComponent = () => {
         ))}
       </ImageList>
       <Typography className="start-post-text">
-        `${trans("profile.emptyPostCaseCaption")}`
+        {trans("profile.emptyPostCaseCaption")}
       </Typography>
     </Typography>
   );

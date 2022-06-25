@@ -6,6 +6,7 @@ import ReactLoading from "react-loading";
 import FollowButton from "../FollowButton";
 import { useHistory } from "react-router-dom";
 import "./style.scss";
+import UsernameContainer from "../UsernameContainer";
 
 const SuggestedAccounts = () => {
   const [isLoading, setLoading] = useState(false);
@@ -64,7 +65,12 @@ const SuggestedAccounts = () => {
             <Typography component="div" className="avatar">
               <img with="100" height="100" src={userInfo.avatar} />
             </Typography>
-            <Typography className="username">{userInfo.username}</Typography>
+            <Typography
+              className="username"
+              onClick={() => history.push(`/profile/${userInfo.username}`)}
+            >
+              {userInfo.username}
+            </Typography>
             <Typography className="fullname">{userInfo.fullName}</Typography>
           </Typography>
 
@@ -92,12 +98,13 @@ const SuggestedAccounts = () => {
                 <Typography className="suggest-item">
                   <img src={user.avatar} width="30px" height="30px" />
                   <Typography className="right-content">
-                    <Typography
+                    {/* <Typography
                       className="username"
                       onClick={() => history.push(`/profile/${user.username}`)}
                     >
                       {user.username}
-                    </Typography>
+                    </Typography> */}
+                    <UsernameContainer username={user.username} />
                     <Typography className="details">
                       {user.mutualFriends?.length > 0
                         ? `Both follow ${user.mutualFriends[0].username} ${

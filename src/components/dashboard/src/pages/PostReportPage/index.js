@@ -174,7 +174,6 @@ export default function PostReportPage() {
       });
       handleRejectedPostReport(id);
     }
-    updateReportListAfterDeleting(id);
   };
 
   const updateReportListAfterDeleting = (id) => {
@@ -201,6 +200,7 @@ export default function PostReportPage() {
           content: `You have rejected a post report successfully`,
           type: "SUCCESS",
         });
+        updateReportListAfterDeleting(id);
       }
       if (postReportList && postReportList?.content.length === 1) {
         fetchListPostReport(page - 1, limit);
@@ -220,6 +220,7 @@ export default function PostReportPage() {
           content: `You have approved a post report successfully`,
           type: "SUCCESS",
         });
+        updateReportListAfterDeleting(id);
       }
       if (postReportList && postReportList?.content.length === 1) {
         fetchListPostReport(page - 1, limit);
@@ -313,6 +314,7 @@ export default function PostReportPage() {
             dataList={showPostReportModal.dataList}
             reportId={showPostReportModal.reportId}
             setUpdatedItem={() => null}
+            type="post"
           />
         </Typography>
       </CustomModal>

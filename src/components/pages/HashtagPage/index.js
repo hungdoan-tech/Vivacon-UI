@@ -120,6 +120,7 @@ const HashtagPage = (props) => {
             index={showPostDetailsModal.index}
             item={showPostDetailsModal.item}
             dataList={showPostDetailsModal.dataList}
+            isOnModal={true}
           />
         </CustomModal>
       </Box>

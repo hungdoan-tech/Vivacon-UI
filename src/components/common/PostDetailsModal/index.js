@@ -27,8 +27,9 @@ import { reportContent } from "../../../constant/types";
 import InfoIcon from "@mui/icons-material/Info";
 import ReportDetailModal from "../ReportDetailModal";
 import PostOptionModal from "../PostOptionModal";
+import UsernameContainer from "../UsernameContainer";
 
-const PostDetailsModal = ({ index, dataList, title, reportId }) => {
+const PostDetailsModal = ({ index, dataList, title, reportId, isOnModal }) => {
   const [currentIndex, setCurrentIndex] = useState(index);
   const [currentPost, setCurrentPost] = useState({});
   const [showPopUp, setShowPopUp] = useState({
@@ -158,61 +159,24 @@ const PostDetailsModal = ({ index, dataList, title, reportId }) => {
                     width={35}
                     height={35}
                   />
-                  <Typography
-                    className="owner-name"
-                    component="div"
-                    onMouseEnter={() =>
-                      handleOpenPopUp(currentPost.createdBy?.id, false)
-                    }
-                    onMouseLeave={handleClosePopUp}
-                  >
-                    <Typography
-                      className="username"
-                      onClick={() =>
-                        navigateToUser(currentPost.createdBy?.username)
-                      }
-                    >
-                      {substringUsername(currentPost.createdBy?.username)}
-                    </Typography>
-                    <Typography className="post-more-actions">
-                      {" "}
-                      <MoreHorizIcon
-                        className="post-more-icon"
-                        onClick={handleOpenOptionModal}
-                      />
-                    </Typography>
-
-                    {/* {showPopUp.open &&
-                    showPopUp.id === currentPost.createdBy?.id &&
-                    !showPopUp.showInImage && (
-                      <CustomPopUp
-                        width={390}
-                        height={350}
-                        component={() => (
-                          <PopUpContent
-                            username={currentPost.createdBy?.username}
-                            setUpdatedItem={setUpdatedItem}
-                          />
-                        )}
-                      />
-                    )} */}
-                  </Typography>
-                  {/* {getCurrentUser().username !==
-                  currentPost.createdBy?.username && (
-                  <Typography className="owner-follow">
-                    <FollowButton
-                      userProfile={currentPost.createdBy}
-                      follow={currentPost.createdBy?.isFollowing}
-                      setUpdatedItem={setUpdatedItem}
+                  <UsernameContainer
+                    username={currentPost.createdBy?.username}
+                    isOnModal={isOnModal}
+                  />
+                  <Typography className="post-more-actions">
+                    {" "}
+                    <MoreHorizIcon
+                      className="post-more-icon"
+                      onClick={handleOpenOptionModal}
                     />
                   </Typography>
-                )} */}
                 </Typography>
                 <Typography component="div" className="interaction-line2">
                   <CommentList
                     currentPost={currentPost}
                     submittedComment={submittedComment}
                     setSubmittedComment={setSubmittedComment}
+                    isOnModal={isOnModal}
                   />
                 </Typography>
               </Typography>

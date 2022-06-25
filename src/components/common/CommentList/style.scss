@@ -27,6 +27,15 @@
         margin-left: 10px;
 
         .content-line1 {
+          .username-container-on-modal,
+          .username-container-on-page {
+            display: inline-block;
+            margin-right: 5px;
+          }
+          .comment-text-content {
+            display: contents;
+            margin: 0;
+          }
         }
         .content-line2 {
           display: flex;

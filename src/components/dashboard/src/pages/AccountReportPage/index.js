@@ -108,6 +108,7 @@ export default function AccountReportPage() {
           content: `You have rejected a account report successfully`,
           type: "SUCCESS",
         });
+        updateReportListAfterDeleting(id);
       }
     });
   };
@@ -121,6 +122,7 @@ export default function AccountReportPage() {
           content: `You have approved a account report successfully`,
           type: "SUCCESS",
         });
+        updateReportListAfterDeleting(id);
       }
     });
   };
@@ -199,7 +201,6 @@ export default function AccountReportPage() {
       });
       handleRejectedAccountReport(id);
     }
-    updateReportListAfterDeleting(id);
   };
 
   const updateReportListAfterDeleting = (id) => {

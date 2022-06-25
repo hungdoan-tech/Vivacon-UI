@@ -10,19 +10,8 @@
   .right-content {
     min-width: 100px;
     margin-left: 10px;
-    .username-container {
-      position: relative;
-      width: fit-content;
-    }
   }
-  .owner-name {
-    color: var(--charColor);
-    font-weight: 600;
-    &:hover {
-      cursor: pointer;
-      text-decoration: underline;
-    }
-  }
+
   .post-time {
     font-size: 13px;
     color: var(--defaultColor);

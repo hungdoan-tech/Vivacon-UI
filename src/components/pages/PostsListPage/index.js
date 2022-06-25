@@ -64,6 +64,7 @@ const PostsListPage = () => {
           index={showPostDetailsModal.index}
           dataList={showPostDetailsModal.dataList}
           setUpdatedItem={() => null}
+          isOnModal={true}
         />
       </CustomModal>
     </>
