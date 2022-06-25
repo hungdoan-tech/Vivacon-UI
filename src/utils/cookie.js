@@ -2,9 +2,8 @@ import cookie from "js-cookie";
 
 const cookieConfig = {
   path: "/",
-  secure: true,
-  sameSite: "strict",
-  expires: 7,
+  sameSite: 'Lax',
+  expires: 30,
 };
 
 export const setCookieData = (key, value) => {
