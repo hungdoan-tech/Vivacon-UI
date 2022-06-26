@@ -16,6 +16,28 @@
     cursor: pointer;
   }
 
+  .change-language-container {
+    min-width: 100px;
+    margin: 0 32px 0 0;
+    border: none !important;
+    .icon {
+      margin: auto 0 auto 5px;
+      color: var(--defaultColor);
+    }
+    .MuiOutlinedInput-root {
+      display: flex;
+      flex-direction: row-reverse;
+      justify-content: space-around;
+      border: none !important;
+      .MuiSelect-select {
+        padding: 8px;
+      }
+      .MuiOutlinedInput-notchedOutline {
+        border: none;
+      }
+    }
+  }
+
   .app-user {
     grid-column-start: 10;
     grid-column-end: 10;

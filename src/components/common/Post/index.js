@@ -22,7 +22,12 @@ const Post = (props) => {
           index={index}
           dataList={dataList}
         />
-        <Interaction currentPost={item} />
+        <Interaction
+          currentPost={item}
+          handleClick={handleClick}
+          index={index}
+          dataList={dataList}
+        />
         <CommentInput />
       </CardContent>
     </Card>

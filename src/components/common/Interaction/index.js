@@ -19,7 +19,7 @@ import { checkConversationIsExistOrNot } from "api/chatService";
 import { useHistory } from "react-router-dom";
 import { handleFilterHashtagOfCaption } from "utils/resolveData";
 
-const Interaction = ({ currentPost }) => {
+const Interaction = ({ currentPost, handleClick, index, dataList }) => {
   const { isLiked, id: postId } = currentPost;
   const [like, setLike] = useState(isLiked);
   const [id, setId] = useState(postId);
@@ -172,7 +172,10 @@ const Interaction = ({ currentPost }) => {
               onClick={handleLikePost}
             />
           )}
-          <ChatBubbleOutlineOutlinedIcon className="comment-icon" />
+          <ChatBubbleOutlineOutlinedIcon
+            className="comment-icon"
+            onClick={() => handleClick(index, currentPost, dataList)}
+          />
           <ShareOutlinedIcon
             className="share-icon"
             onClick={handleOpenChattingSearchModal}

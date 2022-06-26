@@ -60,7 +60,7 @@ const ImagesCarousel = (props) => {
               </>
             }
             onChange={handleSaveImages}
-            imgExtension={[".jpg", ".gif", ".png", ".gif", ".svg"]}
+            imgExtension={[".jpg", ".gif", ".png", ".gif", ".svg", ".jpeg"]}
             maxFileSize={10485760000000}
             fileSizeError=" file size is too big"
           />

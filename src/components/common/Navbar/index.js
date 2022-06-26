@@ -22,6 +22,9 @@ import AppSearchInput from "../AppSearchInput";
 import i18n from "translation/i18n";
 import useSocket from "hooks/useSocket";
 import { getCurrentLanguage } from "translation/util";
+import { Icon } from "@iconify/react";
+import LanguageIcon from "@mui/icons-material/Language";
+import moment from "moment/min/moment-with-locales";
 
 const Navbar = () => {
   const [openUserOption, setUserOption] = useState(false);
@@ -55,6 +58,11 @@ const Navbar = () => {
     getCurrentLanguage();
   }, [language]);
 
+  useEffect(() => {
+    moment().locale(language)
+    console.log(moment().localeData())
+  }, [language])
+
   return (
     <AppBar className="nav-container" postion="sticky">
       <Typography
@@ -65,24 +73,33 @@ const Navbar = () => {
         VivaCon
       </Typography>
 
-      <FormControl sx={{ m: 1, minWidth: 120 }}>
-        <Select
-          value={language}
-          onChange={changeLanguage}
-          displayEmpty
-          inputProps={{ "aria-label": "Without label" }}
-        >
-          <MenuItem value={"en"}>English</MenuItem>
-          <MenuItem value={"vi"}>Vietnamese</MenuItem>
-        </Select>
-      </FormControl>
-
       {!Auth.auth.isAdmin && (
         <>
-          <AppSearchInput />
-          <AppButtonsGroup
-            handleOpenCreatePostModal={handleOpenCreatePostModal}
-          />
+          <FormControl
+            sx={{ m: 1, minWidth: 120, border: "none" }}
+            className="change-language-container"
+          >
+            <Select
+              value={language}
+              onChange={changeLanguage}
+              displayEmpty
+              inputProps={{ "aria-label": "Without label" }}
+              defaultValue="en"
+              id="demo-simple-select-autowidth"
+              IconComponent={() => (
+                <LanguageIcon width={80} height={80} className="icon" />
+              )}
+            >
+              <MenuItem value={"en"}>En</MenuItem>
+              <MenuItem value={"vi"}>Vi</MenuItem>
+            </Select>
+          </FormControl>
+          <>
+            <AppSearchInput />
+            <AppButtonsGroup
+              handleOpenCreatePostModal={handleOpenCreatePostModal}
+            />
+          </>
         </>
       )}
       <Typography className="app-user" component="div" align="center">

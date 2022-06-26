@@ -1,9 +1,14 @@
 import moment from "moment/min/moment-with-locales";
 import { getCurrentLanguage } from "translation/util";
+import i18n from "translation/i18n";
 
 const offset = new Date().getTimezoneOffset();
+const locale = i18n.language;
+moment.locale(locale);
+moment().locale(locale);
+
 export const calculateFromNow = (dateTime) => {
-  const locale = getCurrentLanguage();
+  const locale = i18n.language;
   moment.locale(locale);
   return moment(new Date(dateTime).getTime()).fromNow();
 };
@@ -16,7 +21,7 @@ export const convertUTCtoLocalDate = (date, format) => {
 };
 
 export const convertDateTimeOnNearest = (date) => {
-  const locale = getCurrentLanguage();
+  const locale = i18n.language;
   moment.locale(locale);
   const convertedDate = moment(date).add(-offset, "minutes").calendar();
   return convertedDate

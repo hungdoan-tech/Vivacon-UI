@@ -96,3 +96,10 @@ export const notificationsType = {
 
   FOLLOWING_ON_ME: "FOLLOWING_ON_ME",
 };
+
+export const maliciousImageType = {
+  DRUGS: "Recreational drugs",
+  WEAPON: "Weapons such as guns, rifles and firearms",
+  NUDITY: "Explicit and partial nudity",
+  GORE: "Gore, horrific imagery, content with blood",
+};

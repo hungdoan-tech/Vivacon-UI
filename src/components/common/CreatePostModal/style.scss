@@ -63,7 +63,6 @@
       }
     }
 
-
     @keyframes appearModal {
       0% {
         margin-top: -50px;
@@ -73,6 +72,23 @@
         margin-top: 0px;
         opacity: 1;
       }
+    }
+  }
+}
+.forbidden-list-container {
+  overflow: auto;
+  height: calc(450px - 50px);
+  .forbidden-image-container {
+    display: flex;
+    flex-direction: row;
+    padding: 10px;
+    border: 0.25px solid var(--lightColor);
+    .forbidden-image {
+      border-radius: 5px;
+    }
+    .forbidden-reason {
+      text-align: left;
+      font-style: italic;
     }
   }
 }

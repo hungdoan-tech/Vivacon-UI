@@ -1,12 +1,13 @@
 import _ from "lodash";
 import { getCurrentUser } from "./jwtToken";
+import { maliciousImageType } from "constant/types";
 
 export const substringUsername = (username) => {
   return username.length > 20 ? `${username.substring(0, 19)}...` : username;
 };
 
 export const splitUserName = (participants) => {
-  const sortList = [...participants].sort((a, b) => a.id > b.id ? 1:-1);
+  const sortList = [...participants].sort((a, b) => (a.id > b.id ? 1 : -1));
   sortList.map((user, index) => {
     if (user.username === getCurrentUser().username) {
       sortList[index].fullName = "Me";
@@ -161,15 +162,14 @@ export const getAllCurrentInteractionUser = (currConvList) => {
   return result;
 };
 
-
 export const getDifferenceItemBetweenTwoArrays = (array1, array2) => {
   const result = _.filter(array1, (itemOfArray1) => {
     return !_.some(array2, function (itemOfArray2) {
-        return itemOfArray1.id === itemOfArray2.id;
+      return itemOfArray1.id === itemOfArray2.id;
     });
   });
   return result;
-}
+};
 
 export const handleFilterHashtagOfCaption = (caption) => {
   const hashtagList = caption.match(/(?<=(.*?)#)(.*?)(?=($|\s))/gi);
@@ -187,4 +187,26 @@ export const handleFilterHashtagOfCaption = (caption) => {
     });
   }
   return val;
+};
+
+export const handleCheckImageRange = (image, scoreList) => {
+  const { drugs, gore, nudity, weapon } = scoreList;
+
+  const maliciousRange = [];
+  if (drugs >= 0.7) {
+    maliciousRange.push(maliciousImageType.DRUGS);
+  }
+  if (gore?.prob >= 0.7) {
+    maliciousRange.push(maliciousImageType.GORE);
+  }
+  if (nudity?.safe <= 0.3) {
+    maliciousRange.push(maliciousImageType.NUDITY);
+  }
+  if (weapon >= 0.7) {
+    maliciousRange.push(maliciousImageType.WEAPON);
+  }
+  return {
+    image,
+    maliciousRange
+  }
 };
