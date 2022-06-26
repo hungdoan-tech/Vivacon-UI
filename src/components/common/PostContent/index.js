@@ -36,7 +36,12 @@ const PostContent = (props) => {
         className="post-images"
         onClick={() => handleClick(index, item, dataList)}
       >
-        <Carousel autoPlay={false} className="details-carousel">
+        <Carousel
+          autoPlay={false}
+          className="details-carousel"
+          indicators={item.attachments?.length > 1}
+          cycleNavigation={item.attachments?.length > 1}
+        >
           {item.attachments.map((item, i) => (
             <img key={i} src={item.url} alt="" />
           ))}

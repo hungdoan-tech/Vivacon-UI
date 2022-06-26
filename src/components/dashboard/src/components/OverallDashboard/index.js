@@ -90,7 +90,12 @@ const OverallDashboard = ({
                 </div>
                 <div className="homepage__top-card-right-content">
                   <div className="homepage__top-card-img">
-                    <Carousel autoPlay={false} className="details-carousel">
+                    <Carousel
+                      autoPlay={false}
+                      className="details-carousel"
+                      indicators={item.lstAttachmentDTO?.length > 1}
+                      cycleNavigation={item.lstAttachmentDTO?.length > 1}
+                    >
                       {item.lstAttachmentDTO?.map((item, i) => (
                         <img
                           key={i}

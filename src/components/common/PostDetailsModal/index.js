@@ -144,7 +144,12 @@ const PostDetailsModal = ({ index, dataList, title, reportId, isOnModal }) => {
               </div>
             )}
             <Typography component="div" className="post-details-carousel">
-              <Carousel autoPlay={false} className="details-carousel">
+              <Carousel
+                autoPlay={false}
+                className="details-carousel"
+                indicators={currentPost.attachments?.length > 1}
+                cycleNavigation={currentPost.attachments?.length > 1}
+              >
                 {currentPost.attachments?.map((item, i) => (
                   <img key={i} src={item.url} alt="" />
                 ))}

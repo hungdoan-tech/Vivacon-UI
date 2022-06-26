@@ -113,7 +113,7 @@ const HashtagPage = (props) => {
           open={showPostDetailsModal.open}
           title={_.startCase(_.toLower(""))}
           handleCloseModal={handleCloseOpenPostDetailsModal}
-          width={1200}
+          width={1240}
           height={800}
         >
           <PostDetailsModal
