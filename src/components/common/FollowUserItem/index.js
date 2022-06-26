@@ -105,7 +105,14 @@ const FollowUserItem = (props) => {
               </CustomPopUp>
             )}
           </Typography> */}
-          <UsernameContainer username={user.username} isOnModal={true} />
+          <UsernameContainer
+            username={user.username}
+            isOnModal={true}
+            isFollowing={isFollowing}
+            setFollowing={setFollowing}
+            isUpdated={isUpdated}
+            setIsUpdated={setIsUpdated}
+          />
           <Typography className="fullName">{user.fullName}</Typography>
         </Typography>
         {getCurrentUser().accountId !== user.id && !Auth.auth.isAdmin && (

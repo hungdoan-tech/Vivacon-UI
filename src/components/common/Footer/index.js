@@ -9,7 +9,6 @@ const Footer = () => {
   const { t: trans } = useTranslation();
 
   const changeLanguage = (e) => {
-    console.log({ language: e.target.value });
     i18n.changeLanguage(e.target.value);
   };
   const columns = [

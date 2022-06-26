@@ -3,8 +3,6 @@ import { toArray } from "react-emoji-render";
 
 export const parseTextToEmojis = (value) => {
   const emojisArray = toArray(value);
-  console.log({ emojisArray });
-
   const newValue = emojisArray.reduce((previous, current) => {
     if (typeof current === "string") {
       return previous + current;

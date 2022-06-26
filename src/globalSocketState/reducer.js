@@ -17,7 +17,6 @@ const initialState: SocketStateType = {
 };
 
 const socketReducer = (state: SocketStateType = initialState, action) => {
-  console.log("socketREDUX", state, action);
   switch (action.type) {
     case types.GET_RECEIVE_MESSAGE:
       return {

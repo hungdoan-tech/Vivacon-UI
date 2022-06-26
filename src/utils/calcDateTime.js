@@ -19,6 +19,5 @@ export const convertDateTimeOnNearest = (date) => {
   const locale = getCurrentLanguage();
   moment.locale(locale);
   const convertedDate = moment(date).add(-offset, "minutes").calendar();
-  console.log(convertedDate);
   return convertedDate
 };

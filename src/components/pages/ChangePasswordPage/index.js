@@ -50,7 +50,6 @@ const ChangePasswordPage = () => {
       ...invalidMessage,
       [field]: "",
     };
-    console.log(err);
     setInvalidMessage(err);
   };
 
@@ -65,7 +64,6 @@ const ChangePasswordPage = () => {
     let invaliObject = { ...err };
     Object.keys(inputData).map((key, value) => {
       if (inputData[key] === "") {
-        console.log({ isEmpty: inputData[key] });
         const displayName = changePasswordFields.filter(
           (item) => item.field === key
         )[0].title;

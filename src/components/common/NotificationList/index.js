@@ -27,7 +27,6 @@ const NotificationList = ({ type, changePosition, closeNotification }) => {
   }, [type]);
 
   useEffect(() => {
-    console.log("SOCKET NOTIFICATION: ", { newNotification });
     if (
       newNotification &&
       !_.isEmpty(newNotification) &&

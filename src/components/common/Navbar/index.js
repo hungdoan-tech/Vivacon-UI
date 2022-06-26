@@ -5,6 +5,10 @@ import {
   Typography,
   ClickAwayListener,
   Box,
+  FormControl,
+  Select,
+  MenuItem,
+  FormHelperText,
 } from "@mui/material";
 import "./style.scss";
 import { getCurrentUser } from "utils/jwtToken";
@@ -15,11 +19,15 @@ import { useHistory } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { AuthUser } from "App";
 import AppSearchInput from "../AppSearchInput";
+import i18n from "translation/i18n";
 import useSocket from "hooks/useSocket";
+import { getCurrentLanguage } from "translation/util";
 
 const Navbar = () => {
   const [openUserOption, setUserOption] = useState(false);
   const [openCreatePostModal, setOpenCreatePostModal] = useState(false);
+  const [language, setLanguage] = useState("en");
+
   const history = useHistory();
   const Auth = useContext(AuthUser);
 
@@ -38,6 +46,15 @@ const Navbar = () => {
     setOpenCreatePostModal(false);
   };
 
+  const changeLanguage = (e) => {
+    setLanguage(e.target.value);
+    i18n.changeLanguage(e.target.value);
+  };
+
+  useEffect(() => {
+    getCurrentLanguage();
+  }, [language]);
+
   return (
     <AppBar className="nav-container" postion="sticky">
       <Typography
@@ -47,6 +64,18 @@ const Navbar = () => {
       >
         VivaCon
       </Typography>
+
+      <FormControl sx={{ m: 1, minWidth: 120 }}>
+        <Select
+          value={language}
+          onChange={changeLanguage}
+          displayEmpty
+          inputProps={{ "aria-label": "Without label" }}
+        >
+          <MenuItem value={"en"}>English</MenuItem>
+          <MenuItem value={"vi"}>Vietnamese</MenuItem>
+        </Select>
+      </FormControl>
 
       {!Auth.auth.isAdmin && (
         <>
@@ -59,7 +88,10 @@ const Navbar = () => {
       <Typography className="app-user" component="div" align="center">
         <ClickAwayListener onClickAway={handleClickAwayUserOption}>
           <Box sx={{ position: "relative" }}>
-            <Typography className="profile-avatar" onClick={handleOpenUserOption}>
+            <Typography
+              className="profile-avatar"
+              onClick={handleOpenUserOption}
+            >
               <Typography
                 className="user-avatar"
                 component="div"

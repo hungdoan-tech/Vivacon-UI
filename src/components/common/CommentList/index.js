@@ -29,9 +29,8 @@ const CommentList = ({
   submittedComment,
   setSubmittedComment,
   commentReport,
-  isOnModal
+  isOnModal,
 }) => {
-  console.log({commentReport})
   const [commentList, setCommentList] = useState([]);
   const [fetchInfo, setFetchInfo] = useState({});
   const [pageNumber, setPageNumber] = useState(0);
@@ -113,7 +112,6 @@ const CommentList = ({
   };
 
   useEffect(() => {
-    console.log({ totalCommentChildList });
   }, [totalCommentChildList]);
 
   const handleFilterCommentChild = (commentId, index) => {

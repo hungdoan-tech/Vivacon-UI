@@ -51,7 +51,6 @@ const InfiniteReverseList = (props) => {
       if (lastItemObserver.current) lastItemObserver.current.disconnect();
       lastItemObserver.current = new IntersectionObserver(
         (entries) => {
-          console.log({entries})
           if (entries[0].isIntersecting && hasMore) {
             setPageNumber((prevPageNumber) => prevPageNumber + 1);
           }
@@ -66,12 +65,10 @@ const InfiniteReverseList = (props) => {
   const firstItemRef = useCallback(
     (node) => {
       testRef.current = node;
-      console.log({ node });
       if (isLoading) return;
       if (firstItemObserver.current) firstItemObserver.current.disconnect();
       firstItemObserver.current = new IntersectionObserver(
         (entries) => {
-          console.log({ entries });
           if (!entries[0].isIntersecting) {
             setShowViewNewestMessage(true);
           } else {
@@ -113,7 +110,6 @@ const InfiniteReverseList = (props) => {
   }, [submitMessage]);
 
   useEffect(() => {
-    console.log("typing before ", pageNumber);
     if (!_.isEqual(dataList, parentDataList)) {
       setParentDataList(dataList);
     }
@@ -152,7 +148,7 @@ const InfiniteReverseList = (props) => {
       {!isNoData ? (
         <Container
           ref={listRef}
-          onScroll={() => console.log("hello")}
+          onScroll={() => null}
           _renderItem={
             <>
               {isLoading && pageNumber > 0 && (

@@ -37,7 +37,6 @@ const useSocket = () => {
 
   const onNewNotification = (payload) => {
     dispatch(setSocketState(GET_NEW_NOTIFICATION, JSON.parse(payload.body)));
-    console.log({ state });
   };
 
   const onMessageReceived = (payload) => {
@@ -83,7 +82,6 @@ const useSocket = () => {
   };
 
   const onError = (err) => {
-    console.log({ err });
   };
 
   const connect = () => {

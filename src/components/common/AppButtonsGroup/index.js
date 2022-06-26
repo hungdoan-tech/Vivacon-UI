@@ -87,7 +87,6 @@ const AppButtonsGroup = (props) => {
     })
       .then((res) => {
         if (res.status === 200) {
-          console.log({ notiN: res });
           setNumberOfNotification(res.data.totalElements);
         }
       })
@@ -142,21 +141,24 @@ const AppButtonsGroup = (props) => {
       </Typography>
       <Typography component="div" className="btn-container">
         <Button onClick={() => history.push("/")}>
-          {/* <HomeIcon /> */}
           <Icon icon="ant-design:home-filled" width={26} height={26} />
+        </Button>
+      </Typography>
+      <Typography component="div" className="btn-container">
+        <Button
+          onClick={() => {
+            if (window.location.pathname !== "/chat") {
+              history.push("/chat");
+            }
+          }}
+          className={messageBtnClass}
+        >
+          <NotificationNumber number={0} />
+          <Icon icon="bi:chat-fill" width={26} height={26} />
         </Button>
       </Typography>
       <ClickAwayListener onClickAway={closeNotification}>
         <Typography component="div" className="notification-btns">
-          <Typography component="div" className="btn-container">
-            <Button
-              onClick={() => history.push("/chat")}
-              className={messageBtnClass}
-            >
-              <NotificationNumber number={0} />
-              <Icon icon="bi:chat-fill" width={26} height={26} />
-            </Button>
-          </Typography>
           <Typography component="div" className="btn-container">
             <Button
               onClick={handleOpenNotificationList}

@@ -50,7 +50,7 @@ const Sidebar = ({ setSelected, selected }) => {
       left: "-60%",
     },
   };
-  console.log(window.innerWidth);
+
   return (
     <div className="sidebar-container">
       <div

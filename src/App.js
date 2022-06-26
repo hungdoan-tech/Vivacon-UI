@@ -80,7 +80,7 @@ function App() {
     i18n.changeLanguage("en");
     connect();
     setAuth(readCookie());
-    history.listen(() => {
+    history.listen((e) => {
       cleanSocketState();
     });
   }, []);

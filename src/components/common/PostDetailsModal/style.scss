@@ -95,17 +95,20 @@
           flex-direction: row;
           justify-content: space-between;
           flex: 1;
-          .post-more-actions {
-            .post-more-icon {
-              cursor: pointer;
-            }
+        }
+        .post-more-actions {
+          &:hover {
+            cursor: pointer !important;
+          }
+          .post-more-icon {
           }
         }
         border-bottom: 0.5px solid var(--lightColor);
       }
       .interaction-line2 {
         max-height: calc(100% - 50px);
-        overflow: auto;
+        overflow-y: auto !important;
+        overflow-x: visible !important;
         padding: 0 10px;
       }
     }

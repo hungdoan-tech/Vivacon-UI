@@ -30,12 +30,10 @@ export const getCurrentUser = () => {
 
 export const updateCookieToken = () => {
   const refreshToken = getRefreshToken();
-  console.log({ refreshToken });
   if (refreshToken) {
     renewAccessToken(refreshToken)
       .then((res) => {
         const { accessToken: newToken, refreshToken: newRefreshToken } = res;
-        console.log({ newToken, newRefreshToken });
         saveJwtToken(newToken);
         saveRefreshToken(newRefreshToken);
       })

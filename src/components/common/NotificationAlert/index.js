@@ -19,7 +19,6 @@ const NotificationAlert = () => {
     if (!_.isEmpty(newNotification)) {
       setAlertData([...alertData, newNotification]);
     }
-    console.log("newNotification is: ", newNotification);
   }, [newNotification]);
 
   useEffect(() => {

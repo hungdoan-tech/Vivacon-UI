@@ -8,7 +8,14 @@ import CustomPopUp from "../CustomPopUp";
 import { substringUsername } from "utils/resolveData";
 import classNames from "classnames";
 
-const UsernameContainer = ({ username, isOnModal = false }) => {
+const UsernameContainer = ({
+  username,
+  isOnModal = false,
+  isFollowing: isFollowingOnProps,
+  setFollowing: setFollowingOnProps,
+  setIsUpdated: setIsUpdatedOnProps,
+  isUpdatedOnProps: isUpdatedOnProps,
+}) => {
   const [showPopUp, setShowPopUp] = React.useState(false);
   const [localLoading, setLocalLoading] = React.useState(false);
   const [isUpdated, setIsUpdated] = React.useState(false);
@@ -30,6 +37,9 @@ const UsernameContainer = ({ username, isOnModal = false }) => {
     if (isUpdated) {
       handleGetProfile(username);
     }
+    if (isUpdatedOnProps) {
+      handleGetProfile(username);
+    }
   };
 
   const handleGetProfile = (username) => {
@@ -38,7 +48,11 @@ const UsernameContainer = ({ username, isOnModal = false }) => {
       .then((res) => {
         if (res.status === 200) {
           setUserInfo(res.data);
-          setFollowing(res.data.following);
+          if (setFollowingOnProps) {
+            setFollowingOnProps(res.data.following);
+          } else {
+            setFollowing(res.data.following);
+          }
         }
       })
       .catch((err) => {
@@ -52,6 +66,10 @@ const UsernameContainer = ({ username, isOnModal = false }) => {
   React.useEffect(() => {
     setUserInfo({ ...userInfo, following: isFollowing });
   }, [isFollowing]);
+
+  React.useEffect(() => {
+    setUserInfo({ ...userInfo, following: isFollowingOnProps });
+  }, [isFollowingOnProps]);
 
   const classNameByType = classNames({
     "username-container-on-page": !isOnModal,
@@ -85,10 +103,16 @@ const UsernameContainer = ({ username, isOnModal = false }) => {
         >
           <OutlineProfile
             userInfo={userInfo}
-            isFollowing={userInfo.following}
-            setFollowing={setFollowing}
+            isFollowing={
+              isFollowingOnProps ? isFollowingOnProps : userInfo.following
+            }
+            setFollowing={
+              setFollowingOnProps ? setFollowingOnProps : setFollowing
+            }
             localLoading={localLoading}
-            setIsUpdated={setIsUpdated}
+            setIsUpdated={
+              setIsUpdatedOnProps ? setIsUpdatedOnProps : setIsUpdated
+            }
           />
         </CustomPopUp>
       )}

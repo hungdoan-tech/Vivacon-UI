@@ -35,7 +35,6 @@ const makeStyle = (status) => {
 };
 
 export default function BasicTable({ newestPostData }) {
-  console.log({ newestPostData });
   return (
     <div className="Table">
       <h3>Latest Post</h3>

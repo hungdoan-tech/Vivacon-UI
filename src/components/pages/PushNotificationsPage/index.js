@@ -17,7 +17,6 @@ const PushNotificationsPage = (props) => {
     const currentSettingOfType = globalSetting.filter(
       (setting) => setting.type === type
     )[0].value;
-    console.log({ currentSettingOfType, value });
     if (currentSettingOfType !== value) {
       changeSetting({
         settingType: type,

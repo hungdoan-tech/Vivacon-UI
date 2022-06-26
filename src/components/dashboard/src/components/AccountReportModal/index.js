@@ -216,7 +216,6 @@ const AccountReportModal = (props) => {
   }, [props.item.account.username]);
 
   useEffect(() => {
-    console.log("open");
     if (currentModalType === ModalType.FOLLOWER) {
       handleGetFollowers(userProfile.id);
     }

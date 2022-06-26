@@ -98,7 +98,6 @@ const AdminManagement = () => {
     let invaliObject = { ...err };
     Object.keys(inputData).map((key, value) => {
       if (inputData[key] === "") {
-        console.log({ isEmpty: inputData[key] });
         const displayName = createNewAdminFields.filter(
           (item) => item.field === key
         )[0].title;

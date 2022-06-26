@@ -100,7 +100,6 @@ const ChatPage = () => {
     notificationAudio.play();
   };
   const onEmojiClick = (event, emojiObject) => {
-    console.log({ emojiObject });
     setInputMessage(`${inputMessage}${emojiObject.emoji}`);
     setEmojiPicker(true);
   };
@@ -109,10 +108,8 @@ const ChatPage = () => {
   };
 
   useEffect(() => {
-    console.log({ receivedMessage });
     if (receivedMessage) {
       const message = receivedMessage;
-      console.log("RECEIVED SOME", message);
       switch (message?.messageType) {
         case chattingType.USUAL_TEXT: {
           // startAudio();
@@ -184,7 +181,6 @@ const ChatPage = () => {
   };
 
   useEffect(() => {
-    console.log({ newConversation });
     if (newConversation.id) {
       //If new conversation is chat 1vs1
       if (newConversation.participants.length >= 2) {
@@ -306,14 +302,12 @@ const ChatPage = () => {
           if (res.status === 200) {
             const { fullName, isOnline, avatar } = selectedList[0];
             const { id: conversationId } = res.data;
-            console.log({ conversationId });
             setOpenChattingSearch(false);
             if (
               !conversationList.content.find(
                 (conv) => conv.id === conversationId
               )
             ) {
-              console.log("conversationId not found");
               const currConvList = [
                 {
                   ...res.data,
@@ -330,7 +324,6 @@ const ChatPage = () => {
         })
         // Create virtual conversation
         .catch(() => {
-          console.log("conversationId catch");
           const { fullName, isOnline } = selectedList[0];
           const fullConvParticipants = [
             selectedList[0],
@@ -411,7 +404,6 @@ const ChatPage = () => {
     uploadImage(data)
       .then((res) => {
         if (res.status === 200) {
-          console.log({ img });
           const tempEvent = { key: "Enter", preventDefault: () => null };
           sendMessage(tempEvent, `[image|${res.data.url}]`);
         }
@@ -751,14 +743,11 @@ const MessageItem = ({ item: message, index, dataList: messageList }) => {
 
   useEffect(() => {
     if (message) {
-      console.log({ messagesharePost: message });
       const sharePost = message.content.match(
         /(?<=\[sharePost\|)(.*?)(?=\])/gi
       );
-      console.log({ sharePost });
       const parseIntPostId = sharePost ? parseInt(sharePost[0]) : null;
       if (parseIntPostId) {
-        console.log({ message });
         getSharePostDetail(parseIntPostId);
       } else {
         setPostInfo(null);
@@ -814,7 +803,6 @@ const MessageItem = ({ item: message, index, dataList: messageList }) => {
                 <img
                   src={imageList[0]}
                   onClick={(e) => {
-                    console.log("call");
                     setOpenImageModal({ open: true, image: imageList[0] });
                     e.stopPropagation();
                   }}

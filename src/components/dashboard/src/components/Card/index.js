@@ -54,7 +54,6 @@ function ExpandedCard({
   setSummaryPeriod,
   setSummaryUserPeriod,
 }) {
-  console.log({ param });
   const [currentPeriod, setCurrentPeroid] = useState(PERIOD.MONTHS);
   const data = {
     options: {

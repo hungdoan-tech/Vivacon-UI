@@ -24,14 +24,7 @@ const useInfiniteList = (
   }, []);
 
   useEffect(() => {
-    console.log(
-      "COMPARE CHANGE: ",
-      parentDataList,
-      dataList,
-      _.isEqual(dataList, parentDataList)
-    );
     if (parentDataList?.length > 0 || !_.isEqual(parentDataList, dataList)) {
-      console.log("COMPARE CHANGE IF PASS");
       setDataList(parentDataList);
     }
   }, [parentDataList]);

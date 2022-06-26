@@ -40,14 +40,11 @@ const InfiniteList = (props) => {
   }, [data.username]);
 
   useEffect(() => {
-    console.log("statusIS", data.status);
     setPageNumber(0);
   }, [data.status]);
 
   useEffect(() => {
-    console.log("COMPARE CHANGE 1: ", parentDataList, dataList, _.isEqual(dataList, parentDataList))
     if (!_.isEqual(dataList, parentDataList) && parentDataList) {
-      console.log('COMPARE CHANGE 1 IF PASS')
       setParentDataList(dataList);
     }
   }, [dataList]);
@@ -77,7 +74,6 @@ const InfiniteList = (props) => {
             <>
               {dataList &&
                 dataList.map((item, index) => {
-                  console.log('COMPARE CHANGE: ', {dataList})
                   if (dataList.length === index + 1) {
                     return (
                       <div ref={lastItemRef} key={item.id}>

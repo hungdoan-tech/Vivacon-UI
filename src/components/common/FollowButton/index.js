@@ -32,7 +32,6 @@ const FollowButton = (props) => {
   // const [isFollowing, setFollowing] = useState(follow);
 
   // useEffect(() => {
-  //   console.log("follow change", follow);
   //   setFollowing(follow);
   // }, [follow]);
 

@@ -11,7 +11,11 @@ const PostDetailPage = (props) => {
   }, [props.match.params.id]);
   return (
     <Typography component="div" className="post-detail-page-container">
-      <PostDetailsModal index={0} dataList={[{ id: postId }]} isOnModal={false}/>
+      <PostDetailsModal
+        index={0}
+        dataList={[{ id: postId }]}
+        isOnModal={true}
+      />
     </Typography>
   );
 };

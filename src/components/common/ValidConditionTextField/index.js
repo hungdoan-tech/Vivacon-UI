@@ -40,7 +40,6 @@ const ValidConditionTextField = ({ textInput }) => {
 };
 
 const ConditionText = ({ condition, text }) => {
-  console.log({ condition, text });
   const conditionStyle = classNames("condition-text", {
     right: condition,
     wrong: !condition,

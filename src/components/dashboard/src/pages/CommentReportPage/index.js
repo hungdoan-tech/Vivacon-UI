@@ -213,7 +213,7 @@ export default function CommentReportPage() {
       const filteredReportList = [...commentReportList.content].filter(
         (rp) => rp.id !== id
       );
-      console.log({ commentReportList, filteredReportList, id });
+
       setCommentReportList({
         ...commentReportList,
         content: filteredReportList,

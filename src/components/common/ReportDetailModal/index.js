@@ -42,7 +42,6 @@ const ReportDetailModal = ({ open, handleCloseModal, type, currentTarget }) => {
   const { t: trans } = useTranslation();
 
   const handleCreateReport = (item) => {
-    console.log({ item, trans: trans(item.detailContent) });
     setGlobalState(item);
     handleNextStep();
   };

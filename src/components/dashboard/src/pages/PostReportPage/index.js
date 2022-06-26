@@ -68,7 +68,6 @@ export default function PostReportPage() {
   }, [limit]);
 
   useEffect(() => {
-    console.log({ showPostReportModal, reportContent });
     if (showPostReportModal.reportMessage) {
       const filterReportDetail = trans(
         reportContent.filter(

@@ -98,13 +98,15 @@ const SuggestedAccounts = () => {
                 <Typography className="suggest-item">
                   <img src={user.avatar} width="30px" height="30px" />
                   <Typography className="right-content">
-                    {/* <Typography
-                      className="username"
-                      onClick={() => history.push(`/profile/${user.username}`)}
-                    >
-                      {user.username}
-                    </Typography> */}
-                    <UsernameContainer username={user.username} />
+                    <UsernameContainer
+                      username={user.username}
+                      isFollowing={user.isFollowing}
+                      setFollowing={(res) => {
+                        const currList = [...suggestList];
+                        currList[index].isFollowing = res;
+                        setSuggestList(currList);
+                      }}
+                    />
                     <Typography className="details">
                       {user.mutualFriends?.length > 0
                         ? `Both follow ${user.mutualFriends[0].username} ${
