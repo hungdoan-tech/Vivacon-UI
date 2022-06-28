@@ -881,3 +881,14 @@ option {
   padding: 20px;
   border: 0.25px solid var(--lightColor);
 }
+.dashboard-general-container {
+  display: flex;
+  flex-direction: row;
+  height: 100%;
+  .MainDash {
+    flex: 1;
+  }
+  .RightSide {
+    width: 250px;
+  }
+}

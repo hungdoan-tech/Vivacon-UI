@@ -9,6 +9,11 @@
     width: 100%;
     min-height: calc(100vh - 350px);
   }
+  &.notFullWidthAdmin {
+    margin-top: 0px;
+    width: 100%;
+    min-height: calc(100vh - 350px);
+  }
 }
 :root {
   font-family: "-apple-system,BlinkMacSystemFont", "Segoe UI", "Roboto",

@@ -10,12 +10,13 @@ import {
 
 // Analytics Cards imports
 import { UilUsdSquare, UilMoneyWithdrawal } from "@iconscout/react-unicons";
-import DashboardIcon from '@mui/icons-material/Dashboard';
+import DashboardIcon from "@mui/icons-material/Dashboard";
 import { keyboard } from "@testing-library/user-event/dist/keyboard";
-import ContactPageIcon from '@mui/icons-material/ContactPage';
-import MarkUnreadChatAltIcon from '@mui/icons-material/MarkUnreadChatAlt';
-import BurstModeIcon from '@mui/icons-material/BurstMode';
-import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
+import ContactPageIcon from "@mui/icons-material/ContactPage";
+import MarkUnreadChatAltIcon from "@mui/icons-material/MarkUnreadChatAlt";
+import BurstModeIcon from "@mui/icons-material/BurstMode";
+import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
+import { Icon } from "@iconify/react";
 
 // Recent Card Imports
 import img1 from "../imgs/img1.png";

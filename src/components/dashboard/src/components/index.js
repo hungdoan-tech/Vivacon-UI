@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import "./style.scss";
 import Logo from "../imgs/logo.png";
 import { UilSignOutAlt } from "@iconscout/react-unicons";
@@ -9,6 +9,14 @@ import { Box, Tab, Tabs, Typography } from "@mui/material";
 import MainDash from "./OverallDashboard";
 import { getCurrentUser } from "utils/jwtToken";
 import { AuthUser } from "App";
+import { getLatLng, getLocationInformation } from "api/googleMapService";
+import { useHistory } from "react-router-dom";
+import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
+import {
+  removeJwtToken,
+  removeLocalStorageField,
+  removeRefreshToken,
+} from "utils/cookie";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -40,6 +48,8 @@ const Sidebar = ({ setSelected, selected }) => {
     setValue(newValue);
   };
 
+  const history = useHistory();
+
   const Auth = useContext(AuthUser);
 
   const sidebarVariants = {
@@ -60,12 +70,32 @@ const Sidebar = ({ setSelected, selected }) => {
       >
         <UilBars />
       </div>
+      <Typography
+        className="app-logo"
+        align="center"
+        onClick={() => history.push("/dashboard")}
+      >
+        VivaCon
+      </Typography>
       <Typography component="div" className="admin-info">
         <Typography component="div" className="admin-info-line1">
           <img src={adminInfo.avatar} width="50px" height="50px" />
           <Typography component="div" className="admin-name">
             <p className="username">{adminInfo.username}</p>
             <p className="fullname">{adminInfo.fullName}</p>
+          </Typography>
+          <Typography
+            component="div"
+            className="admin-logout"
+            onClick={() => {
+              removeJwtToken();
+              removeRefreshToken();
+              removeLocalStorageField("suggested_users");
+              removeLocalStorageField("recent_search");
+              window.location.href = "/login";
+            }}
+          >
+            <LogoutOutlinedIcon />
           </Typography>
         </Typography>
         <Typography component="div" className="admin-info-line2">

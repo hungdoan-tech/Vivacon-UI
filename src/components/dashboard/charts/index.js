@@ -24,6 +24,7 @@ import { Bar } from "react-chartjs-2";
 import { Slide } from "react-slideshow-image";
 import "react-slideshow-image/dist/styles.css";
 import moment from "moment";
+import { getLocationByLongLat } from "api/googleMapService";
 
 ChartJS.register(
   CategoryScale,

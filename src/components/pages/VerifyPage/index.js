@@ -1,4 +1,9 @@
-import { resendToken, verifyChangePassword, activeNewAccount } from "api/userService";
+import {
+  resendToken,
+  verifyChangePassword,
+  activeNewAccount,
+  login,
+} from "api/userService";
 import useLoading from "hooks/useLoading";
 import useSnackbar from "hooks/useSnackbar";
 import React, { useState, useEffect, useRef } from "react";
@@ -7,6 +12,7 @@ import { useHistory } from "react-router-dom";
 import { Button, Typography } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import "./style.scss";
+import { parseJwt } from "utils/jwtToken";
 
 export default function VerifyPage(props) {
   const [code, setCode] = useState([]);
@@ -34,7 +40,7 @@ export default function VerifyPage(props) {
           saveRefreshToken(res.data.refreshToken);
           setSnackbarState({
             open: true,
-            content: trans('signIn.loginSuccessful'),
+            content: trans("signIn.loginSuccessful"),
             type: "SUCCESS",
           });
           setTimeout(() => {
@@ -61,7 +67,7 @@ export default function VerifyPage(props) {
         if (res.status === 200) {
           setSnackbarState({
             open: true,
-            content: trans('findAccount.pleaseEnterCode'),
+            content: trans("findAccount.pleaseEnterCode"),
             type: "SUCCESS",
           });
           setTimeout(() => setButtonDisabled(false), 5000);
@@ -97,12 +103,89 @@ export default function VerifyPage(props) {
       });
   };
 
+  const handleConfirmLoginNewDevice = () => {
+    token = code.reduce((prev, curr) => {
+      return prev + curr;
+    });
+
+    setLoading(true);
+    verifyChangePassword(token)
+      .then((res) => {
+        if (res.status === 200) {
+          if (props.location.state.type === "LoginNewDevice") {
+            setTimeout(() => {
+              setSnackbarState({
+                open: true,
+                content: "Verify successfully",
+                type: "SUCCESS",
+              });
+              const { username, password } = props.location.state;
+              handleLogin(username, password);
+            }, 1000);
+          }
+          if (props.location.state.type === "ForgotPassword") {
+            setTimeout(() => {
+              setSnackbarState({
+                open: true,
+                content: "Verify successfully",
+                type: "SUCCESS",
+              });
+              history.push("/forgot-password", token);
+            }, 1000);
+          }
+        }
+      })
+      .catch((err) => {
+        throw err;
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  };
+
+  const handleLogin = (username, password) => {
+    setLoading(true);
+    login({ username, password })
+      .then((res) => {
+        if (res.status === 200) {
+          saveJwtToken(res.data.accessToken);
+          saveRefreshToken(res.data.refreshToken);
+          setSnackbarState({
+            open: true,
+            content: trans("signIn.loginSuccessful"),
+            type: "SUCCESS",
+          });
+          setTimeout(() => {
+            if (
+              parseJwt(res.data.accessToken).roles.includes("ADMIN") ||
+              parseJwt(res.data.accessToken).roles.includes("SUPER_ADMIN")
+            ) {
+              window.location.href = "/dashboard";
+            } else {
+              window.location.href = "/";
+            }
+          }, 1000);
+        }
+      })
+      .catch((err) => {
+        throw err;
+      })
+      .finally(() => {
+        setTimeout(() => {
+          setLoading(false);
+        }, 1000);
+      });
+  };
+
   const handleSubmit = () => {
     if (props.location.state.type === "ForgotPassword") {
       handleConfirmForgotPassword();
     }
     if (props.location.state.type === "Register") {
       handleConfirmRegister();
+    }
+    if (props.location.state.type === "LoginNewDevice") {
+      handleConfirmLoginNewDevice();
     }
   };
 

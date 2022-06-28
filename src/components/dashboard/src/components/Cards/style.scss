@@ -1,24 +1,26 @@
 .Cards {
   display: flex;
   gap: 10px;
+  flex-wrap: wrap;
+  height: fit-content;
 }
-.parentContainer{
+.parentContainer {
   position: relative;
-  width: 100%;
+  width: calc(50% - 10px);
+  height: fit-content;
 }
 
 @media screen and (max-width: 1200px) {
-  .Cards{
+  .Cards {
     flex-direction: column;
   }
-  .parentContainer{
+  .parentContainer {
     height: 9rem;
   }
 }
 
-@media screen and (max-width: 768px)
-{
-  .Cards{
+@media screen and (max-width: 768px) {
+  .Cards {
     width: 90%;
   }
 }

@@ -4,11 +4,20 @@
   box-shadow: 0px 2px 15px 2px rgb(0 0 0 / 20%),
     0px 1px 1px 0px rgb(0 0 0 / 14%), 0px 1px 3px 0px rgb(0 0 0 / 12%) !important;
   position: fixed;
-  top: 70px;
+  top: 0px;
   left: 0;
   bottom: 0;
   background-color: var(--backgroundColor);
   width: 250px;
+  .app-logo {
+    grid-column-start: 3;
+    grid-column-end: span 1;
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--mainColor);
+    margin: 14px 0;
+    cursor: pointer;
+  }
   .sidebar {
     display: flex;
     flex-direction: column;
@@ -84,6 +93,7 @@
   //   width: 100%;
   // }
   .admin-info {
+    margin-top: 10px;
     .admin-info-line1 {
       display: flex;
       flex-direction: row;
@@ -92,11 +102,12 @@
       img {
         border-radius: 30px;
         box-shadow: 0px 2px 15px 2px rgb(0 0 0 / 20%),
-        0px 1px 1px 0px rgb(0 0 0 / 14%), 0px 1px 3px 0px rgb(0 0 0 / 12%) !important;
+          0px 1px 1px 0px rgb(0 0 0 / 14%), 0px 1px 3px 0px rgb(0 0 0 / 12%) !important;
       }
       .admin-name {
         display: flex;
         flex-direction: column;
+        flex: 1;
         p {
           margin: 0px 10px;
           &.username {
@@ -106,6 +117,12 @@
             color: var(--defaultColor);
           }
         }
+      }
+      .admin-logout {
+        &:hover {
+          cursor: pointer;
+        }
+        margin: auto 0;
       }
     }
     .admin-info-line2 {
@@ -121,16 +138,40 @@
   }
 
   /* Tablets */
-  @media screen and (max-width: 1200px) {
+  @media screen and (max-width: 1530px) {
+    grid-column-start: 1;
+    grid-column-end: 1;
+    width: 100px !important;
     .menuItem > span {
       display: none;
     }
     .logo {
       display: none;
     }
+    .app-logo {
+      display: none;
+    }
+    .admin-info {
+      .admin-info-line1 {
+        .admin-name,
+        .admin-logout {
+          display: none;
+        }
+      }
+      .admin-info-line2 {
+        .admin-role {
+          display: none;
+        }
+      }
+    }
   }
 
   @media screen and (max-width: 768px) {
+    .sidebar-container {
+      grid-column-start: 1;
+      grid-column-end: 1;
+      width: 100px !important;
+    }
     .sidebar {
       position: fixed;
       z-index: 9;

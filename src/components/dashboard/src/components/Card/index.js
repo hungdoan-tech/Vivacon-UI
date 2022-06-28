@@ -58,7 +58,7 @@ function ExpandedCard({
   const data = {
     options: {
       chart: {
-        id: "basic-bar",
+        id: param.type,
       },
       xaxis: {
         categories: param.time,

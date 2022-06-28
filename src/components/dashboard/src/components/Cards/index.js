@@ -45,6 +45,7 @@ const Cards = ({
         },
       ],
       time: label,
+      type: "basic-bar"
     },
     {
       title: "User Account",
@@ -62,6 +63,25 @@ const Cards = ({
         },
       ],
       time: label,
+      type: "basic-bar"
+    },
+    {
+      title: "Hashtag",
+      color: {
+        backGround: "linear-gradient(180deg, rgba(249, 205, 5, 0.76) 0%,rgba(249, 205, 5, 0.76) 100%)",
+        boxShadow: "0px 10px 20px 0px rgba(249, 205, 5, 0.4)",
+        chartColor: "rgba(249, 205, 5, 0.76)",
+      },
+      value: statisticData.totalAccountCount,
+      png: UilUsdSquare,
+      series: [
+        {
+          name: "Hashtag",
+          data: statisticUserByTime.map((item) => item.quantity),
+        },
+      ],
+      time: label,
+      type: "basic-bar"
     },
   ];
 

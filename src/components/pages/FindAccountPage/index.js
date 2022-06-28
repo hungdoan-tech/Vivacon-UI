@@ -131,7 +131,7 @@ export default function FindAccountPage(props) {
 
   const handleGetProfile = () => {
     setLoading(true);
-    getUserInformation(email)
+    getUserInformation(email, null)
       .then((res) => {
         if (res.status === 200) {
           setFoundProfile(res.data);

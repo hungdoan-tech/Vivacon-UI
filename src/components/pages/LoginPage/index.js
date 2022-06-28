@@ -12,7 +12,7 @@ import {
 } from "@mui/material";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
-import { login } from "api/userService";
+import { getUserInformation, login } from "api/userService";
 import "./style.scss";
 import { saveJwtToken, saveRefreshToken } from "utils/cookie";
 import useLoading from "hooks/useLoading";
@@ -120,13 +120,41 @@ const LoginPage = () => {
         }
       })
       .catch((err) => {
-        setTimeout(() => {
-          setSnackbarState({
-            open: true,
-            content: err.response.data.message,
-            type: "FAIL",
+        if (err.response.data === 1003 || err.response.data === 1002) {
+          const condition = err.response.data;
+          getUserInformation(null, username).then((res) => {
+            setTimeout(() => {
+              setSnackbarState({
+                open: true,
+                content:
+                  condition === 1003
+                    ? "This account is logged in on new deivce, please verify it."
+                    : "This account is not verified, please verify it.",
+                type: "SUCCESS",
+              });
+              history.push("/verify", {
+                email: res.data.email,
+                username,
+                password,
+                type: condition === 1003 ? "LoginNewDevice" : "Register",
+              });
+            }, 1000);
           });
-        }, 1000);
+        }
+        if (err.response.data === 1001) {
+          setInvalidMessage({
+            ...invalidMessage,
+            username: "This account was banned.",
+          });
+        } else {
+          setTimeout(() => {
+            setSnackbarState({
+              open: true,
+              content: err.response.data.message,
+              type: "FAIL",
+            });
+          }, 1000);
+        }
       })
       .finally(() => {
         setTimeout(() => {

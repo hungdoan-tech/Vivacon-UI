@@ -109,8 +109,9 @@ function App() {
   }, [snackbarState.open]);
 
   const appWidthClass = classNames("page-content", {
-    fullWidth: !auth,
-    notFullWidth: auth,
+    fullWidth: !auth.isLogin,
+    notFullWidth: auth.isLogin && !auth.isAdmin,
+    notFullWidthAdmin: auth.isLogin && auth.isAdmin,
   });
   return (
     <AuthUser.Provider value={{ auth, setAuth }}>
@@ -120,7 +121,7 @@ function App() {
             <div className="App">
               {openApp ? (
                 <>
-                  {auth.isLogin && (
+                  {auth.isLogin && !auth.isAdmin && (
                     <div className="navbar">
                       <Navbar />
                     </div>

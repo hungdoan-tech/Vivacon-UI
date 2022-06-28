@@ -45,9 +45,9 @@ export const changePassword = async (data) => {
   return await axiosConfig.put(API_ENDPOINT_KEYS.PASSWORD, data);
 };
 
-export const getUserInformation = async (email) => {
+export const getUserInformation = async (email = null, username = null) => {
   return await axiosConfig.get(`${API_ENDPOINT_KEYS.CHECK}`, {
-    params: { email },
+    params: { email, username },
   });
 };
 
