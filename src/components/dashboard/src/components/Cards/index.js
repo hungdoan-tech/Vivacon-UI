@@ -14,6 +14,10 @@ const Cards = ({
   setSummaryPeriod,
   statisticUserByTime,
   setSummaryUserPeriod,
+
+  topTrendingHashTag,
+  setLimit,
+  setTimeSection,
 }) => {
   const labels = statisticByTime.map((item) => ({
     time: item.time,
@@ -45,7 +49,8 @@ const Cards = ({
         },
       ],
       time: label,
-      type: "basic-bar"
+      type: "bar",
+      isPieChart: false,
     },
     {
       title: "User Account",
@@ -63,16 +68,18 @@ const Cards = ({
         },
       ],
       time: label,
-      type: "basic-bar"
+      type: "bar",
+      isPieChart: false,
     },
     {
       title: "Hashtag",
       color: {
-        backGround: "linear-gradient(180deg, rgba(249, 205, 5, 0.76) 0%,rgba(249, 205, 5, 0.76) 100%)",
+        backGround:
+          "linear-gradient(180deg, rgba(249, 205, 5, 0.76) 0%,rgba(249, 205, 5, 0.76) 100%)",
         boxShadow: "0px 10px 20px 0px rgba(249, 205, 5, 0.4)",
         chartColor: "rgba(249, 205, 5, 0.76)",
       },
-      value: statisticData.totalAccountCount,
+      //value: statisticData.totalAccountCount,
       png: UilUsdSquare,
       series: [
         {
@@ -80,8 +87,9 @@ const Cards = ({
           data: statisticUserByTime.map((item) => item.quantity),
         },
       ],
-      time: label,
-      type: "basic-bar"
+      //time: label,
+      type: "pie",
+      isPieChart: true,
     },
   ];
 
@@ -99,6 +107,11 @@ const Cards = ({
               setSummaryPeriod={setSummaryPeriod}
               time={card.time}
               setSummaryUserPeriod={setSummaryUserPeriod}
+              type={card.type}
+              isPieChart={card.isPieChart}
+              topTrendingHashTag={topTrendingHashTag}
+              setLimit={setLimit}
+              setTimeSection={setTimeSection}
             />
           </div>
         );

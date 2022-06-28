@@ -20,9 +20,16 @@ import {
   getUserQuantityStatisticInMonths,
   getUserQuantityStatisticInQuarters,
   getUserQuantityStatisticInYears,
+  getTopHashTagQuantityInTime,
 } from "api/statisticService";
-import { PERIOD } from "constant/types";
+import {
+  limitPerPage,
+  PERIOD,
+  timeSection,
+  timeSectionList,
+} from "constant/types";
 import RightSide from "../RigtSide";
+import ReactApexChart from "react-apexcharts";
 
 const OverallDashboard = () => {
   const [summaryPeriod, setSummaryPeriod] = useState(PERIOD.MONTHS);
@@ -34,6 +41,10 @@ const OverallDashboard = () => {
   const [postInteractionData, setPostInteractionData] = useState([]);
   const [userAccountMostFollowerData, setUserAccountMostFollowerData] =
     useState([]);
+
+  const [topTrendingHashTag, setTopTrendingHashTag] = useState([]);
+  const [limit, setLimit] = useState(5);
+  const [timeSection, setTimeSection] = useState("YEAR");
 
   useEffect(() => {
     if (summaryPeriod === PERIOD.MONTHS) {
@@ -78,7 +89,19 @@ const OverallDashboard = () => {
     getTheTopAccountMostFollowerStatistic({ limit: 5 }).then((res) =>
       setUserAccountMostFollowerData(res.data)
     );
+    getTopHashTagQuantityInTime({ timeSection: "YEAR", limit: 5 }).then((res) =>
+      setTopTrendingHashTag(res.data)
+    );
   }, []);
+
+  useEffect(() => {
+    getTopHashTagQuantityInTime({ timeSection, limit }).then((res) =>
+      setTopTrendingHashTag(res.data)
+    );
+  }, [limit, timeSection]);
+
+  console.log(topTrendingHashTag);
+
   return (
     <div className="dashboard-general-container">
       <div className="MainDash">
@@ -97,7 +120,32 @@ const OverallDashboard = () => {
             setSummaryPeriod={setSummaryPeriod}
             statisticUserByTime={statisticUserByTime}
             setSummaryUserPeriod={setSummaryUserPeriod}
+            topTrendingHashTag={topTrendingHashTag}
+            setLimit={setLimit}
+            setTimeSection={setTimeSection}
           />
+
+          {/* {topTrendingHashTag && topTrendingHashTag.length > 0 ? (
+            <div id="chart">
+              <ReactApexChart
+                options={mapDataToPieChart(topTrendingHashTag)?.options}
+                series={mapDataToPieChart(topTrendingHashTag)?.series}
+                type="pie"
+                width={380}
+              />
+              <select onChange={(event) => setLimit(+event.target.value)}>
+                {limitPerPage.map((item, index) => (
+                  <option key={item}>{item}</option>
+                ))}
+              </select>
+              <select onChange={(event) => setTimeSection(event.target.value)}>
+                {timeSectionList.map((item, index) => (
+                  <option key={item}>{item}</option>
+                ))}
+              </select>
+            </div>
+          ) : null} */}
+
           <div className="homepage__top-cards slide-container">
             <Carousel duration={1000} autoPlay={true} animation="slide">
               {postInteractionData.map((item, index) => (
