@@ -8,16 +8,41 @@ import useSocket from "hooks/useSocket";
 import NotificationDetail from "components/common/NotificationDetail";
 import _ from "lodash";
 import "./style.scss";
+import {
+  removeJwtToken,
+  removeLocalStorageField,
+  removeRefreshToken,
+} from "utils/cookie";
+import useSnackbar from "hooks/useSnackbar";
 
 const NotificationAlert = () => {
   const numberOfAlert = 4;
   const [alertData, setAlertData] = useState([]);
   const { states } = useSocket();
   const { newNotification } = states;
+  const { setSnackbarState } = useSnackbar();
 
   useEffect(() => {
     if (!_.isEmpty(newNotification)) {
       setAlertData([...alertData, newNotification]);
+      if (
+        newNotification.type ===
+        notificationsType.ACCOUNT_REPORT_APPROVING_DOMAIN_AUTHOR
+      ) {
+        setSnackbarState({
+          open: true,
+          content:
+            "Your account violate some our terms, we must block this account!",
+          type: "FAIL",
+        });
+        setTimeout(() => {
+          removeJwtToken();
+          removeRefreshToken();
+          removeLocalStorageField("suggested_users");
+          removeLocalStorageField("recent_search");
+          window.location.href = "/login";
+        }, 3000);
+      }
     }
   }, [newNotification]);
 

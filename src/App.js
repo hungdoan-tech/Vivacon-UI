@@ -104,7 +104,7 @@ function App() {
           title: "",
           content: "",
         });
-      }, 2000);
+      }, 4000);
     }
   }, [snackbarState.open]);
 
