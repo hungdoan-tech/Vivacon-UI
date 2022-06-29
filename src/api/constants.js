@@ -32,4 +32,5 @@ export const API_ENDPOINT_KEYS = {
   SETTING: "/setting",
   ADMIN: "/admin",
   HASHTAG: "/hashtag",
+  TRENDING: "/trending",
 };

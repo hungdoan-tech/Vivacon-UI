@@ -105,3 +105,13 @@ export const getNewFeed = async (data) => {
     },
   });
 };
+
+export const getTrending = async (data) => {
+  const { limit, page } = data;
+  return await axiosConfig.get(`${API_ENDPOINT_KEYS.TRENDING}`, {
+    params: {
+      limit,
+      page,
+    },
+  });
+};

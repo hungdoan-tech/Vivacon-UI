@@ -1,6 +1,6 @@
 import { useState } from "react";
 import Post from "components/common/Post";
-import { getNewFeed } from "../../../api/postService";
+import { getNewFeed, getTrending } from "../../../api/postService";
 import InfiniteList from "components/common/InfiniteList";
 import "./style.scss";
 import CustomModal from "components/common/CustomModal";
@@ -21,6 +21,7 @@ const PostsListPage = () => {
     item: {},
     dataList: [],
   });
+  const [isUseTrendingApi, setUseTrendingApi] = useState(false);
 
   const handleOpenPostDetailsModal = (index, item, dataList) => {
     setShowPostDetailsModal({
@@ -44,15 +45,23 @@ const PostsListPage = () => {
       <SuggestedHashtag />
       <NewsfeedInfiniteList
         container={ImagesListContainer}
-        handleGetData={getNewFeed}
-        data={{
-          _sort: "createdAt",
-          _order: "desc",
-          limit: 2,
-        }}
+        handleGetData={isUseTrendingApi ? getTrending : getNewFeed}
+        data={
+          isUseTrendingApi
+            ? {
+                limit: 2,
+              }
+            : {
+                _sort: "createdAt",
+                _order: "desc",
+                limit: 2,
+              }
+        }
         component={Post}
         handleClickItem={handleOpenPostDetailsModal}
         noDataComponent={() => <></>}
+        setUseTrendingApi={setUseTrendingApi}
+        isUseTrendingApi={isUseTrendingApi}
       />
       <CustomModal
         open={showPostDetailsModal.open}

@@ -18,13 +18,16 @@ const NewsfeedInfiniteList = (props) => {
     parentDataList,
     setParentDataList,
     changedField = null,
+    setUseTrendingApi,
+    isUseTrendingApi,
   } = props;
   const { dataList, isLoading, hasMore, isNoData } = useNewsfeedInfiniteList(
     handleGetData,
     data,
     pageNumber,
     parentDataList,
-    changedField
+    changedField,
+    isUseTrendingApi,
   );
 
   const observer = useRef();
@@ -57,6 +60,15 @@ const NewsfeedInfiniteList = (props) => {
         (entries) => {
           if (entries[0].isIntersecting && hasMore) {
             setPageNumber((prevPageNumber) => prevPageNumber + 1);
+          }
+          console.log("entries and hasmore: ", {
+            entries: entries[0].isIntersecting,
+            hasMore,
+            isUseTrendingApi,
+          });
+          if (entries[0].isIntersecting && !hasMore && !isUseTrendingApi) {
+            setUseTrendingApi(true);
+            setPageNumber(0);
           }
         },
         { threshold: 1.0 }

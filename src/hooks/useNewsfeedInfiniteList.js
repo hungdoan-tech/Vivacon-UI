@@ -11,7 +11,8 @@ const useNewsfeedInfiniteList = (
   data,
   pageNumber,
   parentDataList,
-  changedField
+  changedField,
+  isUseTrendingApi
 ) => {
   const [isLoading, setLoading] = useState(true);
   const [error, setError] = useState(false);
@@ -40,7 +41,7 @@ const useNewsfeedInfiniteList = (
   }, [dataList]);
 
   useEffect(() => {
-    if (pageNumber > 0) {
+    if (pageNumber > 0 || (pageNumber === 0 && isUseTrendingApi)) {
       setLoading(true);
       setError(false);
       // let cancel;
