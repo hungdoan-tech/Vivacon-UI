@@ -104,7 +104,7 @@ const ProfilePage = (props) => {
   const [openSuggestedUsers, setOpenSuggestedUsers] = useState(false);
   const [suggestedUsers, setSuggestedUsers] = useState([]);
 
-  const history = useHistory()
+  const history = useHistory();
 
   //--GET DATA--
   const handleGetProfile = (username) => {
@@ -116,6 +116,7 @@ const ProfilePage = (props) => {
         }
       })
       .catch((err) => {
+        history.push("/not-found");
         throw err;
       })
       .finally(() => {
@@ -468,7 +469,10 @@ const ProfilePage = (props) => {
             <Typography className="action-btns">
               {getCurrentUser().username === userProfile.username ? (
                 <>
-                  <Button className="edit-btn" onClick={() => history.push('/setting')}>
+                  <Button
+                    className="edit-btn"
+                    onClick={() => history.push("/setting")}
+                  >
                     {trans("profile.editInformation")}
                   </Button>
                   <SettingsIcon className="edit-icon" />

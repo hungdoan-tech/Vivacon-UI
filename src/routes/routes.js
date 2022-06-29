@@ -38,7 +38,6 @@ const RouterList = () => {
         <>
           <PrivateRoute exact path="/login" component={LoginPage} />
           <PrivateRoute exact path="/" component={PostsListPage} />
-          <PrivateRoute exact path="/not-found" component={NotFoundPage} />
           <PrivateRoute
             exact
             path="/profile/:username"
@@ -49,13 +48,14 @@ const RouterList = () => {
           <PrivateRoute exact path="/setting" component={SettingPage} />
           <PrivateRoute exact path="/post/:id" component={PostDetailPage} />
           <PrivateRoute exact path="/hashtag/:name" component={HashtagPage} />
+          <PrivateRoute exact path="/not-found" component={NotFoundPage} />
         </>
       )}
       {Auth.auth.isLogin && Auth.auth.isAdmin && (
         <>
           <PrivateRoute exact path="/login" component={LoginPage} />
-          <PrivateRoute exact path="/not-found" component={NotFoundPage} />
           <PrivateRoute exact path="/dashboard" component={Dashboard} />
+          <PrivateRoute exact path="/not-found" component={NotFoundPage} />
         </>
       )}
     </Switch>
@@ -74,7 +74,7 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
           ) : (
             <Redirect
               to={{
-                pathname: "/",
+                pathname: Auth.auth.isAdmin ? "/dashboard" : "/",
                 // state: { from: location },
               }}
             />

@@ -89,7 +89,7 @@ const OverallDashboard = () => {
     getTheTopAccountMostFollowerStatistic({ limit: 5 }).then((res) =>
       setUserAccountMostFollowerData(res.data)
     );
-    getTopHashTagQuantityInTime({ timeSection: "YEAR", limit: 5 }).then((res) =>
+    getTopHashTagQuantityInTime({ timeSection: "MONTHS", limit: 5 }).then((res) =>
       setTopTrendingHashTag(res.data)
     );
   }, []);

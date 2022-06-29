@@ -11,6 +11,7 @@ import _ from "lodash";
 import FavoriteRoundedIcon from "@mui/icons-material/FavoriteRounded";
 import ChatBubbleRoundedIcon from "@mui/icons-material/ChatBubbleRounded";
 import PhotoLibraryIcon from "@mui/icons-material/PhotoLibrary";
+import { useHistory } from "react-router-dom";
 
 const HashtagPage = (props) => {
   const [hashtagInfo, setHashtagInfo] = useState({});
@@ -20,16 +21,22 @@ const HashtagPage = (props) => {
     item: {},
     dataList: [],
   });
+  const history = useHistory();
   const handleGetHashtagPostList = () => {
     getHashtagPostList({
       name: `#${props.match.params.name}`,
       limit: 10,
       page: 0,
-    }).then((res) => {
-      if (res.status === 200) {
-        setHashtagInfo(res.data);
-      }
-    });
+    })
+      .then((res) => {
+        if (res.status === 200) {
+          setHashtagInfo(res.data);
+        }
+      })
+      .catch((err) => {
+        history.push("/not-found");
+        throw err;
+      });
   };
 
   const handleOpenPostDetailsModal = (index, item, dataList) => {
