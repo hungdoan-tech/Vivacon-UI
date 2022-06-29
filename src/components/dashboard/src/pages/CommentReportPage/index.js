@@ -224,7 +224,6 @@ export default function CommentReportPage() {
 
   const updateReportListAfterDeleting = (id) => {
     if (commentReportList.content?.length === 1 && page > 1) {
-      fetchListCommentReport(page - 1, limit);
       setPage(page - 1);
     } else {
       const filteredReportList = [...commentReportList.content].filter(

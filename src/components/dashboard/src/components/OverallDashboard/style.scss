@@ -43,7 +43,7 @@
 
 .homepage__hero {
   width: 100%;
-  min-height: 250px;
+  min-height: 300px;
   display: grid;
   grid-template-columns: 1fr 2fr;
   column-gap: 1.2rem;
@@ -866,8 +866,12 @@ option {
   text-align: center;
   margin-bottom: 2rem;
 }
-
+.trending-post-title{
+  margin: 0 0 10px 0;
+  padding: 0;
+}
 .slide-container {
+  min-height: 250px;
   .css-1m9128y {
     text-align: left;
     margin-left: 20px;

@@ -65,7 +65,7 @@ const PostDetailsModal = ({ index, dataList, title, reportId, isOnModal }) => {
         lastModifiedAt: convertUTCtoLocalDate(res.data.lastModifiedAt),
       });
     }).catch((err) => {
-      history.push('/not-found');
+      history.replace('/not-found');
       throw err;
     });
   };

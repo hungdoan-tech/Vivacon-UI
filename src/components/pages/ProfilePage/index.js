@@ -116,7 +116,7 @@ const ProfilePage = (props) => {
         }
       })
       .catch((err) => {
-        history.push("/not-found");
+        history.replace("/not-found");
         throw err;
       })
       .finally(() => {

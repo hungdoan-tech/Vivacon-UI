@@ -226,7 +226,7 @@ const UserActivity = () => {
           </Typography>
 
           <Typography component="div" className="user-logged-in-hours chart">
-            <Typography className="header">User Logged-in Hours</Typography>
+            <Typography className="header">User average logged-in minutes</Typography>
             <Typography className="chart-content">
               <ReactApexChart
                 options={areaChartConfig.options}

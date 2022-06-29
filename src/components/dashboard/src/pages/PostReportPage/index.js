@@ -205,7 +205,6 @@ export default function PostReportPage() {
 
   const updateReportListAfterDeleting = (id) => {
     if (postReportList.content?.length === 1 && page > 1) {
-      fetchListPostReport(page - 1, limit);
       setPage(page - 1);
     } else {
       const filteredReportList = [...postReportList.content].filter(

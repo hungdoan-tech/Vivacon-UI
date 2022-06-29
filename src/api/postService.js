@@ -111,7 +111,7 @@ export const getTrending = async (data) => {
   return await axiosConfig.get(`${API_ENDPOINT_KEYS.TRENDING}`, {
     params: {
       limit,
-      page,
+      pageIndex: page,
     },
   });
 };

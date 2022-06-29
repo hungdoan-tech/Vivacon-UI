@@ -222,7 +222,6 @@ export default function AccountReportPage() {
 
   const updateReportListAfterDeleting = (id) => {
     if (accountReportList.content?.length === 1 && page > 1) {
-      fetchListAccountReport(page - 1, limit);
       setPage(page - 1);
     } else {
       const filteredReportList = [...accountReportList.content].filter(
