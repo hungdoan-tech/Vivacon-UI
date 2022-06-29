@@ -79,7 +79,7 @@ const Cards = ({
         boxShadow: "0px 10px 20px 0px rgba(249, 205, 5, 0.4)",
         chartColor: "rgba(249, 205, 5, 0.76)",
       },
-      //value: statisticData.totalAccountCount,
+      value: statisticData.totalHashTagCount,
       png: UilUsdSquare,
       series: [
         {

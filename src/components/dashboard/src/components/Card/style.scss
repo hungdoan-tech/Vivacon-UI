@@ -53,8 +53,8 @@
 .detail > span:nth-child(2) {
   font-size: 22px;
   font-weight: bold;
-}ExpandedCard
-.detail > span:nth-child(3) {
+}
+ExpandedCard .detail > span:nth-child(3) {
   font-size: 12px;
 }
 
@@ -75,6 +75,16 @@
   border: 0.25px solid var(--lightColor);
   .chartContainer {
     flex: 1;
+    height: 600px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    .apexcharts-legend {
+      .apexcharts-legend-series {
+        font-size: 16px;
+      }
+    }
   }
 }
 .ExpandedCard > span:nth-of-type(1) {
@@ -92,6 +102,9 @@
   height: 50px;
   border-bottom: 0.25px solid var(--lightColor);
   padding-top: 10px;
+  select {
+    margin: auto 20px;
+  }
   .homepage__summary-filter-wrapper {
     display: flex;
     flex-direction: row;

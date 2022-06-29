@@ -75,7 +75,7 @@ function ExpandedCard({
       }),
       options: {
         chart: {
-          width: 380,
+          width: 600,
           type: "pie",
         },
         labels: param.topTrendingHashTag.map(function (item) {
@@ -83,13 +83,16 @@ function ExpandedCard({
         }),
         responsive: [
           {
-            breakpoint: 480,
+            breakpoint: 600,
             options: {
               chart: {
-                width: 200,
+                width: 600,
               },
               legend: {
                 position: "bottom",
+                fontSize: '16px',
+                width: '50px',
+                height: '30px',
               },
             },
           },
@@ -169,19 +172,18 @@ function ExpandedCard({
       layoutId="expandableCard"
     >
       <ClickAwayListener onClickAway={setExpanded}>
-        <div style={{ flex: 1 }}>
+        <div style={{ flex: 1, width: "100%" }}>
           <div className="ChartHeader">
             <span className="Title">{param.title}</span>
+            {param.isPieChart ? (
+              <select onChange={(event) => setLimit(+event.target.value)}>
+                {limitPerPage.map((item, index) => (
+                  <option key={item}>{item}</option>
+                ))}
+              </select>
+            ) : null}
 
             <div className="homepage__summary-filter-wrapper">
-              {param.isPieChart ? (
-                <select onChange={(event) => setLimit(+event.target.value)}>
-                  {limitPerPage.map((item, index) => (
-                    <option key={item}>{item}</option>
-                  ))}
-                </select>
-              ) : null}
-
               <div
                 onClick={() => {
                   handleClickPeriod(PERIOD.MONTHS);
@@ -225,7 +227,7 @@ function ExpandedCard({
                 options={data.options}
                 series={data.series}
                 type={param.type}
-                width={380}
+                width={600}
               />
             )}
           </div>
