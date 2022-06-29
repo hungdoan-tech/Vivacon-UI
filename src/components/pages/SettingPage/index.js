@@ -11,6 +11,8 @@ import PushNotificationsPage from "../PushNotificationsPage";
 import EmailNotificationsPage from "../EmailNotificationsPage";
 import ChangePasswordPage from "../ChangePasswordPage";
 import { getAllSetting } from "api/settingService";
+import SecurityAndPrivacyPage from "../SecurityAndPrivacyPage";
+import LoginActivityPage from "../LoginActivityPage";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -103,6 +105,15 @@ export default function SettingPage() {
           globalSetting={globalSetting}
           updateSetting={handleGetAllSetting}
         />
+      </TabPanel>
+      <TabPanel value={value} index={4} className="setting-content">
+        <SecurityAndPrivacyPage
+          globalSetting={globalSetting}
+          updateSetting={handleGetAllSetting}
+        />
+      </TabPanel>
+      <TabPanel value={value} index={5} className="setting-content">
+        <LoginActivityPage />
       </TabPanel>
     </Box>
   );

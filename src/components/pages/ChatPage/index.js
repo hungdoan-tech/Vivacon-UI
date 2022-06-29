@@ -483,6 +483,7 @@ const ChatPage = () => {
   useEffect(() => {
     if (activeUsers.length > 0) {
       const currConvList = [...conversationList.content];
+      //Update conversation list 
       currConvList.map((conversation) => {
         conversation.participants?.map((user, index) => {
           if (activeUsers.find((activeUser) => activeUser === user.username)) {
@@ -493,6 +494,25 @@ const ChatPage = () => {
         });
       });
       setConversationList({ ...conversationList, content: currConvList });
+      const currentTarget = currConvList.filter(
+        (conv) => conv.id === conversationID
+      )[0];
+
+      //Update current conversation that user is chatting
+      currentTarget.participants?.map((user, index) => {
+        if (activeUsers.find((activeUser) => activeUser === user.username)) {
+          user.isOnline = true;
+        } else {
+          user.isOnline = false;
+        }
+      });
+      setUserChatting({
+        name: splitUserName(currentTarget.participants),
+        isOnline: getStatusOfConversation(currentTarget.participants),
+        avatars: filterParticipants(currentTarget.participants).map((user) => {
+          return user.avatar;
+        }),
+      });
     }
   }, [activeUsers]);
 

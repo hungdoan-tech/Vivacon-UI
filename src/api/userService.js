@@ -51,6 +51,10 @@ export const getUserInformation = async (email = null, username = null) => {
   });
 };
 
+export const getCurrentUserInformation = async () => {
+  return await axiosConfig.get(`${API_ENDPOINT_KEYS.PROFILE}/info`, {});
+};
+
 export const uploadImage = async (data) => {
   return await axiosConfig.post(`${API_ENDPOINT_KEYS.ATTACTMENT}`, data);
 };
@@ -132,5 +136,5 @@ export const getSuggestedListOnProfile = async (id) => {
 };
 
 export const editProfile = async (data) => {
-  return await axiosConfig.post(`${API_ENDPOINT_KEYS.PROFILE}/edit`, data);
+  return await axiosConfig.put(`${API_ENDPOINT_KEYS.PROFILE}/edit`, data);
 };

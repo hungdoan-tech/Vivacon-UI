@@ -1,4 +1,6 @@
 import axios from "axios";
+import axiosConfig from "./axiosConfig";
+import { API_ENDPOINT_KEYS } from "./constants";
 const google = window.google;
 
 export const getLatLng = async (callback) => {
@@ -17,14 +19,20 @@ export const getLocationInformation = async ({ latitude, longitude }) => {
   });
 };
 
-// console.log(process.env.REACT_APP_GOOGLE_MAP_API_URL, process.env.REACT_APP_GOOGLE_MAP_KEY)
-// return await axios.get(
-//   `${process.env.REACT_APP_GOOGLE_MAP_API_URL}/geocode/json`,
-//   {
-//     params: {
-//       latlng: `${position.coords.latitude},${position.coords.longitude}`,
-//       sensor: true,
-//       key: process.env.REACT_APP_GOOGLE_MAP_KEY,
-//     },
-//   }
-// );
+export const getPositionOfCurrentUser = async () => {
+  return await axiosConfig.get(`${API_ENDPOINT_KEYS.SETTING}/location`, {});
+};
+
+export const getLatestLoginLocationOfAllUser = async () => {
+  return await axiosConfig.get(
+    `${API_ENDPOINT_KEYS.STATISTIC}/user/location`,
+    {}
+  );
+};
+
+export const deleteUserLocationItem = async (id) => {
+  return await axiosConfig.delete(
+    `${API_ENDPOINT_KEYS.SETTING}/location/${id}`,
+    {}
+  );
+};

@@ -81,7 +81,7 @@ const Cards = ({
         },
       ],
       time: label,
-      type: "basic-bar"
+      type: "donut"
     },
   ];
 

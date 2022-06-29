@@ -129,7 +129,7 @@ const LoginPage = () => {
                 content:
                   condition === 1003
                     ? "This account is logged in on new deivce, please verify it."
-                    : "This account is not verified, please verify it.",
+                    : "This account is not active, please verify it.",
                 type: "SUCCESS",
               });
               history.push("/verify", {

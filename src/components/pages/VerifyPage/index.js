@@ -114,11 +114,6 @@ export default function VerifyPage(props) {
         if (res.status === 200) {
           if (props.location.state.type === "LoginNewDevice") {
             setTimeout(() => {
-              setSnackbarState({
-                open: true,
-                content: "Verify successfully",
-                type: "SUCCESS",
-              });
               const { username, password } = props.location.state;
               handleLogin(username, password);
             }, 1000);

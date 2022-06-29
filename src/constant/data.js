@@ -228,15 +228,14 @@ export const editProfileTextFields = [
   {
     title: "Name",
     field: "fullName",
-    belowText: `Help people discover your account by using the name you're known by: either your full name, nickname, or business name. \n
-    You can only change your name twice within 14 days.`,
+    belowText: `Help people discover your account by using the name you're known by: either your full name, nickname, or business name.`,
     type: "textField",
     maxRow: 1,
   },
   {
     title: "Username",
     field: "username",
-    belowText: `In most cases, you'll be able to change your username back to mr_trucc for another 14 days. `,
+    belowText: ``,
     type: "textField",
     maxRow: 1,
   },
@@ -263,15 +262,8 @@ export const editProfileTextFields = [
   {
     title: "Gender",
     field: "gender",
-    type: "textField",
-    maxRow: 1,
-  },
-  {
-    title: "Similar Account Suggestions",
-    field: "",
     type: "checkBox",
-    checkBoxText:
-      "Include your account when recommending similar accounts people might want to follow.",
+    maxRow: 1,
   },
 ];
 
@@ -305,6 +297,22 @@ export const emailNotificationFields = [
     field: "",
     checkBoxText: "Give notification you may have missed.",
     type: "EMAIL_ON_MISSED_ACTIVITIES",
+  },
+];
+
+export const securityAndPrivacyFields = [
+  {
+    title: "Privacy on active status",
+    field: "",
+    checkBoxText: "Show your online status.",
+    type: "PRIVACY_ON_ACTIVE_STATUS",
+  },
+  {
+    title: "Privacy on new device/location login activity",
+    field: "",
+    checkBoxText:
+      "Warning and require the verified process when having abnormal login activity on new device.",
+    type: "PRIVACY_ON_NEW_DEVICE_LOCATION",
   },
 ];
 

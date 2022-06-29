@@ -19,6 +19,7 @@
     "b64-to-blob": "^1.2.19",
     "chart.js": "^3.7.1",
     "classnames": "^2.3.1",
+    "d3-scale": "^4.0.2",
     "dotenv": "^16.0.0",
     "emoji-picker-react": "^3.5.1",
     "env-cmd": "^10.1.0",
