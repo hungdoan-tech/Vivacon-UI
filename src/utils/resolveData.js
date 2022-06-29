@@ -172,7 +172,7 @@ export const getDifferenceItemBetweenTwoArrays = (array1, array2) => {
 };
 
 export const handleFilterHashtagOfCaption = (caption) => {
-  const hashtagList = caption.match(/(?<=(.*?)#)(.*?)(?=($|\s))/gi);
+  const hashtagList = caption?.match(/(?<=(.*?)#)(.*?)(?=($|\s))/gi);
   let val = caption;
   let result = [];
   if (hashtagList) {

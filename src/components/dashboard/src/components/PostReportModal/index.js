@@ -23,6 +23,7 @@ import {
 } from "../../../../../api/reportService";
 import useSnackbar from "../../../../../hooks/useSnackbar";
 import { AuthUser } from "App";
+import { getPostOnAnyStatus } from "api/adminService";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -61,7 +62,7 @@ const PostReportModal = ({ index, dataList, title, reportId, type }) => {
 
   const history = useHistory();
   const handleGetPostDetail = () => {
-    getPostDetail({
+    getPostOnAnyStatus({
       id:
         type === "comment"
           ? dataList[currentIndex]?.comment.post.id

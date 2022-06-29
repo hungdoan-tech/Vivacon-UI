@@ -26,3 +26,11 @@ export const createNewAdmin = async (data) => {
 export const deleteAdmin = async (id) => {
   return await axiosConfig.delete(`${API_ENDPOINT_KEYS.ADMIN}/${id}`, {});
 };
+
+export const getPostOnAnyStatus = async ({ id }) => {
+  return await axiosConfig.get(`${API_ENDPOINT_KEYS.ADMIN}/post/${id}`, {});
+};
+
+export const getResolvedReportAdminInfo = async (id) => {
+  return await axiosConfig.get(`${API_ENDPOINT_KEYS.ADMIN}/profile/${id}`, {});
+};

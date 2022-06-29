@@ -10,13 +10,14 @@ export const getDetailPostReport = async (id) => {
 };
 
 export const getListPostReport = async (data) => {
-  const { _sort, limit, _order, page } = data;
+  const { _sort, limit, _order, page, isActive } = data;
   return await axiosConfig.get(`${API_ENDPOINT_KEYS.POST_REPORT}`, {
     params: {
       _sort,
       _order,
       limit,
       page,
+      isActive
     },
   });
 };
@@ -38,13 +39,14 @@ export const createCommentReport = async (data) => {
 };
 
 export const getListCommentReport = async (data) => {
-  const { _sort, limit, _order, page } = data;
+  const { _sort, limit, _order, page, isActive } = data;
   return await axiosConfig.get(`${API_ENDPOINT_KEYS.COMMENT_REPORT}`, {
     params: {
       _sort,
       _order,
       limit,
       page,
+      isActive
     },
   });
 };
@@ -70,13 +72,14 @@ export const createAccountReport = async (data) => {
 };
 
 export const getListAccountReport = async (data) => {
-  const { _sort, limit, _order, page } = data;
+  const { _sort, limit, _order, page, isActive } = data;
   return await axiosConfig.get(`${API_ENDPOINT_KEYS.ACCOUNT_REPORT}`, {
     params: {
       _sort,
       _order,
       limit,
       page,
+      isActive
     },
   });
 };

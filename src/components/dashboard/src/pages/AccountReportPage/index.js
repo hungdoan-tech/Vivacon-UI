@@ -26,6 +26,8 @@ import "./style.scss";
 import ReportTable from "components/dashboard/src/components/ReportTable";
 import ReportHeader from "components/dashboard/src/components/ReportHeader";
 import { useTranslation } from "react-i18next";
+import ChangeReportType from "../../components/ChangeReportType";
+import ReportPartiesInfo from "../../components/ReportPartiesInfo";
 
 export default function AccountReportPage() {
   const [showAccountReportModal, setShowAccountReportModal] = useState({
@@ -39,6 +41,11 @@ export default function AccountReportPage() {
   const [accountReportList, setAccountReportList] = useState([]);
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(5);
+  const [reportType, setReportType] = useState("request");
+
+  const handleChangeReportType = (value) => {
+    setReportType(value);
+  };
 
   const [openConfirmRejectedDialog, setOpenConfirmRejectedDialog] = useState({
     open: false,
@@ -65,12 +72,22 @@ export default function AccountReportPage() {
     }
   }, [limit]);
 
+  useEffect(() => {
+    if (page === 1) {
+      fetchListAccountReport(1, limit);
+    } else {
+      setPage(1);
+    }
+    setPage(1);
+  }, [reportType]);
+
   const fetchListAccountReport = (page, limit) => {
     getListAccountReport({
       _sort: null,
       limit,
       _order: null,
       page: page - 1,
+      isActive: reportType === "request",
     })
       .then((res) => setAccountReportList(res?.data))
       .finally(() => {});
@@ -255,6 +272,10 @@ export default function AccountReportPage() {
 
   return (
     <div className="Table">
+      <ChangeReportType
+        handleChangeReportType={handleChangeReportType}
+        reportType={reportType}
+      />
       <h3>Account Report Data</h3>
       <select onChange={(event) => setLimit(+event.target.value)}>
         {limitPerPage.map((item, index) => (
@@ -276,7 +297,7 @@ export default function AccountReportPage() {
         open={showAccountReportModal.open}
         title=""
         handleCloseModal={handleCloseAccountReportModal}
-        width={1200}
+        width={1500}
         height={800}
       >
         <Typography component="div" className="report-admin-modal">
@@ -296,14 +317,24 @@ export default function AccountReportPage() {
             handleCancel={() => handleCloseAccountReportModal()}
             reportMessage={trans(showAccountReportModal.reportMessage)}
             reportDetailContent={reportDetailContent}
+            isDone={reportType === "done"}
           />
-          <AccountReportModal
-            title={showAccountReportModal.reportMessage}
-            index={showAccountReportModal.index}
-            dataList={showAccountReportModal.dataList}
-            item={showAccountReportModal.item}
-            setUpdatedItem={() => null}
-          />
+          <Typography component="div" className="report-total-space">
+            <ReportPartiesInfo
+              item={showAccountReportModal.item}
+              reportName="Account"
+              reportType={reportType}
+            />
+            <div style={{ overflow: "auto", height: 'calc(800px - 60px)', margin: 'auto' }}>
+              <AccountReportModal
+                title={showAccountReportModal.reportMessage}
+                index={showAccountReportModal.index}
+                dataList={showAccountReportModal.dataList}
+                item={showAccountReportModal.item}
+                setUpdatedItem={() => null}
+              />
+            </div>
+          </Typography>
         </Typography>
       </CustomModal>
     </div>

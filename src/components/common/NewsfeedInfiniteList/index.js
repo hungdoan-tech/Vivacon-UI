@@ -27,7 +27,7 @@ const NewsfeedInfiniteList = (props) => {
     pageNumber,
     parentDataList,
     changedField,
-    isUseTrendingApi,
+    isUseTrendingApi
   );
 
   const observer = useRef();
@@ -52,6 +52,12 @@ const NewsfeedInfiniteList = (props) => {
     }
   }, [dataList]);
 
+  useEffect(() => {
+    if (isUseTrendingApi) {
+      setPageNumber(0);
+    }
+  }, [isUseTrendingApi]);
+
   const lastItemRef = useCallback(
     (node) => {
       if (isLoading) return;
@@ -68,7 +74,7 @@ const NewsfeedInfiniteList = (props) => {
           });
           if (entries[0].isIntersecting && !hasMore && !isUseTrendingApi) {
             setUseTrendingApi(true);
-            setPageNumber(0);
+            // setPageNumber(0);
           }
         },
         { threshold: 1.0 }

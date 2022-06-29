@@ -42,7 +42,7 @@ const PostContent = (props) => {
           indicators={item.attachments?.length > 1}
           cycleNavigation={item.attachments?.length > 1}
         >
-          {item.attachments.map((item, i) => (
+          {item.attachments?.map((item, i) => (
             <img key={i} src={item.url} alt="" />
           ))}
         </Carousel>

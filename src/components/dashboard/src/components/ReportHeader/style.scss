@@ -46,6 +46,9 @@
     font-weight: 900;
   }
 }
+.report-content-tooltip{
+  z-index: 1500 !important;
+}
 .MuiTooltip-tooltip {
   white-space: break-spaces;
   font-size: 12px !important;

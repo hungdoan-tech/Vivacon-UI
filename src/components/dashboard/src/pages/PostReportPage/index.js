@@ -21,11 +21,23 @@ import useSnackbar from "hooks/useSnackbar";
 import ConfirmDialog from "components/common/ConfirmDialog";
 import { convertUTCtoLocalDate } from "utils/calcDateTime";
 import ReportTable from "components/dashboard/src/components/ReportTable";
-import { IconButton, Tooltip, Typography, Button } from "@mui/material";
+import {
+  IconButton,
+  Tooltip,
+  Typography,
+  Button,
+  FormControl,
+  FormLabel,
+  RadioGroup,
+  FormControlLabel,
+  Radio,
+} from "@mui/material";
 import "./style.scss";
 import PostReportModal from "components/dashboard/src/components/PostReportModal";
 import ReportHeader from "components/dashboard/src/components/ReportHeader";
 import { useTranslation } from "react-i18next";
+import ChangeReportType from "../../components/ChangeReportType";
+import ReportPartiesInfo from "../../components/ReportPartiesInfo";
 
 export default function PostReportPage() {
   const [showPostReportModal, setShowPostReportModal] = useState({
@@ -40,6 +52,11 @@ export default function PostReportPage() {
   const [postReportList, setPostReportList] = useState([]);
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(5);
+  const [reportType, setReportType] = useState("request");
+
+  const handleChangeReportType = (value) => {
+    setReportType(value);
+  };
 
   const [openConfirmRejectedDialog, setOpenConfirmRejectedDialog] = useState({
     open: false,
@@ -56,6 +73,7 @@ export default function PostReportPage() {
   const { t: trans } = useTranslation();
 
   useEffect(() => {
+    console.log("refetch");
     fetchListPostReport(page, limit);
   }, [page]);
 
@@ -66,6 +84,15 @@ export default function PostReportPage() {
       setPage(1);
     }
   }, [limit]);
+
+  useEffect(() => {
+    if (page === 1) {
+      fetchListPostReport(1, limit);
+    } else {
+      setPage(1);
+    }
+    setPage(1);
+  }, [reportType]);
 
   useEffect(() => {
     if (showPostReportModal.reportMessage) {
@@ -90,6 +117,7 @@ export default function PostReportPage() {
       limit,
       _order: null,
       page: page - 1,
+      isActive: reportType === "request",
     })
       .then((res) => setPostReportList(res?.data))
       .finally(() => {});
@@ -271,6 +299,10 @@ export default function PostReportPage() {
 
   return (
     <div className="Table">
+      <ChangeReportType
+        handleChangeReportType={handleChangeReportType}
+        reportType={reportType}
+      />
       <h3>Post Report Data</h3>
       <select onChange={(event) => setLimit(+event.target.value)}>
         {limitPerPage.map((item, index) => (
@@ -292,7 +324,7 @@ export default function PostReportPage() {
         open={showPostReportModal.open}
         title=""
         handleCloseModal={handleClosePostReportModal}
-        width={1200}
+        width={1500}
         height={800}
       >
         <Typography component="div" className="report-admin-modal">
@@ -306,15 +338,19 @@ export default function PostReportPage() {
             handleCancel={() => handleClosePostReportModal()}
             reportMessage={trans(showPostReportModal.reportMessage)}
             reportDetailContent={reportDetailContent}
+            isDone={reportType === "done"}
           />
-          <PostReportModal
-            title={showPostReportModal.reportMessage}
-            index={showPostReportModal.index}
-            dataList={showPostReportModal.dataList}
-            reportId={showPostReportModal.reportId}
-            setUpdatedItem={() => null}
-            type="post"
-          />
+          <Typography component="div" className="report-total-space">
+            <ReportPartiesInfo item={showPostReportModal.item} reportName="Post" reportType={reportType}/>
+            <PostReportModal
+              title={showPostReportModal.reportMessage}
+              index={showPostReportModal.index}
+              dataList={showPostReportModal.dataList}
+              reportId={showPostReportModal.reportId}
+              setUpdatedItem={() => null}
+              type="post"
+            />
+          </Typography>
         </Typography>
       </CustomModal>
     </div>

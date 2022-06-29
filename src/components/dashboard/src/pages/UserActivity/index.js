@@ -22,7 +22,7 @@ const geoUrl =
   "https://raw.githubusercontent.com/zcreativelabs/react-simple-maps/master/topojson-maps/world-110m.json";
 
 const colorScale = scaleQuantize()
-  .domain([1, 100])
+  .domain([1, 80])
   .range([
     "#ffedea",
     "#ffcec5",
@@ -55,6 +55,7 @@ const UserActivity = () => {
   const [chartConfig, setChartConfig] = useState({
     series: [
       {
+        name: 'No. users',
         data: [],
       },
     ],
@@ -91,7 +92,7 @@ const UserActivity = () => {
             return {
               country: item[0],
               marksList: item[1],
-              rate: Math.round(item[1].length / res.data.length * 100, 4),
+              rate: Math.round((item[1].length / res.data.length) * 100, 4),
             };
           });
           setGroup(sortData);
@@ -155,13 +156,9 @@ const UserActivity = () => {
   const areaChartConfig = {
     series: [
       {
-        name: "series1",
-        data: [31, 40, 28, 51, 42, 109, 100],
+        name: "minutes",
+        data: [80, 100, 78, 68, 96, 104, 89],
       },
-      // {
-      //   name: "series2",
-      //   data: [11, 32, 45, 32, 34, 52, 41],
-      // },
     ],
     options: {
       chart: {
@@ -192,18 +189,18 @@ const UserActivity = () => {
       xaxis: {
         type: "datetime",
         categories: [
-          "2018-09-19T00:00:00.000Z",
-          "2018-09-19T01:30:00.000Z",
-          "2018-09-19T02:30:00.000Z",
-          "2018-09-19T03:30:00.000Z",
-          "2018-09-19T04:30:00.000Z",
-          "2018-09-19T05:30:00.000Z",
-          "2018-09-19T06:30:00.000Z",
+          "2022-06-29",
+          "2022-06-28",
+          "2022-06-27",
+          "2022-06-26",
+          "2022-06-25",
+          "2022-06-24",
+          "2022-06-23",
         ],
       },
       tooltip: {
         x: {
-          format: "dd/MM/yy HH:mm",
+          format: "dd/MM/yyyy",
         },
       },
     },

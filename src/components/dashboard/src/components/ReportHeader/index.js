@@ -1,6 +1,6 @@
 import { IconButton, Tooltip, Typography, Button } from "@mui/material";
 import InfoIcon from "@mui/icons-material/Info";
-import "./style.scss"
+import "./style.scss";
 
 const ReportHeader = ({
   handleApprove,
@@ -8,6 +8,7 @@ const ReportHeader = ({
   handleCancel,
   reportMessage,
   reportDetailContent,
+  isDone = false,
 }) => {
   return (
     <Typography component="div" className="header">
@@ -19,12 +20,16 @@ const ReportHeader = ({
           </IconButton>
         </Tooltip>
       </Typography>
-      <Button className="rejected-btn" onClick={handleReject}>
-        Rejected
-      </Button>
-      <Button className="approved-btn" onClick={handleApprove}>
-        Approved
-      </Button>
+      {!isDone && (
+        <>
+          <Button className="rejected-btn" onClick={handleReject}>
+            Rejected
+          </Button>
+          <Button className="approved-btn" onClick={handleApprove}>
+            Approved
+          </Button>
+        </>
+      )}
       <Button className="cancel-btn" onClick={handleCancel}>
         Cancel
       </Button>

@@ -24,6 +24,8 @@ import ReportTable from "components/dashboard/src/components/ReportTable";
 import { Typography } from "@mui/material";
 import ReportHeader from "components/dashboard/src/components/ReportHeader";
 import { useTranslation } from "react-i18next";
+import ChangeReportType from "../../components/ChangeReportType";
+import ReportPartiesInfo from "../../components/ReportPartiesInfo";
 
 export default function CommentReportPage() {
   const [showCommentReportModal, setShowCommentReportModal] = useState({
@@ -38,6 +40,11 @@ export default function CommentReportPage() {
   const [commentReportList, setCommentReportList] = useState([]);
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(5);
+  const [reportType, setReportType] = useState("request");
+
+  const handleChangeReportType = (value) => {
+    setReportType(value);
+  };
 
   const [openConfirmRejectedDialog, setOpenConfirmRejectedDialog] = useState({
     open: false,
@@ -65,12 +72,22 @@ export default function CommentReportPage() {
     }
   }, [limit]);
 
+  useEffect(() => {
+    if (page === 1) {
+      fetchListCommentReport(1, limit);
+    } else {
+      setPage(1);
+    }
+    setPage(1);
+  }, [reportType]);
+
   const fetchListCommentReport = (page, limit) => {
     getListCommentReport({
       _sort: null,
       limit,
       _order: null,
       page: page - 1,
+      isActive: reportType === "request",
     })
       .then((res) => setCommentReportList(res?.data))
       .finally(() => {});
@@ -178,13 +195,13 @@ export default function CommentReportPage() {
     if (type === "Approved") {
       setOpenConfirmApprovedDialog({
         open: false,
-        id: -1
+        id: -1,
       });
     }
     if (type === "Rejected") {
       setOpenConfirmRejectedDialog({
         open: false,
-        id: -1
+        id: -1,
       });
     }
   };
@@ -192,14 +209,14 @@ export default function CommentReportPage() {
     if (type === "Approved") {
       setOpenConfirmApprovedDialog({
         open: false,
-        id: -1
+        id: -1,
       });
       handleApprovedCommentReport(id);
     }
     if (type === "Rejected") {
       setOpenConfirmRejectedDialog({
         open: false,
-        id: -1
+        id: -1,
       });
       handleRejectedCommentReport(id);
     }
@@ -259,6 +276,10 @@ export default function CommentReportPage() {
 
   return (
     <div className="Table">
+      <ChangeReportType
+        handleChangeReportType={handleChangeReportType}
+        reportType={reportType}
+      />
       <h3>Comment Report Data</h3>
       <select onChange={(event) => setLimit(+event.target.value)}>
         {limitPerPage.map((item, index) => (
@@ -280,7 +301,7 @@ export default function CommentReportPage() {
         open={showCommentReportModal.open}
         title=""
         handleCloseModal={handleCloseReportModal}
-        width={1200}
+        width={1500}
         height={800}
       >
         <Typography component="div" className="report-admin-modal">
@@ -300,15 +321,23 @@ export default function CommentReportPage() {
             handleCancel={() => handleCloseReportModal()}
             reportMessage={trans(showCommentReportModal.reportMessage)}
             reportDetailContent={reportDetailContent}
+            isDone={reportType === "done"}
           />
-          <PostReportModal
-            title={showCommentReportModal.reportMessage}
-            index={showCommentReportModal.index}
-            dataList={showCommentReportModal.dataList}
-            reportId={showCommentReportModal.reportId}
-            setUpdatedItem={() => null}
-            type="comment"
-          />
+          <Typography component="div" className="report-total-space">
+            <ReportPartiesInfo
+              item={showCommentReportModal.item}
+              reportName="Comment"
+              reportType={reportType}
+            />
+            <PostReportModal
+              title={showCommentReportModal.reportMessage}
+              index={showCommentReportModal.index}
+              dataList={showCommentReportModal.dataList}
+              reportId={showCommentReportModal.reportId}
+              setUpdatedItem={() => null}
+              type="comment"
+            />
+          </Typography>
         </Typography>
       </CustomModal>
     </div>
