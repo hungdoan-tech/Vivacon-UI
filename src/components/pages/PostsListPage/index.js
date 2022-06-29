@@ -8,6 +8,7 @@ import PostDetailsModal from "components/common/PostDetailsModal";
 import SuggestedAccounts from "components/common/SuggestedAccounts";
 import SuggestedHashtag from "components/common/SuggestedHashtag";
 import _ from "lodash";
+import NewsfeedInfiniteList from "components/common/NewsfeedInfiniteList";
 
 const ImagesListContainer = ({ _renderItem }) => {
   return <div>{_renderItem}</div>;
@@ -41,7 +42,7 @@ const PostsListPage = () => {
     <>
       <SuggestedAccounts />
       <SuggestedHashtag />
-      <InfiniteList
+      <NewsfeedInfiniteList
         container={ImagesListContainer}
         handleGetData={getNewFeed}
         data={{
