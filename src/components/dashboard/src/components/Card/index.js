@@ -4,9 +4,10 @@ import "react-circular-progressbar/dist/styles.css";
 import { motion, AnimateSharedLayout } from "framer-motion";
 import { UilTimes } from "@iconscout/react-unicons";
 import Chart from "react-apexcharts";
-import { PERIOD } from "../../../../../constant/types";
+import { limitPerPage, PERIOD } from "../../../../../constant/types";
 import classNames from "classnames";
 import { ClickAwayListener, Typography } from "@mui/material";
+import ReactApexChart from "react-apexcharts";
 
 // parent Card
 const Card = (props) => {
@@ -19,6 +20,8 @@ const Card = (props) => {
           setExpanded={() => setExpanded(false)}
           setSummaryPeriod={props.setSummaryPeriod}
           setSummaryUserPeriod={props.setSummaryUserPeriod}
+          setLimit={props.setLimit}
+          setTimeSection={props.setTimeSection}
         />
       ) : (
         <CompactCard param={props} setExpanded={() => setExpanded(true)} />
@@ -41,7 +44,9 @@ function CompactCard({ param, setExpanded }) {
     >
       <div className="radialBar">
         <span>{param.title}</span>
-        <span>{param.value} posts</span>
+        <span>
+          {param.value} {param.title}
+        </span>
       </div>
     </motion.div>
   );
@@ -53,57 +58,99 @@ function ExpandedCard({
   setExpanded,
   setSummaryPeriod,
   setSummaryUserPeriod,
+  setLimit,
+  setTimeSection,
 }) {
   const [currentPeriod, setCurrentPeroid] = useState(PERIOD.MONTHS);
-  const data = {
-    options: {
-      chart: {
-        id: param.type,
+
+  let data = {};
+
+  if (param.isPieChart) {
+    data = {
+      series: param.topTrendingHashTag?.map(function (item) {
+        if (item?.quantity == null) {
+          item["quantity"] = 0;
+        }
+        return item["quantity"];
+      }),
+      options: {
+        chart: {
+          width: 380,
+          type: "pie",
+        },
+        labels: param.topTrendingHashTag.map(function (item) {
+          return item["name"].trim();
+        }),
+        responsive: [
+          {
+            breakpoint: 480,
+            options: {
+              chart: {
+                width: 200,
+              },
+              legend: {
+                position: "bottom",
+              },
+            },
+          },
+        ],
       },
-      xaxis: {
-        categories: param.time,
-        labels: {
-          style: {
-            fontSize: "12px",
+    };
+  } else {
+    data = {
+      options: {
+        chart: {
+          id: param.type,
+        },
+        xaxis: {
+          categories: param.time,
+          labels: {
+            style: {
+              fontSize: "12px",
+            },
           },
         },
-      },
-      yaxis: {
-        labels: {
-          style: {
-            fontSize: "14px !important",
+        yaxis: {
+          labels: {
+            style: {
+              fontSize: "14px !important",
+            },
           },
         },
-      },
-      tooltip: {
-        enabled: true,
-      },
-      fill: {
-        colors: [param.color.chartColor],
-        type: "gradient",
-        gradient: {
-          shade: "light",
-          type: "horizontal",
-          shadeIntensity: 0.25,
-          gradientToColors: undefined,
-          inverseColors: true,
-          opacityFrom: 1,
-          opacityTo: 1,
-          stops: [20, 40, 100],
+        tooltip: {
+          enabled: true,
+        },
+        fill: {
+          colors: [param.color.chartColor],
+          type: "gradient",
+          gradient: {
+            shade: "light",
+            type: "horizontal",
+            shadeIntensity: 0.25,
+            gradientToColors: undefined,
+            inverseColors: true,
+            opacityFrom: 1,
+            opacityTo: 1,
+            stops: [20, 40, 100],
+          },
+        },
+        legend: {
+          position: "bottom",
+          offsetX: 0,
+          offsetY: 50,
         },
       },
-      legend: {
-        position: "bottom",
-        offsetX: 0,
-        offsetY: 50,
-      },
-    },
-  };
+    };
+  }
 
   const handleClickPeriod = (type) => {
     setSummaryPeriod(type);
     setSummaryUserPeriod(type);
     setCurrentPeroid(type);
+
+    if (param.isPieChart) {
+      setTimeSection(type.toUpperCase());
+    }
   };
 
   const peroidClassName = (type) =>
@@ -127,6 +174,14 @@ function ExpandedCard({
             <span className="Title">{param.title}</span>
 
             <div className="homepage__summary-filter-wrapper">
+              {param.isPieChart ? (
+                <select onChange={(event) => setLimit(+event.target.value)}>
+                  {limitPerPage.map((item, index) => (
+                    <option key={item}>{item}</option>
+                  ))}
+                </select>
+              ) : null}
+
               <div
                 onClick={() => {
                   handleClickPeriod(PERIOD.MONTHS);
@@ -157,13 +212,22 @@ function ExpandedCard({
             </div>
           </div>
           <div className="chartContainer">
-            <Chart
-              options={data.options}
-              series={param.series}
-              type="bar"
-              width="700"
-              style={{ marginTop: "20px" }}
-            />
+            {!param.isPieChart ? (
+              <Chart
+                options={data.options}
+                series={param.series}
+                type={param.type}
+                width="700"
+                style={{ marginTop: "20px" }}
+              />
+            ) : (
+              <ReactApexChart
+                options={data.options}
+                series={data.series}
+                type={param.type}
+                width={380}
+              />
+            )}
           </div>
         </div>
       </ClickAwayListener>

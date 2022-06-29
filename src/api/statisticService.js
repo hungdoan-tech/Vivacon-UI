@@ -85,3 +85,17 @@ export const getUserQuantityStatisticInYears = async () => {
     {}
   );
 };
+
+export const getTopHashTagQuantityInTime = async (data) => {
+  const { timeSection, limit } = data;
+
+  return await axiosConfig.get(
+    `${API_ENDPOINT_KEYS.STATISTIC}/hashtag/in/time`,
+    {
+      params: {
+        timeSection,
+        limit,
+      },
+    }
+  );
+};
